@@ -36,9 +36,10 @@ Name=wlan0
 [Network]
 DHCP=yes" >> /etc/systemd/network/20-wireless.network
 
+systemctl daemon-reload
 systemctl restart systemd-networkd
 sleep 1
-systemctl restart systemd-resolved.service
+systemctl restart systemd-resolved
 sleep 1
 
 #--------------------
@@ -50,8 +51,8 @@ systemctl restart wpa_supplicant@wlan0.service
 # Change webserver config
 #--------------------
 #systemctl stop lighttpd.service
-#cp /etc/lighttpd/lighttpd-config.conf /etc/lighttpd/lighttpd.conf
-#systemctl start lighttpd.service
+cp /etc/lighttpd/lighttpd-config.conf /etc/lighttpd/lighttpd.conf
+#systemctl restart lighttpd.service
 
 rm /wifisetup
 touch /firstsetup

@@ -65,8 +65,7 @@ then
     systemctl stop systemd-resolved.service
     dnsmasq -k --conf-file=/etc/dnsmasq.conf &
 
-    rm /etc/resolv.conf
-    echo "nameserver 127.0.0.1" > /etc/resolv.conf
+    #echo "nameserver 127.0.0.1" >> /etc/resolv.conf
 
     #--------------------
     # launch hostapd
