@@ -7,6 +7,7 @@ GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 
 cp board/yio-remote/${BOARD_NAME}/config.txt ${BINARIES_DIR}/config.txt
 cp board/yio-remote/${BOARD_NAME}/cmdline.txt ${BINARIES_DIR}/cmdline.txt
+cp board/yio-remote/${BOARD_NAME}/config.json ${BINARIES_DIR}/config.json
 
 mkdir -p ${BINARIES_DIR}/overlays
 cp board/yio-remote/${BOARD_NAME}/goodix.dtbo ${BINARIES_DIR}/overlays/goodix.dtbo

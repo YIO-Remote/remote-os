@@ -1,0 +1,132 @@
+{
+    "areas": [
+        {
+            "area": "Entrance",
+            "bluetooth": "xx:xx:xx:xx:xx"
+        },
+        {
+            "area": "Kitchen",
+            "bluetooth": "xx:xx:xx:xx:xx"
+        }
+    ],
+    "entities": [
+        {
+            "data": [
+                {
+                    "area": "Entrance",
+                    "entity_id": "light.backdoor_lamp",
+                    "favorite": false,
+                    "friendly_name": "Backdoor lamp",
+                    "integration": "homeassistant",
+                    "supported_features": [
+                        "BRIGHTNESS"
+                    ],
+                    "type": "light"
+                }
+            ],
+            "type": "light"
+        },
+        {
+            "data": [
+                {
+                    "area": "Bedroom",
+                    "entity_id": "cover.bedroom_blinds_level",
+                    "favorite": false,
+                    "friendly_name": "Bedroom blinds",
+                    "integration": "homeassistant",
+                    "supported_features": [
+                        "OPEN",
+                        "CLOSE",
+                        "STOP",
+                        "POSITION"
+                    ],
+                    "type": "blind"
+                }
+            ],
+            "type": "blind"
+        },
+        {
+            "data": [
+                {
+                    "area": "Kitchen",
+                    "attributes": {
+                        "state": "off"
+                    },
+                    "entity_id": "media_player.kitchen",
+                    "favorite": false,
+                    "friendly_name": "Kitchen speaker",
+                    "integration": "homeassistant",
+                    "supported_features": [
+                        "SOURCE",
+                        "APP_NAME",
+                        "VOLUME",
+                        "VOLUME_UP",
+                        "VOLUME_DOWN",
+                        "VOLUME_SET",
+                        "MUTE",
+                        "MUTE_SET",
+                        "MEDIA_TYPE",
+                        "MEDIA_TITLE",
+                        "MEDIA_ARTIST",
+                        "MEDIA_ALBUM",
+                        "MEDIA_DURATION",
+                        "MEDIA_POSITION",
+                        "MEDIA_IMAGE",
+                        "PLAY",
+                        "PAUSE",
+                        "STOP",
+                        "PREVIOUS",
+                        "NEXT",
+                        "SEEK",
+                        "SHUFFLE",
+                        "TURN_ON",
+                        "TURN_OFF"
+                    ],
+                    "type": "media_player"
+                }
+            ],
+            "type": "media_player"
+        }
+    ],
+    "integration": [
+        {
+            "connectionOpen": true,
+            "data": {
+                "ip": "ip:port",
+                "token": "xxxxxx"
+            },
+            "friendly_name": "Home Assistant",
+            "id": 1,
+            "plugin": "homeassistant",
+            "type": "homeassistant"
+        }
+    ],
+    "language": "en_US",
+    "settings": {
+        "autobrightness": true,
+        "darkmode": true,
+        "menu": {
+            "order": [
+                {
+                    "display_name": "Favorites",
+                    "displayname": "Favorites",
+                    "name": "favorites",
+                    "show": true
+                },
+                {
+                    "display_name": "Settings",
+                    "displayname": "Settings",
+                    "name": "settings",
+                    "show": true
+                }
+            ],
+            "showareas": true,
+            "showdevices": true
+        },
+        "proximity": 40,
+        "shutdowntime": 7200,
+        "softwareupdate": false,
+        "wifitime": 240,
+        "bluetootharea": false
+    }
+}

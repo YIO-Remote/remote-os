@@ -10,6 +10,8 @@ then
     # restart wifi
     systemctl start wpa_supplicant@wlan0.service
     sleep 5
+
+    touch /wificopy
 else
     echo "No wpa config."
 fi

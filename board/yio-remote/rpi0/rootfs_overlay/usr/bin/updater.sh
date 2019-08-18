@@ -6,6 +6,11 @@
 #--------------------
 url=`cat /usr/bin/updateURL`
 
+if [ -z "$url" ]
+then
+	echo "URL is empty"
+	exit 0
+fi
 
 #--------------------
 # 1. Show the update screen

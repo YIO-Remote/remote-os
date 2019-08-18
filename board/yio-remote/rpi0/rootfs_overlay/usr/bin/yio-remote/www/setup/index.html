@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>YIO Remote Wi-Fi Setup</title>	
+	<meta charset="utf-8" />	
+	<link rel="stylesheet" href="style.css" type="text/css" media="all" />
+</head>
+<body>	
+	<form action="wifi.php" method="POST">
+		<div class='logo'>
+			<img src='assets/yio-logo.png'
+				srcset='assets/yio-logo.png 1x,
+						assets/yio-logo@2x.png 2x,
+						assets/yio-logo@3x.png 3x'
+				style='max-width: 180px'/>
+		</div>
+		<p class="infotext">
+			Let’s get started and set up your Wi-Fi connection.
+		</p>		
+		<p class="ssid">
+			<input type="text" name="ssid" id="ssid" placeholder="Enter you Wi-Fi network’s name" />
+		</p>
+		<p class="password">
+			<input type="text" name="password" id="password" placeholder="Enter your Wi-Fi password" />
+		</p>
+		<p class="submit">
+			<input type="submit" value="Connect" />
+		</p>
+	</form>
+</body>
+</html>
+

@@ -67,7 +67,7 @@ KeyboardStyle {
         Rectangle {
             id: keyBackground
             radius: 5
-            color: colorButton
+            color: colorMedium
             anchors.fill: keyPanel
             anchors.margins: keyBackgroundMargin
             Text {
@@ -137,7 +137,7 @@ KeyboardStyle {
         Rectangle {
             id: backspaceKeyBackground
             radius: 5
-            color: colorButton
+            color: colorMedium
             anchors.fill: backspaceKeyPanel
             anchors.margins: keyBackgroundMargin
             Image {
@@ -324,7 +324,7 @@ KeyboardStyle {
         Rectangle {
             id: hideKeyBackground
             radius: 5
-            color: colorButton
+            color: colorMedium
             anchors.fill: hideKeyPanel
             anchors.margins: keyBackgroundMargin
             Image {
@@ -369,7 +369,7 @@ KeyboardStyle {
         Rectangle {
             id: shiftKeyBackground
             radius: 5
-            color: colorButton
+            color: colorMedium
             anchors.fill: shiftKeyPanel
             anchors.margins: keyBackgroundMargin
             Image {
@@ -386,7 +386,7 @@ KeyboardStyle {
                     when: InputContext.capsLock
                     PropertyChanges {
                         target: shiftKeyBackground
-                        color: colorHighlight
+                        color: colorHighlight1
                     }
                     PropertyChanges {
                         target: shiftKeyIcon
@@ -477,7 +477,7 @@ KeyboardStyle {
         Rectangle {
             id: symbolKeyBackground
             radius: 5
-            color: colorButton
+            color: colorMedium
             anchors.fill: symbolKeyPanel
             anchors.margins: keyBackgroundMargin
             Text {
@@ -643,7 +643,7 @@ KeyboardStyle {
             id: characterPreviewBackground
             width: parent.width+20
             height: parent.height+20
-            color: colorHighlight
+            color: colorHighlight1
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             radius: 5

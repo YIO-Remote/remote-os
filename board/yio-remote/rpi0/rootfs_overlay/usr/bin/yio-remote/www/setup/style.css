@@ -1,0 +1,84 @@
+body {
+	text-align: center;
+	background-color: black;
+}
+
+form {
+    display: inline-block;
+}
+
+input {
+	margin-left: auto;
+	margin-right: auto;
+	
+	padding-left: 10px;
+	width: 300px;
+	height: 60px;
+	max-height: 60px;
+
+	font-family: OpenSans, sans-serif;
+	font-size: 18px;
+	color: #FFFFFF;
+	line-height: 24px;
+
+	background-color: #1C1C1C;
+	border-color: transparent;
+	border-radius: 18px;
+	-moz-border-radius: 18px;
+	-webkit-border-radius: 18px;
+}
+
+.logo img {
+	width: 100%;
+	display: block;
+	margin-top: 60px;
+	margin-bottom: 60px;
+	margin-left: auto;
+	margin-right: auto;
+  }
+
+.infotext {
+	margin-left: auto;
+	margin-right: auto;
+	
+	opacity: 0.4;
+	font-family: OpenSans, sans-serif;
+	font-size: 18px;
+	color: #FFFFFF;
+	text-align: center;
+	line-height: 24px;
+
+	width: 240px;
+}
+
+.ssid {
+	margin-top: 40px;
+}
+
+.password {
+	margin-top: 20px;
+}
+
+input:hover, textarea:hover,
+input:focus, textarea:focus {
+	border-color: 1px solid #C9C9C9;
+}
+
+.submit input {
+	margin-top: 40px;
+	
+	width: 200px;
+	height: 60px;
+
+	font-family: OpenSans, sans-serif;
+	font-size: 27px;
+	color: #FFFFFF;
+	text-align: center;
+	line-height: 32px;
+
+	background-color: transparent; 
+	border: 2px solid #ffffff;
+	border-radius: 40px;
+	-moz-border-radius: 40px;
+	-webkit-border-radius: 40px;		
+}
