@@ -21,14 +21,10 @@ network={
 #--------------------	
 killall -9 hostapd
 
-echo "hostpad stopped" >> /phplog
-
 #--------------------
 # DHCP and DNS service
 #--------------------	
 killall -9 dnsmasq
-
-echo "dnsmasq stopped" >> /phplog
 
 #--------------------
 # set dynamic IP address
@@ -45,13 +41,10 @@ sleep 1
 systemctl restart systemd-resolved.service
 sleep 1
 
-echo "networkd and resolved started" >> /phplog
-
 #--------------------
 # Enable Wi-Fi
 #--------------------
 systemctl restart wpa_supplicant@wlan0.service
-echo "wpa supplicant started" >> /phplog
 
 #--------------------
 # Change webserver config
@@ -62,5 +55,3 @@ echo "wpa supplicant started" >> /phplog
 
 rm /wifisetup
 touch /firstsetup
-
-echo "end" >> /phplog
