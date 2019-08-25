@@ -4,7 +4,8 @@ body {
 }
 
 form {
-    display: inline-block;
+	display: inline-block;
+	margin: 0px;
 }
 
 input {
@@ -28,6 +29,10 @@ input {
 	-webkit-border-radius: 18px;
 }
 
+.hiddeninput {
+	display: none;
+}
+
 .logo img {
 	width: 100%;
 	display: block;
@@ -37,9 +42,73 @@ input {
 	margin-right: auto;
   }
 
+.smalltitle {
+	display: block;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 300px;
+
+	opacity: 0.4;
+	font-family: OpenSans, sans-serif;
+	font-size: 16px;
+	color: #FFFFFF;
+	text-align: left;
+	line-height: 24px;
+
+  }
+
+.networklist_container {
+	display: block;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 300px;
+
+}
+
+.networklist_element {
+	margin-left: auto;
+	margin-right: auto;
+
+	padding-bottom: 10px;
+
+	/* background-color: aqua; */
+
+	width: 300px;
+	min-height: 24px;
+	max-height: 24px;
+
+	font-family: OpenSans, sans-serif;
+	font-size: 18px;
+	color: #FFFFFF;
+	text-align: left;
+	vertical-align: middle;
+	line-height: 24px;
+}
+
+.imgwifi {
+	float: right;
+	margin-top: -25px;
+}
+
+.networklist_element p {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.vl {
+	border-top: 1px solid; 
+	border-color: #1C1C1C;
+	height: 1px;
+}
+
 .infotext {
 	margin-left: auto;
 	margin-right: auto;
+	padding-bottom: 20px;
 	
 	opacity: 0.4;
 	font-family: OpenSans, sans-serif;
@@ -51,12 +120,36 @@ input {
 	width: 240px;
 }
 
+.timedate {
+	font-family: OpenSans, sans-serif;
+	font-size: 18px;
+	color: #FFFFFF;
+	text-align: left;
+	line-height: 24px;
+	width: 300px;
+}
+
+.timezone {
+	font-family: OpenSans, sans-serif;
+	font-size: 18px;
+	color: #FFFFFF;
+	text-align: left;
+	line-height: 24px;
+	width: 300px;
+}
+
+.topspace {
+	margin-top: 40px;
+}
+
 .ssid {
 	margin-top: 40px;
+	display: none;
 }
 
 .password {
 	margin-top: 20px;
+	display: none;
 }
 
 input:hover, textarea:hover,

@@ -28,6 +28,13 @@ then
     echo "$SSID" >> /apssid
 
     #--------------------
+    # scan for nearby wifis
+    #--------------------
+    iw dev wlan0 scan >> /test
+    systemctl start wpa_supplicant@wlan0.service
+    /usr/bin/yio-remote/wifi_network_list.sh >> /networklist
+
+    #--------------------
     # delete firstrun file
     #--------------------
     rm /firstrun
