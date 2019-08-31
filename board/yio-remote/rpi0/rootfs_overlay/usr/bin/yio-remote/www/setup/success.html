@@ -157,9 +157,23 @@ function addNetwork($ssid, $rssi, $id)
 	weekday[5] = "Friday";
 	weekday[6] = "Saturday";
 
-	var date = weekday[today.getDay()] + ", " + today.getDate() + " " + today.getMonth() + " " + today.getFullYear();
+	//get current month
+	var month = new Array(12);
+	month[0] = "Jan";
+	month[1] = "Feb";
+	month[2] = "Mar";
+	month[3] = "Apr";
+	month[4] = "May";
+	month[5] = "Jul";
+	month[6] = "Jun";
+	month[7] = "Aug";
+	month[8] = "Sep";
+	month[9] = "Oct";
+	month[10] = "Nov";
+	month[11] = "Dec";
+
+	var date = weekday[today.getDay()] + ", " + today.getDate() + " " + month[today.getMonth()] + " " + today.getFullYear();
 	document.getElementById('currentdate').innerHTML = date;
 
 </script>
 </html>
-
