@@ -16,7 +16,8 @@ network={
     psk="\"$2\""
 }" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
 
-echo "{\"ssid\":\"$1\",\"password\":\"$2\"}" > /wificred 
+echo "{\"ssid\":\"$1\",\"password\":\"$2\"}" > /wificred
+echo "$1" > /ssid 
 
 #--------------------
 # Stop wireless AP
@@ -54,8 +55,8 @@ sleep 1
 # Change webserver config
 #--------------------
 #systemctl stop lighttpd.service
-cp /etc/lighttpd/lighttpd-config.conf /etc/lighttpd/lighttpd.conf
-systemctl restart lighttpd.service
+#cp /etc/lighttpd/lighttpd-config.conf /etc/lighttpd/lighttpd.conf
+#systemctl restart lighttpd.service
 
 rm /wifisetup
 touch /firstsetup
