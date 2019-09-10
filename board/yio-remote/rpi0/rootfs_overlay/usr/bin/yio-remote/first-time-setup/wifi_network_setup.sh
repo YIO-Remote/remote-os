@@ -16,7 +16,7 @@ network={
     psk="\"$2\""
 }" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
 
-echo "{\"ssid\":\"$1\",\"password\":\"$2\"}" > /wificred
+echo "{\"ssid\":\"$1\",\"password\":\"$2\"," > /wificred
 echo "$1" > /ssid 
 
 #--------------------
