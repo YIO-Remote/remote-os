@@ -28,6 +28,16 @@ then
     echo "$SSID" >> /apssid
 
     #--------------------
+    # setup hostname
+    #--------------------
+    echo "$SSID" > /etc/hostname
+    rm /etc/hosts
+    echo "127.0.0.1	localhost
+127.0.0.1	$SSID" >> /etc/hosts
+    hostnamectl set-hostname "$SSID"
+    systemctl restart avahi-daemon
+
+    #--------------------
     # delete firstrun file
     #--------------------
     rm /firstrun
@@ -43,8 +53,12 @@ then
     #--------------------
     # scan for nearby wifis
     #--------------------
-    iw dev wlan0 scan >> /test
+    iw dev wlan0 scan >> /dev/null
+    systemctl stop wpa_supplicant@wlan0.service
+    killall -9 wpa_supplicant
+    sleep 1
     systemctl start wpa_supplicant@wlan0.service
+    sleep 1
     /usr/bin/yio-remote/wifi_network_list.sh >> /networklist
 
     #--------------------
