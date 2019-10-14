@@ -1,14 +1,14 @@
 #!/bin/bash
-rm /networklist
-rm /ssid
-rm /firstsetup
-rm /wificred
+rm -f /networklist
+rm -f /ssid
+rm -f /firstsetup
+rm -f /wificred
 touch /wifisetup
 
-# create a configuration file
-rm /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+# reset configuration file
+mkdir -p /etc/wpa_supplicant
 echo "ctrl_interface=/var/run/wpa_supplicant
-ap_scan=1" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+ap_scan=1" > /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
 
 #systemctl daemon-reload
 systemctl restart systemd-networkd

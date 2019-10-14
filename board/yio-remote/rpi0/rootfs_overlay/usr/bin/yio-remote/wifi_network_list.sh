@@ -1,19 +1,16 @@
 #!/bin/bash
-i=0
+#
+# Called from firstrun.sh if:
+# - /wifisetup marker file present
+# - and /wificopy marker file doesn't exist
+# Output is appended to /networklist
+#
 
-wpa_cli scan | grep 'OK' &> /dev/null
+wpa_cli -i wlan0 scan | grep 'OK' &> /dev/null
 
 if [ $? == 0 ]; then
-    # echo 'OK'
-    wpa_cli scan_results | 
-    while IFS= read -r line
-    do
-        if [ "$i" -gt "1" ]; then
-            echo $line | awk '{ print $3, $5 }' | tr ' ' ,
-            # echo $line | awk '{ print $5; }'
-        fi
-        i=$((i+1))
-    done
-else 
+    sleep 3
+    wpa_cli -i wlan0 scan_results | tail -n +2 | awk -v OFS=',' 'BEGIN {FS="\t"}; { print $3, substr($0, index($0,$5)) }'
+else
     echo 'Scan failed'
 fi

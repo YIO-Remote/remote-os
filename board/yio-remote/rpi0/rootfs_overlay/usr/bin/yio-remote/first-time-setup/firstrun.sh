@@ -31,7 +31,7 @@ then
     # setup hostname
     #--------------------
     echo "$SSID" > /etc/hostname
-    rm /etc/hosts
+    rm -f /etc/hosts
     echo "127.0.0.1	localhost
 #127.0.0.1	$SSID" >> /etc/hosts
     hostnamectl set-hostname "$SSID"
@@ -59,7 +59,7 @@ then
     #--------------------
     # set static IP address
     #--------------------
-    rm /etc/systemd/network/20-wireless.network
+    rm -f /etc/systemd/network/20-wireless.network
     echo "[Match]" > /etc/systemd/network/20-wireless.network
     echo "Name=wlan0" >> /etc/systemd/network/20-wireless.network
     echo "" >> /etc/systemd/network/20-wireless.network
