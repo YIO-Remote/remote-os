@@ -1,4 +1,5 @@
 #!/bin/bash
+mkdir -p /mnt/boot
 mount /dev/mmcblk0p1 /mnt/boot
 
 /usr/bin/yio-remote/wifi-copy-config.sh

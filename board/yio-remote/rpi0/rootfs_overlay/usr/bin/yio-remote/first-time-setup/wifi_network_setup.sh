@@ -3,10 +3,8 @@
 #--------------------
 # Create WPA supplicant file
 #--------------------
-# delete existing configuration file
-rm -rf /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-
-# create a configuration file
+# (re-)create a configuration file
+mkdir -p /etc/wpa_supplicant
 echo "ctrl_interface=/var/run/wpa_supplicant
 ap_scan=1
 
@@ -14,7 +12,7 @@ network={
     key_mgmt=WPA-PSK
     ssid="\"$1\""
     psk="\"$2\""
-}" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+}" > /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
 
 echo "{\"ssid\":\"$1\",\"password\":\"$2\"," > /wificred
 echo "$1" > /ssid 
@@ -32,12 +30,11 @@ killall -9 dnsmasq
 #--------------------
 # set dynamic IP address
 #--------------------
-rm /etc/systemd/network/20-wireless.network
 echo "[Match]
 Name=wlan0
 
 [Network]
-DHCP=yes" >> /etc/systemd/network/20-wireless.network
+DHCP=yes" > /etc/systemd/network/20-wireless.network
 
 #systemctl daemon-reload
 systemctl restart systemd-networkd
@@ -58,5 +55,5 @@ sleep 1
 #cp /etc/lighttpd/lighttpd-config.conf /etc/lighttpd/lighttpd.conf
 #systemctl restart lighttpd.service
 
-rm /wifisetup
+rm -f /wifisetup
 touch /firstsetup

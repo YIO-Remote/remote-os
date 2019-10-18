@@ -102,7 +102,7 @@ function addNetwork($ssid, $rssi, $id)
 				}	
 			?>	
 			<div id="othernetwork" class="networklist_element" onClick="customWifi()">
-			<p>Joint other network...</p>
+			<p>Join other network...</p>
 			</div>
 		</div>
 		<p id="ssid" class="ssid">
@@ -143,6 +143,8 @@ function addNetwork($ssid, $rssi, $id)
 	document.getElementById('timezonetext').innerHTML = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 	// get current time
+	// TODO use date format functions instead of manual formatting
+	// TODO use current locale and timezone in dateTime format
 	var today = new Date();
 	var time = today.getHours() + ":" + today.getMinutes();
 	document.getElementById('currenttime').innerHTML = time;
