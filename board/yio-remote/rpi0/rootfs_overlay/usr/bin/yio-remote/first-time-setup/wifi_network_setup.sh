@@ -51,9 +51,10 @@ sleep 1
 #--------------------
 # Change webserver config
 #--------------------
-#systemctl stop lighttpd.service
-#cp /etc/lighttpd/lighttpd-config.conf /etc/lighttpd/lighttpd.conf
-#systemctl restart lighttpd.service
-
 rm -f /wifisetup
 touch /firstsetup
+
+# we are called from wifi.php at the last step of the WiFi setup process:
+# once the server cfg is changed no further interactions are possible in the setup!
+cp /etc/lighttpd/lighttpd-config.conf /etc/lighttpd/lighttpd.conf
+systemctl reload lighttpd.service
