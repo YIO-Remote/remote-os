@@ -1,16 +1,17 @@
 #!/bin/bash
-#
+# -----------------------------------------------------------------------------
+# Returns a list of WiFi networks.
+# Format: <signal_strength>,<ssid>
+# Example:
+# -35.00,Guest Network
+# -61.00,Unifi
+# -75.00,DIRECT-gL-BRAVIA
+# -----------------------------------------------------------------------------
 # Called from firstrun.sh if:
 # - /wifisetup marker file present
 # - and /wificopy marker file doesn't exist
-# Output is appended to /networklist
-#
+# Output is written to /networklist
+# -----------------------------------------------------------------------------
 
-wpa_cli -i wlan0 scan | grep 'OK' &> /dev/null
-
-if [ $? == 0 ]; then
-    sleep 3
-    wpa_cli -i wlan0 scan_results | tail -n +2 | awk -v OFS=',' 'BEGIN {FS="\t"}; { print $3, substr($0, index($0,$5)) }'
-else
-    echo 'Scan failed'
-fi
+# 'iw wlan0 scan' should always work, whereas 'wpa_cli -i wlan0 scan' is a pain to work with 
+iw wlan0 scan | awk -f /usr/bin/yio-remote/wifi_network_list.awk

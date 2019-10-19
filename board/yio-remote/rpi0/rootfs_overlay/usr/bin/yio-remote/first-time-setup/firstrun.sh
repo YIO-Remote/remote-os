@@ -54,12 +54,11 @@ then
     # scan for nearby wifis
     #--------------------
     iw dev wlan0 scan >> /dev/null
-    /usr/bin/yio-remote/wifi_network_list.sh >> /networklist
+    /usr/bin/yio-remote/wifi_network_list.sh > /networklist
 
     #--------------------
     # set static IP address
     #--------------------
-    rm -f /etc/systemd/network/20-wireless.network
     echo "[Match]" > /etc/systemd/network/20-wireless.network
     echo "Name=wlan0" >> /etc/systemd/network/20-wireless.network
     echo "" >> /etc/systemd/network/20-wireless.network

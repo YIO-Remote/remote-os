@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title>YIO Configurator</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="menuFrame" id="menu">
+      <div class="logoHolder"><img src="logo.png" alt="Logo" class="menuLogo" /></div>
+
+      <div class="menuItem" onclick="setActiveUI('integrations');">Integrations</div>
+      <div class="menuItem" onclick="setActiveUI('entities');">Entities</div>
+      <div class="menuItem" onclick="setActiveUI('areas');">Areas</div>
+      <div class="menuItem" onclick="setActiveUI('settings');">Settings</div>
+      <div class="menuItem" onclick="setActiveUI('profiles');">Profiles</div>
+      <div class="menuItem" onclick="setActiveUI('groups');">Groups</div>
+      <div class="menuItem" onclick="setActiveUI('pages');">Pages</div>
+      <div class="menuItem" onclick="setActiveUI('advanced');">Advanced</div>
+    </div>
+
+    <div class="mainFrame" id="main">
+      <div class="configPage" id="configFile" name="configFile">
+        <h3>Configuration File</h3>
+
+        <textarea name="configJsonTextBox" id="configJsonTextBox"> </textarea>
+
+        <div class="configMenu"><button type="button" onclick="getConfig();">Reload</button><button type="button" onclick="downloadConfig();">Download</button><button type="button" onclick="setConfig();">Save</button></div>
+      </div>
+
+      <div class="configPage" id="areas" name="areas"></div>
+
+      <div class="configPage" id="entities" name="entities"></div>
+      <div class="configPage" id="intergrations" name="intergrations"></div>
+      <div class="configPage" id="settings" name="settings"></div>
+      <div class="configPage" id="ui_config.groups" name="ui_config.groups"></div>
+      <div class="configPage" id="ui_config.pages" name="ui_config.pages"></div>
+      <div class="configPage" id="ui_config.profiles" name="ui_config.profiles"></div>
+    </div>
+
+    <div class="ToolFrame" id="tool">
+      <div class="toolPage" id="toolEntities" name="toolEntities"></div>
+      <div class="toolPage" id="areasArea" name="areasArea">
+        <h3>Configuration Areas:Area</h3>
+        <div class="configItem">
+          <label for="areasArea.area">Area name</label>
+          <input type="text" name="areasArea.area" placeholder="Livingroom" />
+        </div>
+
+        <div class="configItem">
+          <label for="areasArea.bluetooth">Corresponding Bluetooth device</label>
+          <input type="text" name="areasArea.bluetooth" placeholder="00:00:00:00:00:00" />
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="sort.js"></script>
+  <script src="configurator.js"></script>
+</html>
