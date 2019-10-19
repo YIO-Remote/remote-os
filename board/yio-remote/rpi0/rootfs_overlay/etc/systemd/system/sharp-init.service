@@ -1,0 +1,11 @@
+[Unit]
+Description=Sharp init
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/yio-remote/sharp-init
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

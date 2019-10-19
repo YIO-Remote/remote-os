@@ -1,0 +1,11 @@
+[Unit]
+Description=Remote app
+After=sharp-init.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/yio-remote/app-launch.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
