@@ -20,9 +20,13 @@ Requirements:
   - Recommended card: Samsung EVO Plus (64 and 128GB have much higher write speed!)
   - See: [RPi microSD card performance comparison 2019](https://www.jeffgeerling.com/blog/2019/raspberry-pi-microsd-card-performance-comparison-2019)
 
-### Prepare Build Environment
+### Docker
 
-#### Linux Ubuntu 18.04.3 or newer
+See [Docker Readme](docker/README.md).
+
+### Linux Ubuntu 18.04.3 or newer
+
+#### Prepare Build Environment
 
 - If you just need a headless build VM then use the minimal [Ubuntu 18.04.3 LTS Server](http://cdimage.ubuntu.com/releases/18.04.3/release/) version.
 - Some packages might already be installed depending on the version (desktop or server).
@@ -54,16 +58,6 @@ Install required tools:
 
         sudo apt-get install openssh-server
 
-#### macOS
-
-TODO
-
-#### Windows
-
-TODO maybe
-
-### Build SD Card Image
-
 #### Initial Checkout
 
     SRC_DIR=~/projects/yio
@@ -80,7 +74,7 @@ TODO maybe
     git submodule init
     git submodule update
 
-#### Build Image
+#### Build SD Card Image
 
     cd ${SRC_DIR}/remote-os/buildroot
     
@@ -97,21 +91,13 @@ The built SD card image can be found at: `${SRC_DIR}/remote-os/buildroot/output/
 
 TODO: shortly describe the main commands (menuconfig, clean, rebuild, etc.)
 
-#### Write SD Card Image
+## Write SD Card Image
 
 Use [balenaEtcher](https://www.balena.io/etcher/) - available for Linux, macOS and Windows - or your favorite tool.
 
 ## Technology Research
 
 The following technologies were / are investigated for finding an easy and automated solution to build the RPi image.
-
-### Docker
-
-Docker works best for running services. But it can also be used to build software or anything else. Well, that's a service too :-)
-
-TODO:
-
-- [ ] Docker setup using Docker Volumes for the build cache. (Volume mounts have too many issues on Windows).
 
 ### Vagrant
 
