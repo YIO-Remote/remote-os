@@ -8,8 +8,13 @@
 set -e
 
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+
 SDCARD_IMG=${YIO_SRC}/remote-os/buildroot/output/images/yio-remote-sdcard.img
 BUILD_OUTPUT=/yio-remote/target
+
+QMAKE=${YIO_SRC}/remote-os/buildroot/output/host/bin/qmake
+LINGUIST_LUPDATE=/usr/lib/qt5/bin/lupdate
+LINGUIST_LRELEASE=/usr/lib/qt5/bin/lrelease
 
 #=============================================================
 
@@ -20,9 +25,10 @@ YIO-remote build image.
 
 Commands:
 info     Print Git information of the available projects
+init     Initialize build: prepare buildroot
 bash     Start a shell for manual operations inside the container
 clean    Clean all projects
-clean    Build all projects
+build    Build all projects
 update   Update all projects on the current branch
 
 <project> git [options] <command> [<args>]
@@ -90,11 +96,33 @@ checkBuildOutputExists() {
     rm $BUILD_OUTPUT/write-test-$TIMESTAMP
 }
 
+checkToolchainExists() {
+    if [ ! -x $TARGET_QMAKE ]; then
+        echo "ERROR: Toolchain for RPi cross compilation hasn't been built yet! Build remote-os first"
+        exit 1
+    fi
+}
+
 #=============================================================
 
+initRemoteOS() {
+    echo "Initializing Buildroot project in remote-os..."
+
+    checkProjectExists remote-os
+
+    cd ${YIO_SRC}/remote-os
+    git submodule init
+    git submodule update
+    cd buildroot
+    make defconfig BR2_DEFCONFIG=../yio_rpi0w_defconfig
+}
+
 buildRemoteOS() {
+    echo "Building remote-os project..."
+
     checkProjectExists remote-os
     checkBuildOutputExists
+    initRemoteOS
 
     cd ${YIO_SRC}/remote-os/buildroot
     set -o pipefail
@@ -106,13 +134,43 @@ buildRemoteOS() {
 
 #=============================================================
 
+buildQtProject() {
+    echo "Building Qt project $1..."
+
+    checkToolchainExists
+    checkProjectExists $1
+
+    cd ${YIO_SRC}/$1
+
+    $QMAKE
+
+    if [ "$1" = "remote-software" ]; then 
+        echo "Creating translation files..."
+        $LINGUIST_LUPDATE remote.pro
+        $LINGUIST_LRELEASE remote.pro
+    fi
+
+    # FIXME use build output directory instead of messing up project directory
+    make
+
+    echo ""
+    echo "TODO: copy build artefact to output volume"
+    echo ""
+}
+
+#=============================================================
+
 if [ $# -eq 1 ] && ([ "$1" = "bash" ] || [ "$1" = "/bin/bash" ]); then
     # manual mode: jump to shell
     exec bash
 elif [ $# -eq 1 ]; then
     # handle single command
-    if [ "$1" = "info" ]; then
+    if [ "$1" = "help" ] || [ "$1" = "-h" ]; then
+        usage
+    elif [ "$1" = "info" ]; then
         projectInfo
+    elif [ "$1" = "init" ]; then
+        initRemoteOS
     elif [ "$1" = "clean" ]; then
         echo "Cleaning remote-os project..."
         cd ${YIO_SRC}/remote-os/buildroot
@@ -120,7 +178,6 @@ elif [ $# -eq 1 ]; then
         echo ""
         echo "TODO clean Qt projects!"
     elif [ "$1" = "build" ]; then
-        echo "Building remote-os project..."
         buildRemoteOS
         echo ""
         echo "TODO build Qt projects!"
@@ -164,8 +221,7 @@ elif [ "$2" = "build" ]; then
     if [ "$1" = "remote-os" ]; then
         buildRemoteOS
     else
-        echo "ERROR: $2 of project $1 is not yet supported!"
-        exit 1
+        buildQtProject $1
     fi
 else
     usage;

@@ -18,8 +18,4 @@ mkdir -p ${YIO_SRC} \
     && cd .. \
     && git clone https://github.com/YIO-Remote/remote-os.git \
     && cd remote-os \
-    && git checkout $YIO_REMOTE_OS_BRANCH \
-    && git submodule init \
-    && git submodule update \
-    && cd buildroot \
-    && make defconfig BR2_DEFCONFIG=../yio_rpi0w_defconfig
+    && git checkout $YIO_REMOTE_OS_BRANCH

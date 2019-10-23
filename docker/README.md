@@ -15,7 +15,7 @@ Image name: `yio-remote/build`
   - File sharing configured to store the build artefacts on the host
 - SSD is highly recommended!
 - Internet connection:
-  - ~ 1.5 GB of packages will be downloaded during the **Docker Image build**.
+  - Installation packages will be downloaded during the **Docker Image build**.
   - Some packages might still be downloaded during the **remote-os build** with this Docker image.
 
 ## Usage
@@ -57,6 +57,7 @@ Create Docker Volumes:
 **build-command**:
 
     info     Print Git information of the available projects
+    init     Initialize build: prepare buildroot
     bash     Start a shell for manual operations inside the container
     clean    Clean all projects
     build    Build all projects
@@ -124,9 +125,6 @@ The Docker image is not yet available in a public Docker registry and must be bu
   - remote-software
   - web-configurator
   - *TODO: integrations*
-- Initializes the buildroot Git submodule in remote-os/buildroot
-- Downloads the buildroot package sources in `/yio-remote/buildroot/dl`
-- Downloads about 1.5 GB with the buildroot packages
 - Build takes several minutes depending on internet speed and mirrors used
 
 The wrapper script `./image-build/build.sh` handles build parameters (e.g. disabling build cache) and optionally pushing the image into a registry. See options with:

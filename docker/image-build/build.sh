@@ -14,7 +14,7 @@ usage() {
   cat << EOF
 
 Usage: build.sh [-n] [-o Docker build option]
-Builds the YIO-remote build image.
+Builds the YIO-remote build image: ${TARGET_REPO}${BASE_IMAGE_NAME}
 
 Parameters:
    -o: passes on Docker build option. Default: "$DOCKEROPS"
