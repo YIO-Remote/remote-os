@@ -1,22 +1,38 @@
 # Docker Build Image for YIO-Remote
 
-This Docker image builds the SD card for the YIO-remote from the remote-os Git repository.
+This Docker image cross compiles all required Qt projects from the YIO-Remote Git repositories and builds the SD card image for the RPi zero.
 
 Image name: `yio-remote/build`
 
+## Concept
+
+Buildroot is easy to use with Linux, not so much with macOS and Windows. Probably possible, but doesn't work out of the box.
+Therefore use Docker with an official Ubuntu image to do the hard work.
+
+- The image contains all required build tools for Buildroot in the remote-os project.
+- A helper script is included to download and build all YIO-Remote projects
+  - Projects are cloned from the GitHub repositories
+  - Buildroot in the remote-os project is initialized (Git submodule)
+  - Common build commands perform the required operations on the projects
+- Cross compiliation of the Qt projects uses the already built toolchain in the remote-os project.
+- Docker Volumes are used to persist data for fast builds after the initial slow build
+  - YIO-Remote Git projects
+  - Downloaded Buildroot source packages (> 900 MB)
+  - Compiled Buildroot toolchain (~ TODO GB) and the Buildroot ccache (~ 1.8 GB)
+
 ## Requirements
 
-- Docker obviously
+- Docker (tested with 19.03)
 - At least 20 GB of free space
-  - macOS & Windows: make sure your Docker VM is large enough
 - macOS & Windows Docker configuration:
-  - At least 4 GB RAM. More RAM = better file system caching
-  - As many CPU cores as possible for quicker build times
+  - Make sure your Docker VM is large enough and has enough space left
+  - Associate at least 4 GB RAM. More RAM = better file system caching
+  - Associate as many CPU cores as possible for quicker build times
   - File sharing configured to store the build artefacts on the host
 - SSD is highly recommended!
 - Internet connection:
-  - Installation packages will be downloaded during the **Docker Image build**.
-  - Some packages might still be downloaded during the **remote-os build** with this Docker image.
+  - Ubuntu installation packages will be downloaded during the **Docker Image build**.
+  - Buildroot source packages will be downloaded during the **remote-os build** in a Docker container.
 
 ## Usage
 
@@ -34,11 +50,11 @@ To use the buildroot ccache and to only build changed artefacts in consecutive b
 
 - `/yio-remote/src`: Cloned Git repositories, intended for a named Docker volume.
 
-  Will be initialized with the cloned Git repositories from within the image.
+  Will be initialized with the cloned Git repositories with the `init` command.
 
 - `/yio-remote/buildroot`: Buildroot downloads and ccache, intended for a named Docker volume.
 
-  Will be initialized with the downloaded package sources from within the image.
+  Will be initialized with the downloaded package sources from within the image during the (initial) build.
 
 Create Docker Volumes:
 
@@ -64,11 +80,11 @@ Create Docker Volumes:
     update   Update all projects on the current branch
 
     <project> git [options] <command> [<args>]
-                    Perform Git command on given project
+                      Perform Git command on given project
     <project> clean   Clean the given project
     <project> build   Build the given project
 
-Available projects are: `remote-os` - the other projects will follow...
+See the available projects with the `info` command.
 
 #### Examples
 
@@ -108,7 +124,7 @@ An example [Docker Compose](https://docs.docker.com/compose/) file has been prov
 - [Docker Volumes](https://docs.docker.com/storage/volumes/) for:
   - yio-projects: holds all project sources
   - yio-buildroot: Buildroot package sources and ccache
-- [Bind mounts](https://docs.docker.com/storage/bind-mounts/) the host directory `./build-output` to transfer the built artefacts.
+- [Bind mounts](https://docs.docker.com/storage/bind-mounts/) the host directory `./build-output` to transfer the final build artefacts.
 - Executes a full build when started
 
 Usage:
@@ -117,17 +133,12 @@ Usage:
 
 ## Creating the YIO-Remote Build Image
 
-The Docker image is not yet available in a public Docker registry and must be built. See subdirectory `./image-build`:
+The Docker image is not yet available in a public Docker registry and must be built. See subdirectory `./yio-image`:
 
-- Based on Ubuntu 18.04
-- Clones the following YIO-remote repositories in `/yio-remote/src`
-  - remote-os
-  - remote-software
-  - web-configurator
-  - *TODO: integrations*
+- Based on Ubuntu 19.10
 - Build takes several minutes depending on internet speed and mirrors used
 
-The wrapper script `./image-build/build.sh` handles build parameters (e.g. disabling build cache) and optionally pushing the image into a registry. See options with:
+The wrapper script `./yio-image/build.sh` handles build parameters (e.g. disabling build cache) and optionally pushes the image into a registry. See options with:
 
     ./build.sh -h
 
@@ -135,6 +146,6 @@ Automatic build for macOS and Linux:
 
     ./build.sh
 
-Manual build:
+Manual build command:
 
-    docker build --pull --no-cache=true -t yio-remote/build -f Dockerfile .
+    docker build --pull -t yio-remote/build -f Dockerfile .
