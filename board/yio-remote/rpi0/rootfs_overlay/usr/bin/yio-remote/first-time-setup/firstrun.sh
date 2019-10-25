@@ -45,6 +45,9 @@ then
     if [ ! -e /wificopy ]; then
         touch /wifisetup
     fi
+
+    # set default webserver configuration
+    cp /etc/lighttpd/lighttpd-config.conf /etc/lighttpd/lighttpd.conf
 fi
 
 #--------------------
@@ -64,7 +67,7 @@ then
     echo "[Match]" > /etc/systemd/network/20-wireless.network
     echo "Name=wlan0" >> /etc/systemd/network/20-wireless.network
     echo "" >> /etc/systemd/network/20-wireless.network
-    
+
     echo "[Network]" >> /etc/systemd/network/20-wireless.network
     echo "Address=10.0.0.1/24" >> /etc/systemd/network/20-wireless.network
 
@@ -78,7 +81,7 @@ then
 
     #--------------------
     # DHCP and DNS service
-    #--------------------	
+    #--------------------
     systemctl stop systemd-resolved.service
     dnsmasq -k --conf-file=/etc/dnsmasq.conf &
 
