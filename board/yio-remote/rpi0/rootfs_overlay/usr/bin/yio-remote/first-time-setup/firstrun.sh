@@ -25,15 +25,14 @@ then
     MACADDR=$(cat /sys/class/net/wlan0/address | tr -d ":")
     SSID="YIO-Remote-$MACADDR"
     echo "ssid=$SSID" >> /etc/hostapd/hostapd.conf
-    echo "$SSID" >> /apssid
+    echo "$SSID" > /apssid
 
     #--------------------
     # setup hostname
     #--------------------
     echo "$SSID" > /etc/hostname
-    rm -f /etc/hosts
     echo "127.0.0.1	localhost
-#127.0.0.1	$SSID" >> /etc/hosts
+#127.0.0.1	$SSID" > /etc/hosts
     hostnamectl set-hostname "$SSID"
     systemctl restart avahi-daemon
 
@@ -42,7 +41,10 @@ then
     #--------------------
     rm /firstrun
 
-    touch /wifisetup
+    # /wificopy marker file is set in wifi-copy-config.sh which is called from app-launch.sh
+    if [ ! -e /wificopy ]; then
+        touch /wifisetup
+    fi
 fi
 
 #--------------------
