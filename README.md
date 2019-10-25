@@ -1,6 +1,6 @@
 # YIO Remote OS Repository
 
-For details about the YIO Remote, please visit our documentation wiki: <https://github.com/YIO-Remote/documentation>
+For details about the YIO Remote, please visit our documentation wiki: <https://github.com/YIO-Remote/documentation/wiki>
 
 This repository contains the custom Linux OS built with [buildroot](https://www.buildroot.org/) for the YIO Remote.
 
