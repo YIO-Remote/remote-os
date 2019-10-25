@@ -43,11 +43,13 @@ YIO-remote build image.
 
 Commands:
 info     Print Git information of the available projects
-init     Initialize build: prepare buildroot
+init     Initialize build: checkout all projects & prepare buildroot
 bash     Start a shell for manual operations inside the container
 clean    Clean all projects
-build    Build all projects
-update   Update all projects on the current branch
+build    Build all projects. Initializes projects if required.
+rebuild  Clean and then build all projects
+update   Update all repositories on the current branch (git pull)
+git [options] <command> [<args>] Perform Git command on all projects
 
 <project> git [options] <command> [<args>]
                   Perform Git command on given project
@@ -136,8 +138,9 @@ gitCommandAll() {
     for D in *; do
         cd ${YIO_SRC}/$D
         if [ -d ".git" ]; then
-            printf "%-20s: 'git %s'\n" $D $1
-            git $1
+            printf "%-20s: 'git %s" $D
+            echo "$@''" 
+            git $@
         fi
     done
 }
@@ -324,9 +327,12 @@ elif [ $# -eq 1 ]; then
     elif [ "$1" = "init" ]; then
         initialize
     elif [ "$1" = "clean" ]; then
-        cleanAllProjects ${@:2}
+        cleanAllProjects
     elif [ "$1" = "build" ]; then
-        buildAllProjects ${@:2}
+        buildAllProjects
+    elif [ "$1" = "rebuild" ]; then
+        cleanAllProjects
+        buildAllProjects
     elif [ "$1" = "wait" ]; then
         # helper command for docker-compose 'debugging'
         cat << EOF
@@ -347,6 +353,8 @@ EOF
 elif [ "$1" = "buildroot" ]; then
     cd ${YIO_SRC}/remote-os/buildroot
     make ${@:2}
+elif [ "$1" = "git" ]; then
+    gitCommandAll ${@:2}
 elif [ "$2" = "git" ] && (( $# > 2 )); then
     checkProjectExists $1
     cd ${YIO_SRC}/${1}

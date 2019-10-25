@@ -1,0 +1,33 @@
+#!/bin/bash
+#
+# Wrapper build script for yio-remote/build
+#
+# Configure ${YIO-BUILD-OUTPUT} and copy this script to /usr/local/bin
+#
+
+YIO_BUILD_OUTPUT=/projects/yio/build-output 
+
+# --- Helper functions ---
+
+function checkDockerVolume() {
+    docker volume inspect $1 &> /dev/null || {
+        echo "Docker volume '$1' doesn't exist: creating it..."
+        docker volume create $1
+    }
+}
+
+# --- Script starts here ---
+
+which docker &> /dev/null || {
+    echo "docker not found in path"
+    exit 1
+}
+
+checkDockerVolume yio-projects
+checkDockerVolume yio-buildroot
+
+docker run --rm -it \
+    -v yio-projects:/yio-remote/src \
+    -v yio-buildroot:/yio-remote/buildroot \
+    -v ${YIO_BUILD_OUTPUT}:/yio-remote/target \
+    gcr.io/yio-remote/build $@
