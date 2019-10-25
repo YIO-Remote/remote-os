@@ -25,15 +25,14 @@ then
     MACADDR=$(cat /sys/class/net/wlan0/address | tr -d ":")
     SSID="YIO-Remote-$MACADDR"
     echo "ssid=$SSID" >> /etc/hostapd/hostapd.conf
-    echo "$SSID" >> /apssid
+    echo "$SSID" > /apssid
 
     #--------------------
     # setup hostname
     #--------------------
     echo "$SSID" > /etc/hostname
-    rm -f /etc/hosts
     echo "127.0.0.1	localhost
-#127.0.0.1	$SSID" >> /etc/hosts
+#127.0.0.1	$SSID" > /etc/hosts
     hostnamectl set-hostname "$SSID"
     systemctl restart avahi-daemon
 
@@ -42,7 +41,13 @@ then
     #--------------------
     rm /firstrun
 
-    touch /wifisetup
+    # /wificopy marker file is set in wifi-copy-config.sh which is called from app-launch.sh
+    if [ ! -e /wificopy ]; then
+        touch /wifisetup
+    fi
+
+    # set default webserver configuration
+    cp /etc/lighttpd/lighttpd-config.conf /etc/lighttpd/lighttpd.conf
 fi
 
 #--------------------
@@ -62,7 +67,7 @@ then
     echo "[Match]" > /etc/systemd/network/20-wireless.network
     echo "Name=wlan0" >> /etc/systemd/network/20-wireless.network
     echo "" >> /etc/systemd/network/20-wireless.network
-    
+
     echo "[Network]" >> /etc/systemd/network/20-wireless.network
     echo "Address=10.0.0.1/24" >> /etc/systemd/network/20-wireless.network
 
@@ -76,7 +81,7 @@ then
 
     #--------------------
     # DHCP and DNS service
-    #--------------------	
+    #--------------------
     systemctl stop systemd-resolved.service
     dnsmasq -k --conf-file=/etc/dnsmasq.conf &
 

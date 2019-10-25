@@ -1,7 +1,6 @@
 # YIO Remote OS Repository
 
-For details about the YIO Remote, please visit our documentation repository which can be found under
-<https://github.com/YIO-Remote/documentation>
+For details about the YIO Remote, please visit our documentation wiki: <https://github.com/YIO-Remote/documentation/wiki>
 
 This repository contains the custom Linux OS built with [buildroot](https://www.buildroot.org/) for the YIO Remote.
 
@@ -9,7 +8,7 @@ This repository contains the custom Linux OS built with [buildroot](https://www.
 
 Requirements:
 
-- Preferably a Linux box or VM.
+- A Linux box or VM, otherwise Docker.
 - At least 20 GB of free space.
 - At least 4 GB RAM. More RAM = better file system caching.
 - Fast CPU with many cores for quicker build times.
@@ -20,16 +19,20 @@ Requirements:
   - Recommended card: Samsung EVO Plus (64 and 128GB have much higher write speed!)
   - See: [RPi microSD card performance comparison 2019](https://www.jeffgeerling.com/blog/2019/raspberry-pi-microsd-card-performance-comparison-2019)
 
-### Prepare Build Environment
+### Docker
 
-#### Linux Ubuntu 18.04.3 or newer
+See [Docker Readme](docker/README.md).
+
+### Linux Ubuntu 18.04.3 or newer
+
+#### Prepare Build Environment
 
 - If you just need a headless build VM then use the minimal [Ubuntu 18.04.3 LTS Server](http://cdimage.ubuntu.com/releases/18.04.3/release/) version.
 - Some packages might already be installed depending on the version (desktop or server).
 
 Install required tools:
 
-1. Prepare Ubuntu for buildroot:
+1. Prepare Ubuntu for Buildroot:
 
         sudo apt-get install \
           build-essential \
@@ -43,26 +46,21 @@ Install required tools:
           texinfo \
           unzip
 
-2. Optional: convenient packages for development
+1. Optional: Packages for Qt development
+
+        sudo apt-get install --no-install-recommends \
+            qttools5-dev-tools
+
+1. Optional: convenient packages for development
 
         sudo apt-get install \
           mc \
           nano \
           screen
 
-3. Optional: SSH server for remote access
+1. Optional: SSH server for remote access
 
         sudo apt-get install openssh-server
-
-#### macOS
-
-TODO
-
-#### Windows
-
-TODO maybe
-
-### Build SD Card Image
 
 #### Initial Checkout
 
@@ -80,7 +78,7 @@ TODO maybe
     git submodule init
     git submodule update
 
-#### Build Image
+#### Build SD Card Image
 
     cd ${SRC_DIR}/remote-os/buildroot
     
@@ -97,21 +95,13 @@ The built SD card image can be found at: `${SRC_DIR}/remote-os/buildroot/output/
 
 TODO: shortly describe the main commands (menuconfig, clean, rebuild, etc.)
 
-#### Write SD Card Image
+## Write SD Card Image
 
 Use [balenaEtcher](https://www.balena.io/etcher/) - available for Linux, macOS and Windows - or your favorite tool.
 
 ## Technology Research
 
 The following technologies were / are investigated for finding an easy and automated solution to build the RPi image.
-
-### Docker
-
-Docker works best for running services. But it can also be used to build software or anything else. Well, that's a service too :-)
-
-TODO:
-
-- [ ] Docker setup using Docker Volumes for the build cache. (Volume mounts have too many issues on Windows).
 
 ### Vagrant
 
