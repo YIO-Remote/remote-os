@@ -21,6 +21,8 @@ Requirements:
 
 ### Docker
 
+The easiest way to build all Qt projects and the SD card image is with the provided Docker image.
+
 See [Docker Readme](docker/README.md).
 
 ### Linux Ubuntu 18.04.3 or newer
@@ -111,13 +113,10 @@ Found issues so far:
 
 - Almost all official Linux boxes have a 'small' 10 GB disk:
   - Not enough to build the image.
-  - No standard way of extending the disk, or limited to one virtualization provider.
+  - No standard way of extending the disk, or limited to one virtualization provider (vagrant-disksize plugin).
   - Synced folders don't work because of hard links
 - Serious issues with VirtualBox 6 in combination with newer Ubuntu images
   - Bootup takes 5+ minutes instead of seconds
   - Issue is something with the UART console
 
-TODO:
-
-- [ ] Search for suitable official Box with at least 20 GB volume
-- [ ] Investigate further...
+Vagrant might be investigated again in the future. For now the Docker Image provides an easy way to build on Linux, macOS and Windows.

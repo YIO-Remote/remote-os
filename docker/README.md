@@ -4,14 +4,16 @@ This Docker image cross compiles all required Qt projects from the [YIO-Remote G
 
 Image name: `gcr.io/yio-remote/build`
 
+For now the image is publicly available in the gcr.io container registry and doesn't need to be built manually. Docker will automatically download it.
+
 Further documentation can be found in the documentation wiki: <https://github.com/YIO-Remote/documentation/wiki>
 
 ## Concept
 
-[Buildroot](https://buildroot.org/) is easy to use with Linux, not so much with macOS and Windows. Theoretically possible, but doesn't work out of the box as on Linux.
-Therefore this Docker image acts as an universal build tool.
+[Buildroot](https://buildroot.org/) is easy to use with Linux, not so much with macOS and Windows. Setting up a RPi Zero cross compile toolchain is theoretically possible, but not as straightforward as on Linux.  
+Therefore this Docker image acts as an universal build tool for Linux, macOS and Windows.
 
-- Based on the official Ubuntu 19.10 image.
+- Based on the official Ubuntu 19.10 image to match the Qt version 5.12.4.
 - The image contains all required build tools for Buildroot in the remote-os project.
 - A helper script is included to download and build all YIO-Remote projects:
   - Projects are cloned from the GitHub repositories.
@@ -26,7 +28,7 @@ Therefore this Docker image acts as an universal build tool.
 
 ## Requirements
 
-- Working Docker installation (tested with 19.03).
+- Working [Docker installation](https://docs.docker.com/install/) (tested with 19.03).
 - At least 20 GB of free space.
 - macOS & Windows Docker Desktop configuration:
   - Make sure your Docker VM is large enough and has enough space left.
@@ -44,50 +46,36 @@ The first initial build will take a long time (1.5 h +). This depends on interne
 
 After the initial build the remote-software or even the complete remote-os projects can be built within seconds or minutes!
 
-### a) Regular Docker
+Three ways are provided to use the Docker build image:
 
-#### Create Volumes
+1. Wrapper script for easy interaction. Hides all Docker commands.
+2. Regular Docker commands for full control.
+3. Docker Compose file for further integration with other images.
 
-To use the buildroot ccache and to only build changed artefacts in consecutive builds the build output needs to be persisted. Following volume mount points are defined:
+### Wrapper Script
 
-- `/yio-remote/target`: Built artefacts, intended for bind mounting to host.
+The provided wrapper scripts are a convient way for interacting with the Docker image. All Docker internas are hidden to make it feel like a regular local tool.  
+The scripts use the environment variable `YIO_BUILD_OUTPUT` for the host directory mount to store the final build artefacts.
 
-  Initially empty. After a successful build the final artefact(s) will be copied into here.
+- `yio` - Bash script for Linux and macOS:
+  - Copy the script to `/usr/local/bin` to make it accessible from anywhere.
 
-- `/yio-remote/src`: Cloned Git repositories, intended for a named Docker volume.
+  - Define `YIO_BUILD_OUTPUT` it in your shell environment (e.g. ~/.bash_profile or ~/.profile):
 
-  Will be initialized with the cloned Git repositories with the `init` command.
+        export YIO_BUILD_OUTPUT=/projects/yio/build-output
 
-- `/yio-remote/buildroot`: Buildroot downloads and ccache, intended for a named Docker volume.
+- `yio.cmd` - Windows command script:
+  - Define `YIO_BUILD_OUTPUT` in your environment (Control Panel, System Properties, Advanced: Environment Variables) or temporarly define it in your current cmd session:
 
-  Will be initialized with the downloaded package sources from within the image during the (initial) build.
+        SET YIO_BUILD_OUTPUT=d:/projects/yio/build-output
 
-Create Docker Volumes:
+The scripts will automatically create the required Docker Volumes and check if Docker is running.
 
-    docker volume create yio-projects
-    docker volume create yio-buildroot
-
-#### Start Build
-
-Convenient wrapper scripts for Bash (and soon Windows) are provided:
-
-- `yio` Bash script: Edit the YIO_BUILD_OUTPUT variable in the script and copy it to `/usr/local/bin`
-- TODO: `yio.cmd` Windows command script: Edit the YIO_BUILD_OUTPUT variable in the script and copy it somewhere in your path
-
-*Usage:*
+#### Script Usage
 
     yio <build-command>
 
-*Manual command:*
-
-    docker run --rm -it \
-        -v ./build-output:/yio-remote/target \
-        -v yio-projects:/yio-remote/src \
-        -v yio-buildroot:/yio-remote/buildroot \
-        gcr.io/yio-remote/build \
-        <build-command>
-
-**build-command**:
+*build-command*:
 
     info     Print Git information of the available projects
     init     Initialize build: checkout all projects & prepare buildroot
@@ -123,11 +111,45 @@ Clean remote-os project:
 
     yio remote-os clean
 
-Pull latest sources:
+Pull latest sources in the current branches:
 
     yio update
 
-### b) Docker Compose
+### b) Regular Docker
+
+#### Create Volumes
+
+To use the buildroot ccache and to only build changed artefacts in consecutive builds the build output needs to be persisted. Following volume mount points are defined:
+
+- `/yio-remote/target`: Built artefacts, intended for bind mounting to host.
+
+  Initially empty. After a successful build the final artefact(s) will be copied into here.
+
+- `/yio-remote/src`: Cloned Git repositories, intended for a named Docker volume.
+
+  Will be initialized with the cloned Git repositories with the `init` command.
+
+- `/yio-remote/buildroot`: Buildroot downloads and ccache, intended for a named Docker volume.
+
+  Will be initialized with the downloaded package sources from within the image during the (initial) build.
+
+Create Docker Volumes:
+
+    docker volume create yio-projects
+    docker volume create yio-buildroot
+
+#### Manual command
+
+    docker run --rm -it \
+        -v ./build-output:/yio-remote/target \
+        -v yio-projects:/yio-remote/src \
+        -v yio-buildroot:/yio-remote/buildroot \
+        gcr.io/yio-remote/build \
+        <build-command>
+
+See wrapper scripts above for `build-command` description.
+
+### c) Docker Compose
 
 An example [Docker Compose](https://docs.docker.com/compose/) file has been provided with the following features:
 
