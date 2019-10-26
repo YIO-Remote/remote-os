@@ -1,11 +1,17 @@
 #!/bin/bash
 #
-# Wrapper build script for yio-remote/build
+# Wrapper build script for yio-remote/build Docker image
+# https://github.com/YIO-Remote/documentation/wiki
+# Copy this script to /usr/local/bin to call it from anywhere
 #
-# Configure ${YIO-BUILD-OUTPUT} and copy this script to /usr/local/bin
+# Uses environment variable $YIO_BUILD_OUTPUT
+# Either define it in your shell environment (e.g. ~/.bash_profile or ~/.profile)
+# or define it in your current session: export YIO_BUILD_OUTPUT=/projects/yio/build-output
 #
 
-YIO_BUILD_OUTPUT=/projects/yio/build-output 
+set -e
+
+#YIO_BUILD_OUTPUT=/projects/yio/build-output 
 
 # --- Helper functions ---
 
@@ -18,8 +24,23 @@ function checkDockerVolume() {
 
 # --- Script starts here ---
 
+if [[ -z "${YIO_BUILD_OUTPUT}" ]]; then
+    echo "Environment variable YIO_BUILD_OUTPUT not defined!"
+    exit 1
+fi
+
+if [ ! -d ${YIO_BUILD_OUTPUT} ]; then
+    echo "Output directory defined in 'YIO_BUILD_OUTPUT' doesn't exist: '${YIO_BUILD_OUTPUT}'"
+    exit 1
+fi
+
 which docker &> /dev/null || {
-    echo "docker not found in path"
+    echo "Docker not found in path"
+    exit 1
+}
+
+docker version &> /dev/null || {
+    echo "Docker is not running"
     exit 1
 }
 
