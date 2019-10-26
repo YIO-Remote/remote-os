@@ -23,9 +23,9 @@ IF %ERRORLEVEL% NEQ 0 (
 	EXIT /B %ERRORLEVEL%
 )
 
-CALL :checkDockerVolume yio-projects2
+CALL :checkDockerVolume yio-projects
 IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
-CALL :checkDockerVolume yio-buildroot2
+CALL :checkDockerVolume yio-buildroot
 IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
 docker run --rm -it -v yio-projects:/yio-remote/src -v yio-buildroot:/yio-remote/buildroot -v "%YIO_BUILD_OUTPUT%":/yio-remote/target gcr.io/yio-remote/build %*
