@@ -5,14 +5,12 @@ BOARD_NAME="$(basename ${BOARD_DIR})"
 GENIMAGE_CFG="${BOARD_DIR}/genimage-${BOARD_NAME}.cfg"
 GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 
-cp ../board/yio-remote/${BOARD_NAME}/config.txt ${BINARIES_DIR}/config.txt
-cp ../board/yio-remote/${BOARD_NAME}/cmdline.txt ${BINARIES_DIR}/cmdline.txt
-cp ../board/yio-remote/${BOARD_NAME}/config.json ${BINARIES_DIR}/config.json
+cp ../board/yio-remote/${BOARD_NAME}/config.txt ${BINARIES_DIR}/
+cp ../board/yio-remote/${BOARD_NAME}/cmdline.txt ${BINARIES_DIR}/
+cp ../board/yio-remote/${BOARD_NAME}/config.json ${BINARIES_DIR}/
 
-mkdir -p ${BINARIES_DIR}/overlays
-cp ../board/yio-remote/${BOARD_NAME}/goodix.dtbo ${BINARIES_DIR}/overlays/goodix.dtbo
-cp ../board/yio-remote/${BOARD_NAME}/sharp.dtbo ${BINARIES_DIR}/overlays/sharp.dtbo
-cp ../board/yio-remote/${BOARD_NAME}/pi3-miniuart-bt.dtbo ${BINARIES_DIR}/overlays/pi3-miniuart-bt.dtbo
+cp -r ../board/yio-remote/${BOARD_NAME}/cfg_templates ${BINARIES_DIR}
+cp -r ../board/yio-remote/${BOARD_NAME}/overlays ${BINARIES_DIR}
 
 mv ${BINARIES_DIR}/zImage ${BINARIES_DIR}/kernel.img
 
