@@ -1,0 +1,40 @@
+# HyperPixel 3.5 specific configuration
+#
+# For more options and information see
+# http://rpf.io/configtxt
+
+disable_overscan=1
+
+# HyperPixel LCD Settings
+dtoverlay=hyperpixel
+overscan_left=0
+overscan_right=0
+overscan_top=0
+overscan_bottom=0
+framebuffer_width=480
+framebuffer_height=800
+enable_dpi_lcd=1
+display_default_lcd=1
+dpi_group=2
+dpi_mode=87
+dpi_output_format=454678
+display_rotate=1
+hdmi_timings=800 0 50 20 50 480 1 3 2 3 0 0 0 60 0 32000000 6
+
+# Use a basic GPIO backlight driver with on/off support
+dtoverlay=hyperpixel-gpio-backlight
+
+#dtoverlay=goodix
+
+boot_delay=0
+#disable_splash=1
+
+gpu_mem=128
+
+arm_freq=1000
+arm_freq_min=700
+force_turbo=0
+
+dtoverlay=pi3-miniuart-bt
+enable_uart=1
+core_freq=250
