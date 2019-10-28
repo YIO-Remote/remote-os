@@ -264,6 +264,13 @@ buildQtProject() {
         echo "Copying remote-software binary and plugins to remote-os: $BUILDROOT_DEST"
         header "WARNING: work in progress - this will break 'git pull' in remote-os!"
         cp ${YIO_SRC}/$1/remote $BUILDROOT_DEST
+        cp ${YIO_SRC}/$1/config.json ${YIO_SRC}/remote-os/board/yio-remote/rpi0/
+        rm -Rf $BUILDROOT_DEST/fonts/*
+        rm -Rf $BUILDROOT_DEST/icons/*
+        rm -Rf $BUILDROOT_DEST/images/*
+        cp -r ${YIO_SRC}/$1/fonts $BUILDROOT_DEST
+        cp -r ${YIO_SRC}/$1/icons $BUILDROOT_DEST
+        cp -r ${YIO_SRC}/$1/images $BUILDROOT_DEST
         rm -Rf $BUILDROOT_DEST/plugins/*
         cp -r ${YIO_SRC}/$1/plugins $BUILDROOT_DEST
         rm -Rf $BUILDROOT_DEST/www/config/*
