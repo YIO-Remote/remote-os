@@ -7,10 +7,10 @@
 
 set -e
 
-SDCARD_IMG=${YIO_SRC}/remote-os/buildroot/output/images/yio-remote-sdcard.img
+SDCARD_IMG=${YIO_SRC}/remote-os/rpi0/output/images/yio-remote-sdcard.img
 BUILD_OUTPUT=/yio-remote/target
 
-CROSSCOMPILE_BIN=${YIO_SRC}/remote-os/buildroot/output/host/bin
+CROSSCOMPILE_BIN=${YIO_SRC}/remote-os/rpi0/output/host/bin
 QMAKE_CROSSCOMPILE=${CROSSCOMPILE_BIN}/qmake
 
 LINGUIST_LUPDATE=/usr/lib/qt5/bin/lupdate
@@ -183,7 +183,7 @@ cleanRemoteOS() {
     if [ -f "${YIO_SRC}/remote-os/buildroot/Makefile" ]; then
         header "Cleaning remote-os project..."
 
-        cd ${YIO_SRC}/remote-os/buildroot
+        cd ${YIO_SRC}/remote-os
         make clean
     fi
 }
@@ -196,8 +196,6 @@ initRemoteOS() {
     cd ${YIO_SRC}/remote-os
     git submodule init
     git submodule update
-    cd buildroot
-    make defconfig BR2_DEFCONFIG=../yio_rpi0w_defconfig
 }
 
 buildRemoteOS() {
@@ -210,7 +208,7 @@ buildRemoteOS() {
 
     TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 
-    cd ${YIO_SRC}/remote-os/buildroot
+    cd ${YIO_SRC}/remote-os
     set -o pipefail
     make $@ 2>&1 | tee $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
     echo "Build finished at: $(date)" >> $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
@@ -260,11 +258,11 @@ buildQtProject() {
 
         # HACK transfer built remote application and plugins to remote-os.
         # Ok for initial test version, but we need to clean up the binary handling in remote-os!
-        BUILDROOT_DEST=${YIO_SRC}/remote-os/board/yio-remote/rpi0/rootfs_overlay/usr/bin/yio-remote
+        BUILDROOT_DEST=${YIO_SRC}/remote-os/overlay/usr/bin/yio-remote
         echo "Copying remote-software binary and plugins to remote-os: $BUILDROOT_DEST"
         header "WARNING: work in progress - this will break 'git pull' in remote-os!"
         cp ${YIO_SRC}/$1/remote $BUILDROOT_DEST
-        cp ${YIO_SRC}/$1/config.json ${YIO_SRC}/remote-os/board/yio-remote/rpi0/
+        cp ${YIO_SRC}/$1/config.json ${YIO_SRC}/remote-os/rpi0/boot/
         cp ${YIO_SRC}/$1/translations.json $BUILDROOT_DEST
         rm -Rf $BUILDROOT_DEST/fonts/*
         rm -Rf $BUILDROOT_DEST/icons/*

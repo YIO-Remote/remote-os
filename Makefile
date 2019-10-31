@@ -14,7 +14,7 @@
 #    along with buildroot-submodule.  If not, see <http://www.gnu.org/licenses/>. 2
 
 
-#Makefile for the anonymous (default) project
-PROJECT_NAME :=
+#Makefile for the YIO-remote rpi0 project
+PROJECT_NAME := rpi0
 
 include common.mk

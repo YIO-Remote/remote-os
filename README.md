@@ -2,17 +2,17 @@
 
 For details about the YIO Remote, please visit our documentation wiki: <https://github.com/YIO-Remote/documentation/wiki>
 
-This repository contains the custom Linux OS built with [buildroot](https://www.buildroot.org/) for the YIO Remote.
+This repository contains the custom Linux OS for the YIO Remote application.  
+It is built with [Buildroot](https://www.buildroot.org/) and managed with [Buildroot Submodule](README_buildroot-submodule.md).
 
 ## Build
 
 Requirements:
 
 - A Linux box or VM, otherwise Docker.
-- At least 20 GB of free space.
+- At least 20 GB of free space. A SSD is highly recommended.
 - At least 4 GB RAM. More RAM = better file system caching.
-- Fast CPU with many cores for quicker build times.
-- SSD is highly recommended.
+- Fast CPU. More cores = quicker build times.
 - Internet connection: packages will be downloaded during the build.
 - 1+ GB microSD card
   - Future images might be larger!
@@ -21,11 +21,13 @@ Requirements:
 
 ### Docker
 
-The easiest way to build all Qt projects and the SD card image is with the provided Docker image.
+If you don't have a Linux machine then the easiest way to build all Qt projects and the SD card image is with the provided Docker image.
 
 See [Docker Readme](docker/README.md).
 
-### Linux Ubuntu 18.04.3 or newer
+### Linux
+
+The build has been tested on Ubuntu 18.04.3, 19.04 and 19.10. Other Linux distributions should work as well.
 
 #### Prepare Build Environment
 
@@ -48,24 +50,21 @@ Install required tools:
           texinfo \
           unzip
 
-1. Optional: Packages for Qt development
+2. Optional: Packages for Qt development
 
         sudo apt-get install --no-install-recommends \
             qttools5-dev-tools
 
-1. Optional: convenient packages for development
+3. Optional: SSH server for remote access and other convenient tools
 
-        sudo apt-get install \
+        sudo apt-get install openssh-server \
           mc \
           nano \
           screen
 
-1. Optional: SSH server for remote access
-
-        sudo apt-get install openssh-server
-
 #### Initial Checkout
 
+    # define root directory for project checkout
     SRC_DIR=~/projects/yio
 
     mkdir -p ${SRC_DIR}
@@ -82,20 +81,28 @@ Install required tools:
 
 #### Build SD Card Image
 
-    cd ${SRC_DIR}/remote-os/buildroot
-    
-    make defconfig BR2_DEFCONFIG=../yio_rpi0w_defconfig
+    cd ${SRC_DIR}/remote-os
     make
 
 Hint: redirect the `make` output log into a logfile to easy find an error during building or when using `screen` without scrollback capability:
 
-    make 2>&1 | tee ../buildlog-$(date +"%Y%m%d_%H%M%S").log
+    make 2>&1 | tee remote-os_build_$(date +"%Y%m%d_%H%M%S").log
 
-The built SD card image can be found at: `${SRC_DIR}/remote-os/buildroot/output/images/yio-remote-sdcard.img`
+The final SD card image will be written to: `${SRC_DIR}/remote-os/rpi0/output/images/yio-remote-sdcard.img`
 
 #### Buildroot Commands
 
-TODO: shortly describe the main commands (menuconfig, clean, rebuild, etc.)
+Most important commands:
+
+| **Command**              | **Description**  |
+|--------------------------|------------------|
+|  `make`                  | Update configuration from project's defconfig and start build. |
+|  `make clean`            | Deletes all of the generated files, including build files and the generated toolchain! |
+|  `make menuconfig`       | Shows the configuration menu with the project's defconfig. All changes will be written back to the project configuration.  |
+|  `make linux-menuconfig` | Configure Linux kernel options. |
+|  `make help`             | Shows all options. |
+
+ Thanks to Buildroot Submodule the project configuration in `rpi0/defconfig` is automatically loaded and saved back depending on the Buildroot command (see [common.mk](common.mk)). Manual `make savedefconfig BR2_DEFCONFIG=...` and `make defconfig BR2_DEFCONFIG=...` commands are no longer required and automatically taken care of!
 
 ## Write SD Card Image
 
