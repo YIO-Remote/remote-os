@@ -19,13 +19,13 @@ LINGUIST_LRELEASE=/usr/lib/qt5/bin/lrelease
 #=============================================================
 
 GitProjects=(
-    https://github.com/YIO-Remote/integration.homey.git
-    https://github.com/YIO-Remote/integration.home-assistant.git
-    https://github.com/YIO-Remote/integration.ir.git
-    https://github.com/YIO-Remote/integration.openhab.git
-    https://github.com/YIO-Remote/remote-os.git
-    https://github.com/YIO-Remote/remote-software.git
-    https://github.com/YIO-Remote/web-configurator.git
+    "https://github.com/YIO-Remote/integration.homey.git,dev"
+    "https://github.com/YIO-Remote/integration.home-assistant.git,dev"
+    "https://github.com/YIO-Remote/integration.ir.git,dev"
+    "https://github.com/YIO-Remote/integration.openhab.git,dev"
+    "https://github.com/YIO-Remote/remote-os.git,feature/21-Buildroot_Submodule"
+    "https://github.com/YIO-Remote/remote-software.git,dev"
+    "https://github.com/YIO-Remote/web-configurator.git,master"
 )
 
 QtIntegrationProjects=(
@@ -102,13 +102,17 @@ checkoutProject() {
     if [ ! -d "${YIO_SRC}/${projectName}" ]; then
         header "Git clone $1"
         cd ${YIO_SRC}
-        git clone $1 
+        git clone $1
+        cd ${projectName}
+        git checkout $2
     fi
 }
 
 checkoutProjects() {
-    for project in ${GitProjects[*]}; do
-        checkoutProject $project
+    for item in ${GitProjects[*]}; do
+        PROJECT=$(awk -F, '{print $1}' <<< $item)
+        BRANCH=$(awk -F, '{print $2}' <<< $item)
+        checkoutProject $PROJECT $BRANCH
     done
 }
 
@@ -173,8 +177,13 @@ checkBuildOutputExists() {
 }
 
 checkToolchainExists() {
-    if [ ! -x $TARGET_QMAKE ]; then
+    if [ ! -x "$QMAKE_CROSSCOMPILE" ]; then
         echo "ERROR: Toolchain for RPi cross compilation hasn't been built yet! Build remote-os first"
+        exit 1
+    fi
+
+    if [ ! -f "${YIO_SRC}/remote-os/.toolchain-ready" ]; then
+        echo "ERROR: Toolchain is not yet ready! Build remote-os first (control file missing: '${YIO_SRC}/remote-os/.toolchain-ready')"
         exit 1
     fi
 }
@@ -209,14 +218,19 @@ buildRemoteOS() {
     header "Building remote-os project branch $(git rev-parse --abbrev-ref HEAD) (Git commit: $(git log --pretty=format:'%h' -n 1))"
 
     TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+    echo "Build started at: ${TIMESTAMP}" > $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
+    echo "Build command: make $@" >> $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
 
     cd ${YIO_SRC}/remote-os
     set -o pipefail
-    make $@ 2>&1 | tee $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
+    make $@ 2>&1 | tee -a $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
     echo "Build finished at: $(date)" >> $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
     echo ""
-    header "remote-os build succeeded: copying SD card image to $BUILD_OUTPUT"
-    cp "$SDCARD_IMG" $BUILD_OUTPUT
+
+    if [ ! "$1" = "SKIP_BUILD_IMAGE=y" ]; then
+        header "remote-os build succeeded: copying SD card image to $BUILD_OUTPUT"
+        cp "$SDCARD_IMG" $BUILD_OUTPUT
+    fi
 }
 
 #=============================================================
@@ -262,19 +276,28 @@ buildQtProject() {
         # Ok for initial test version, but we need to clean up the binary handling in remote-os!
         BUILDROOT_DEST=${YIO_SRC}/remote-os/overlay/usr/bin/yio-remote
         echo "Copying remote-software binary and plugins to remote-os: $BUILDROOT_DEST"
-        header "WARNING: work in progress - this will break 'git pull' in remote-os!"
-        cp ${YIO_SRC}/$1/remote $BUILDROOT_DEST
-        cp ${YIO_SRC}/$1/config.json ${YIO_SRC}/remote-os/rpi0/boot/
-        cp ${YIO_SRC}/$1/translations.json $BUILDROOT_DEST
+        header "WARNING: work in progress until there are remote-software & plugin releases!"
+
         rm -Rf $BUILDROOT_DEST/fonts/*
         rm -Rf $BUILDROOT_DEST/icons/*
         rm -Rf $BUILDROOT_DEST/images/*
+        rm -Rf $BUILDROOT_DEST/plugins/*
+        rm -Rf $BUILDROOT_DEST/www/config/*
+
+        mkdir -p $BUILDROOT_DEST/fonts
+        mkdir -p $BUILDROOT_DEST/icons
+        mkdir -p $BUILDROOT_DEST/images
+        mkdir -p $BUILDROOT_DEST/plugins
+        mkdir -p $BUILDROOT_DEST/www/config
+
+        cp ${YIO_SRC}/$1/config.json ${YIO_SRC}/remote-os/rpi0/boot/
+        cp ${YIO_SRC}/$1/remote $BUILDROOT_DEST
+        cp ${YIO_SRC}/$1/translations.json $BUILDROOT_DEST
+
         cp -r ${YIO_SRC}/$1/fonts $BUILDROOT_DEST
         cp -r ${YIO_SRC}/$1/icons $BUILDROOT_DEST
         cp -r ${YIO_SRC}/$1/images $BUILDROOT_DEST
-        rm -Rf $BUILDROOT_DEST/plugins/*
         cp -r ${YIO_SRC}/$1/plugins $BUILDROOT_DEST
-        rm -Rf $BUILDROOT_DEST/www/config/*
         cp -r ${YIO_SRC}/web-configurator/* $BUILDROOT_DEST/www/config/
     fi
 }
@@ -308,8 +331,8 @@ buildAllProjects() {
     fi
 
     # buildroot toolchain must be built first to cross compile Qt projects
-    if [ ! -f $QMAKE_CROSSCOMPILE ]; then
-        echo "Buildroot toolchain doesn't exist: building remote-os without SD card image..."
+    if [[ ! -x "$QMAKE_CROSSCOMPILE" || ! -f "${YIO_SRC}/remote-os/.toolchain-ready" ]]; then
+        echo "Buildroot toolchain is not yet ready: building remote-os without SD card image..."
         buildRemoteOS SKIP_BUILD_IMAGE=y
     fi
 

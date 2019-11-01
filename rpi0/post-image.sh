@@ -8,6 +8,8 @@ BOARD_NAME="$(basename ${BOARD_DIR})"
 GENIMAGE_CFG="${BOARD_DIR}/genimage.cfg"
 GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 
+touch ${BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH}/.toolchain-ready
+
 if [ "$SKIP_BUILD_IMAGE" = "y" ]; then
     echo "WARN: not building SD card image: disabled with SKIP_BUILD_IMAGE"
     exit

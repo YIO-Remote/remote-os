@@ -82,3 +82,4 @@ $RECYCLE.BIN/
 *.bak
 *.old
 *.log
+.toolchain-ready
