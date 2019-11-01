@@ -1,6 +1,7 @@
 BR2_arm=y
 BR2_arm1176jzf_s=y
 BR2_DL_DIR="$(HOME)/buildroot/dl"
+BR2_GNU_MIRROR="http://ftp.thunix.net/gnu-ftp"
 BR2_CCACHE=y
 BR2_CCACHE_DIR="$(HOME)/buildroot/ccache"
 BR2_PACKAGE_OVERRIDE_FILE="$(BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH)/local.mk"
