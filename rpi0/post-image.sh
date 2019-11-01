@@ -8,6 +8,11 @@ BOARD_NAME="$(basename ${BOARD_DIR})"
 GENIMAGE_CFG="${BOARD_DIR}/genimage.cfg"
 GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 
+if [ "$SKIP_BUILD_IMAGE" = "y" ]; then
+    echo "WARN: not building SD card image: disabled with SKIP_BUILD_IMAGE"
+    exit
+fi
+
 cp ${BOARD_DIR}/boot/*.txt ${BINARIES_DIR}/
 cp ${BOARD_DIR}/boot/*.json ${BINARIES_DIR}/
 

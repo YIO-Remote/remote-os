@@ -38,6 +38,7 @@ special_target:=$(config_change_targets) Makefile defconfig savedefconfig %_defc
 all	:= $(filter-out $(special_target),$(MAKECMDGOALS))
 
 default:  
+	$(call INIT_BUILDROOT)
 	$(MAKE) $(MAKEARGS) $(DEFCONFIG) defconfig
 	$(MAKE) $(MAKEARGS) $(DEFCONFIG)
 
@@ -63,6 +64,7 @@ savedefconfig:
 
 # update from current configuration, run the command, then save the result
 $(config_change_targets): $(DEFCONFIG_FILE)
+	$(call INIT_BUILDROOT)
 	$(MAKE) $(MAKEARGS) $(DEFCONFIG) defconfig $@
 	$(MAKE) $(MAKEARGS) $(DEFCONFIG) savedefconfig
 
@@ -89,4 +91,10 @@ define UPDATE_DEFCONFIG
 	$(MAKE) $(MAKEARGS) $(DEFCONFIG) savedefconfig
 endef
 
-
+define INIT_BUILDROOT
+        @if [ ! -d buildroot/.git ]; then \
+                echo "Initializing Git submodule 'buildroot'"; \
+                git submodule init; \
+                git submodule update; \
+        fi
+endef

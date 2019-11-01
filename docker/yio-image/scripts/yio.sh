@@ -70,7 +70,7 @@ header() {
 gitInfo() {
     cd ${YIO_SRC}/$1
     if [ -d ".git" ]; then
-        printf "%-30s %-10s %s\n" $1 $(git rev-parse --abbrev-ref HEAD) $(git log --pretty=format:'%h' -n 1)
+        printf "%-30s %-30s %s\n" $1 $(git rev-parse --abbrev-ref HEAD) $(git log --pretty=format:'%h' -n 1)
     fi
 }
 
@@ -86,7 +86,9 @@ projectInfo() {
     echo ""
     echo "Git information:"
     cd ${YIO_SRC}
-    for D in *; do gitInfo $D; done;
+    for D in */; do
+        gitInfo $D
+    done
     echo ""
     # TODO print docker build image information
 }
@@ -307,7 +309,8 @@ buildAllProjects() {
 
     # buildroot toolchain must be built first to cross compile Qt projects
     if [ ! -f $QMAKE_CROSSCOMPILE ]; then
-        buildRemoteOS
+        echo "Buildroot toolchain doesn't exist: building remote-os without SD card image..."
+        buildRemoteOS SKIP_BUILD_IMAGE=y
     fi
 
     for project in ${QtIntegrationProjects[*]}; do

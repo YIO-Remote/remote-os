@@ -1,0 +1,7 @@
+# Do not check in any remote-software artefacts!
+remote
+*.json
+/fonts
+/icons
+/images
+/plugins
