@@ -2,16 +2,25 @@
 #
 # Wrapper build script for yio-remote/build Docker image
 # https://github.com/YIO-Remote/documentation/wiki
-# Copy this script to /usr/local/bin to call it from anywhere
+# Symlink this script in /usr/local/bin to call it from anywhere
 #
-# Uses environment variable $YIO_BUILD_OUTPUT
-# Either define it in your shell environment (e.g. ~/.bash_profile or ~/.profile)
-# or define it in your current session: export YIO_BUILD_OUTPUT=/projects/yio/build-output
+# Environment variables:
+# Either define them in your shell environment (e.g. ~/.bash_profile or ~/.profile)
+# or define them in your current shell: export YIO_BUILD_OUTPUT=/projects/yio/build-output
+#
+# Mandatory environment variables:
+# - YIO_BUILD_OUTPUT: defines the mapped output directory for the binary artefacts. 
+#
+# Optional environment variables:
+# - YIO_BUILD_SOURCE: defines the mapped source directory of the projects.
+#   If not defined a Docker Volume named `yio-projects` will be used.
 #
 
 set -e
 
 #YIO_BUILD_OUTPUT=/projects/yio/build-output 
+
+YIO_PROJECTS_SOURCE=yio-projects
 
 # --- Helper functions ---
 
@@ -44,11 +53,20 @@ docker version &> /dev/null || {
     exit 1
 }
 
-checkDockerVolume yio-projects
+if [[ ! -z "${YIO_BUILD_SOURCE}" ]]; then
+    if [[ ! -d ${YIO_BUILD_SOURCE} ]]; then
+        echo "Source directory defined in 'YIO_BUILD_SOURCE' doesn't exist: '${YIO_BUILD_SOURCE}'"
+        exit 1
+    fi
+    YIO_PROJECTS_SOURCE="${YIO_BUILD_SOURCE}"
+else
+    checkDockerVolume ${YIO_PROJECTS_SOURCE}
+fi
+
 checkDockerVolume yio-buildroot
 
 docker run --rm -it \
-    -v yio-projects:/yio-remote/src \
+    -v ${YIO_PROJECTS_SOURCE}:/yio-remote/src \
     -v yio-buildroot:/yio-remote/buildroot \
     -v ${YIO_BUILD_OUTPUT}:/yio-remote/target \
-    gcr.io/yio-remote/build $@
+    gcr.io/yio-remote/build:test $@

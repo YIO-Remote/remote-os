@@ -7,6 +7,7 @@ ARG YIO_REMOTE_UID=1000
 ARG YIO_REMOTE_GID=1000
 
 ENV YIO_SRC=/yio-remote/src
+ENV BUILDROOT_OUTPUT=/yio-remote/buildroot/output
 ENV BR2_DL_DIR=/yio-remote/buildroot/dl
 ENV BR2_CCACHE_DIR=/yio-remote/buildroot/ccache
 

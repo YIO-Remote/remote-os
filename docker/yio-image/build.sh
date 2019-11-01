@@ -6,7 +6,7 @@
 #=============================================================
 
 TARGET_REPO="gcr.io/"
-BASE_IMAGE_NAME="yio-remote/build"
+BASE_IMAGE_NAME="yio-remote/build:test"
 DOCKEROPS="--pull --no-cache=true"
 DOCKER_PUSH="n"
 

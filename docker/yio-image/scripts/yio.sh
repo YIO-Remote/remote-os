@@ -7,10 +7,10 @@
 
 set -e
 
-SDCARD_IMG=${YIO_SRC}/remote-os/rpi0/output/images/yio-remote-sdcard.img
+SDCARD_IMG=${BUILDROOT_OUTPUT}/images/yio-remote-sdcard.img
 BUILD_OUTPUT=/yio-remote/target
 
-CROSSCOMPILE_BIN=${YIO_SRC}/remote-os/rpi0/output/host/bin
+CROSSCOMPILE_BIN=${BUILDROOT_OUTPUT}/host/bin
 QMAKE_CROSSCOMPILE=${CROSSCOMPILE_BIN}/qmake
 
 LINGUIST_LUPDATE=/usr/lib/qt5/bin/lupdate
@@ -87,7 +87,7 @@ projectInfo() {
     echo "Git information:"
     cd ${YIO_SRC}
     for D in */; do
-        gitInfo $D
+        gitInfo "$D"
     done
     echo ""
     # TODO print docker build image information
@@ -141,9 +141,9 @@ gitCommandAll() {
     fi
     cd ${YIO_SRC}
     echo ""
-    for D in *; do
-        cd ${YIO_SRC}/$D
-        if [ -d ".git" ]; then
+    for D in */; do
+        if [ -d "${YIO_SRC}/${D}/.git" ]; then
+            cd "${YIO_SRC}/${D}"
             printf "%-20s: 'git %s" $D
             echo "$@''" 
             git $@

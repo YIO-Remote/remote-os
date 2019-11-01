@@ -13,10 +13,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with buildroot-submodule.  If not, see <http://www.gnu.org/licenses/>. 2
 
+BUILDROOT_OUTPUT?=$(CURDIR)/$(PROJECT_NAME)/output
+export BUILDROOT_OUTPUT
+
 #location of the buildroot sources
 MAKEARGS := -C $(CURDIR)/buildroot 
 #location to store build files
-MAKEARGS += O=$(CURDIR)/$(PROJECT_NAME)/output
+MAKEARGS += O=$(BUILDROOT_OUTPUT)
 # location to store extra config options and buildroot packages
 MAKEARGS += BR2_EXTERNAL=$(CURDIR)
 #transmit project name to be able to use it in kconfig
