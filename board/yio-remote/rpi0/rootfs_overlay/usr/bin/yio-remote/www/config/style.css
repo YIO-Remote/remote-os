@@ -13,21 +13,58 @@ body {
 
 h3 {
   color: #ffffff;
-  margin-top: 0;
-  text-align: center;
+  margin-top: 7px;
+  margin-left: 5;
+  /* text-align: left; */
+  margin-bottom: 0px;
+  /* display: contents; */
+  float: left;
 }
 
 h4 {
-  text-align: center;
+  text-align: left;
   margin-top: 50px;
   margin-bottom: 5px;
   text-transform: uppercase;
+  border-bottom-width: 2;
+  border-bottom-style: solid;
+  border-bottom-color: #1d1d1d;
+  display: contents;
 }
 
-input {
-  /*float: right;*/
+h5 {
+  border-bottom-color: #000;
+  border-bottom-width: 0.5;
+  /*border-bottom-style: solid;*/
+  padding-bottom: 11px;
+  font-size: 18px;
+  margin-left: 11px;
+  margin-right: 12px;
+  margin-bottom: -7px;
+  z-index: 9513;
+  position: relative;
+}
+
+li,
+ul {
+  list-style-type: none;
+}
+
+input,
+select {
   width: 100px;
-  display: block;
+  /* display: block; */
+  float: right;
+  background-color: #171717;
+  border: 0;
+  color: #fff;
+  padding: 3;
+  padding-left: 10;
+  border-radius: 8px;
+  outline: none;
+  height: 22px;
+  margin-top: 0;
+  appearance: none;
 }
 
 select {
@@ -40,19 +77,68 @@ button {
   background-color: #2f2e2e;
   display: inline-block;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   color: #eee;
-  margin: 10px;
+  margin: 5px;
   padding: 5px;
   outline: none;
   font-family: "Roboto", sans-serif;
   font-style: normal;
   font-weight: 100;
+  float: right;
+}
+
+.miniButton {
+  width: 26px;
+  height: 26px;
+  font-size: 20px;
+  font-weight: bold;
+  transform: rotate(180deg);
+}
+
+.smallButton {
+  margin: 0;
+  margin-top: -2px;
+  width: 60;
+  top: 0;
+  margin-left: 5px;
+  background-color: #1c1b1b;
+}
+
+.pageName {
+  font-size: 20px;
+  /* font-weight: bold; */
+  margin-top: 27px;
+  margin-left: 14px;
+  float: left;
+}
+
+.profileIcon {
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+  background-color: #918682;
+  float: left;
+  margin-top: 20px;
+  font-size: 30px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.blockMedium {
+  display: block;
+  height: 85px;
+}
+
+.blockSmall {
+  display: block;
+  height: 10px;
 }
 
 button:hover,
 .dragableItem:hover,
-.menuItem:hover {
+.menuItem:hover,
+.dragableItemError:hover {
   background-color: #222332;
 }
 button:active,
@@ -64,7 +150,7 @@ button:active,
 
 #configJsonTextBox {
   height: 84%;
-  width: 100%;
+  width: 580px;
   background-color: #222332;
   color: #eee;
   padding: 10px;
@@ -93,8 +179,9 @@ button:active,
 
 .menuFrame {
   height: 100%;
-  width: 200px;
-  position: absolute;
+  width: 275px;
+  position: fixed;
+  background-color: #1c1c1c;
 }
 
 .menuItem {
@@ -107,20 +194,42 @@ button:active,
 
 .mainFrame {
   width: 100%;
+  min-height: 100%;
   position: inherit;
-  padding-top: 20px;
+  /* padding-top: 20px; */
+  background-color: #161515;
 }
 
 .toolpage {
-  height: 100%;
+  min-height: 100%;
 }
 
 .toolFrame {
   height: 100%;
-  width: 300px;
-  position: absolute;
+  width: 330px;
+  position: fixed;
   right: 0px;
   top: 0;
+  padding: 10px;
+  background-color: #313247;
+  overflow-y: scroll;
+  align-content: space-between;
+  box-sizing: content-box;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+#configJsonTextBox {
+  overflow-y: scroll;
+  align-content: space-between;
+  box-sizing: content-box;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.toolFrame::-webkit-scrollbar,
+#configJsonTextBox::-webkit-scrollbar {
+  display: none;
 }
 
 .configPage {
@@ -131,22 +240,43 @@ button:active,
   margin-top: 30px;
   margin: auto auto;
   width: 600px;
+  overflow: hidden;
 }
 
-.configItem,
-.dragableItem {
+.configGroup {
   padding-left: 20px;
   padding-right: 15px;
   padding-top: 3px;
   padding-bottom: 3px;
-  background-color: #1c1b1b;
+  background-color: #1c1c1c;
   margin-bottom: 2px;
+  border-radius: 14px;
+  /* height: 80; */
+  overflow: hidden;
+  width: 565px;
+}
+
+.configItem,
+.dragableItem,
+.dragableItemError {
+  padding-left: 20px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 7px;
+  background-color: #282828;
+  margin-bottom: 10px;
   border-radius: 6px;
 }
 
-.dragableItem {
-  background-color: #313247;
+.dragableItem,
+.dragableItemError {
+  background-color: #1d1e2b;
   list-style-type: none;
+}
+.configItem,
+.dragableItem,
+.dragableItemError,
+.menuItem {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
@@ -155,17 +285,30 @@ button:active,
   user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
 }
 
+.dragableItemError {
+  color: #b00;
+}
+
 .dragList,
-.toolDragList {
-  padding-left: 10px;
+.toolDragList,
+.toolDragListInactive {
+  padding-left: 9px;
   padding-right: 10px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  margin-bottom: 2px;
+  padding-top: 13px;
+  padding-bottom: 4px;
+  margin-top: 6px;
+  margin-bottom: 29px;
   border-radius: 15px;
   border-style: dashed;
-  border-width: 1;
-  border-color: #1c1b1b;
+  border-width: 0.5;
+  border-color: #44455d;
+  background-color: #313247;
+  min-height: 41px;
+}
+
+.toolDragListInactive {
+  border-color: #2e2e2e;
+  background-color: #171717;
 }
 
 .configMenu {
@@ -176,16 +319,7 @@ button:active,
   background-color: #1c1b1b;
   margin-bottom: 2px;
   border-radius: 5px;
-}
-
-.configItemError {
-  padding-left: 20px;
-  padding-right: 40px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  background-color: #1c1b1b;
-  color: #b00;
-  margin-bottom: 2px;
+  min-height: 36px;
 }
 
 .small {
