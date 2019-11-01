@@ -45,6 +45,7 @@ Commands:
 info     Print Git information of the available projects
 init     Initialize build: checkout all projects & prepare buildroot
 bash     Start a shell for manual operations inside the container
+         The yio script also works inside the container
 clean    Clean all projects
 build    Build all projects. Initializes projects if required.
 rebuild  Clean and then build all projects

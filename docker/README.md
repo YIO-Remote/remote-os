@@ -1,6 +1,6 @@
 # Docker Build Image for YIO-Remote
 
-This Docker image cross compiles all required Qt projects from the [YIO-Remote Git repositories](https://github.com/YIO-Remote) and builds the SD card image for the RPi zero.
+This Docker image builds the Buildroot toolchain,  cross compiles all required Qt projects from the [YIO-Remote Git repositories](https://github.com/YIO-Remote) and builds the SD card image for the Raspberry Pi Zero.
 
 Image name: `gcr.io/yio-remote/build`
 
@@ -8,7 +8,7 @@ For now the image is publicly available in the gcr.io container registry and doe
 
 Further documentation can be found in the documentation wiki: <https://github.com/YIO-Remote/documentation/wiki>
 
-## Concept
+## Concepts
 
 [Buildroot](https://buildroot.org/) is easy to use with Linux, not so much with macOS and Windows. Setting up a RPi Zero cross compile toolchain is theoretically possible, but not as straightforward as on Linux.  
 Therefore this Docker image acts as an universal build tool for Linux, macOS and Windows.
@@ -25,17 +25,19 @@ Therefore this Docker image acts as an universal build tool for Linux, macOS and
   - YIO-Remote Git projects.
   - Downloaded Buildroot source packages (> 900 MB).
   - Compiled Buildroot toolchain (~ 13 GB) and the Buildroot ccache (~ 1.8 GB).
+- The YIO-Remote projects can be bind-mounted from the host or stored in a Docker Volume.
 
 ## Requirements
 
+Attention Windows users: Docker Desktop for Windows uses Microsoft Hyper-V for virtualization, and Hyper-V is not compatible with Oracle VirtualBox.
+
 - Working [Docker installation](https://docs.docker.com/install/) (tested with 19.03).
-- At least 20 GB of free space.
+- At least 20 GB of free disk space. SSD is highly recommended!
 - macOS & Windows Docker Desktop configuration:
   - Make sure your Docker VM is large enough and has enough space left.
   - Associate at least 4 GB RAM. More RAM = better file system caching.
   - Associate as many CPU cores as possible for quicker build times.
-  - File sharing configured to store the build artefacts on the host.
-- SSD is highly recommended!
+  - File sharing configured to store the build artefacts on the host and optionally mount projects.
 - Internet connection:
   - Ubuntu installation packages will be downloaded during the **Docker Image build**.
   - Buildroot source packages will be downloaded during the **remote-os build** in a Docker container.
@@ -46,21 +48,24 @@ The first initial build will take a long time (1.5 h +). This depends on interne
 
 After the initial build the remote-software or even the complete remote-os projects can be built within seconds or minutes!
 
-Three ways are provided to use the Docker build image:
+The Docker build image can be used in various ways:
 
-1. Wrapper script for easy interaction. Hides all Docker commands.
-2. Regular Docker commands for full control.
-3. Docker Compose file for further integration with other images.
+1. Wrapper script for easy interaction for commonly used build actions.  
+   This hides all Docker commands.
+2. Interactive shell within Docker container. See build-command *bash*.
+3. Regular Docker commands for full control.
+4. Docker Compose file for further integration with other images.
 
 ### Wrapper Script
 
-The provided wrapper scripts are a convient way for interacting with the Docker image. All Docker internas are hidden to make it feel like a regular local tool.  
-The scripts use the environment variable `YIO_BUILD_OUTPUT` for the host directory mount to store the final build artefacts.
+The provided wrapper scripts for Windows and Bash are a convient way for interacting with the Docker image. All Docker internas are hidden to make it feel like working with a regular local tool.  
+The scripts require the environment variable `YIO_BUILD_OUTPUT` for the host directory mount to store the final build artefacts.
 
 - `yio` - Bash script for Linux and macOS:
-  - Copy the script to `/usr/local/bin` to make it accessible from anywhere.
+  - Symlink the script to `/usr/local/bin` to make it accessible from anywhere.  
+  E.g. `ln -s /projects/yio/remote-os/docker/yio /usr/local/bin/yio`
 
-  - Define `YIO_BUILD_OUTPUT` it in your shell environment (e.g. ~/.bash_profile or ~/.profile):
+  - Define `YIO_BUILD_OUTPUT` in your shell environment (e.g. ~/.bashrc or ~/.profile):
 
         export YIO_BUILD_OUTPUT=/projects/yio/build-output
 
@@ -71,6 +76,20 @@ The scripts use the environment variable `YIO_BUILD_OUTPUT` for the host directo
 
 The scripts will automatically create the required Docker Volumes and check if Docker is running.
 
+#### Mounting Project Folder from Host
+
+By default the YIO Remote projects are stored in a Docker volume named `yio-projects`. The parent project folder can also be mounted from the host by defining the environment variable `YIO_BUILD_SOURCE`. This allows to edit the projects on the host and conveniently cross compile the projects with Docker!
+
+Windows:
+
+        SET YIO_BUILD_OUTPUT=d:/projects/yio
+
+Linux & macOS:
+
+        export YIO_BUILD_OUTPUT=/projects/yio
+
+Note: bind mounting the project folder from the host will have a negative build performance impact on macOS and Windows.
+
 #### Script Usage
 
     yio <build-command>
@@ -80,6 +99,7 @@ The scripts will automatically create the required Docker Volumes and check if D
     info     Print Git information of the available projects
     init     Initialize build: checkout all projects & prepare buildroot
     bash     Start a shell for manual operations inside the container
+             The yio script also works inside the container
     clean    Clean all projects
     build    Build all projects
     rebuild  Clean and then build all projects
@@ -162,6 +182,20 @@ An example [Docker Compose](https://docs.docker.com/compose/) file has been prov
 Usage:
 
     docker-compose up
+
+### Clean Up
+
+Clean Buildroot:
+
+    yio remote-os clean
+
+Remove Buildroot ccache, downloaded package sources and intermediate build interfacts:
+
+    docker volume rm yio-buildroot
+
+Remove Docker volume containing project sources:
+
+    docker volume rm yio-projects
 
 ## Creating the YIO-Remote Build Image
 

@@ -23,7 +23,14 @@ Requirements:
 
 If you don't have a Linux machine then the easiest way to build all Qt projects and the SD card image is with the provided Docker image.
 
-See [Docker Readme](docker/README.md).
+Features:
+
+- Buildroot build and output directories are stored in a Docker Volume due to hard links performance reasons.
+- Binary outputs are copied to bind mounted directory on the host.
+- YIO Remote projects can be bind mounted from the host or stored in a Docker Volume.
+- A convenient build script handles all common build tasks (single project builds, full build, Git operations, etc.).
+
+See dedicated [Docker Readme](docker/README.md) for further information.
 
 ### Linux
 
@@ -31,8 +38,7 @@ The build has been tested on Ubuntu 18.04.3, 19.04 and 19.10. Other Linux distri
 
 #### Prepare Build Environment
 
-- If you just need a headless build VM then use the minimal [Ubuntu 18.04.3 LTS Server](http://cdimage.ubuntu.com/releases/18.04.3/release/) version.
-- Some packages might already be installed depending on the version (desktop or server).
+The minimal [Ubuntu 18.04.3 LTS Server](http://cdimage.ubuntu.com/releases/18.04.3/release/) version is well suited for a headless build VM. Use a desktop version if the VM should also be used for Qt development with Qt Creator.
 
 Install required tools:
 
@@ -62,36 +68,57 @@ Install required tools:
           nano \
           screen
 
-#### Initial Checkout
+#### Build Environment Variables
+
+The following optional environment variables control where the build output and other artefacts during the build are stored:
+
+| **Variable**             | **Description**  |
+|--------------------------|------------------|
+| `BUILDROOT_OUTPUT`       | Buildroot output directory. Default: ./rpi0/output          |
+| `BR2_DL_DIR`             | Buildroot download directory. Default: $HOME/buildroot/dl   |
+| `BR2_CCACHE_DIR`         | Buildroot ccache directory. Default: $HOME/buildroot/ccache |
+
+#### Initial Checkout and Toolchain Build
+
+Checkout project and build full cross compiler toolchain incl. target system:
 
     # define root directory for project checkout
     SRC_DIR=~/projects/yio
 
-    mkdir -p ${SRC_DIR}
-    cd ${SRC_DIR}
+    mkdir -p $SRC_DIR
+    cd $SRC_DIR
     git clone https://github.com/YIO-Remote/remote-os.git
     
     # switch to development branch
     cd remote-os
-    git checkout develop
+    git checkout dev
     
-    # checkout buildroot (Git submodule)
-    git submodule init
-    git submodule update
+    # build full toolchain without YIO remote SD card image
+    make SKIP_BUILD_IMAGE=y 
+
+This will take at least an hour or much longer on a slower system.
+The `make` command will automatically initialize the buildroot Git submodule (`git submodule init && git submodule update`).
 
 #### Build SD Card Image
 
-    cd ${SRC_DIR}/remote-os
+The SD card image build requires at least a YIO remote configuration file in `./rpi0/boot/config.json`. The latest version can be found in the [remote-software](https://github.com/YIO-Remote/remote-software) repository.  
+Furthermore all application binaries and resources have to be put in `./overlay/usr/bin/yio-remote/`. These are the remote-software binary, integration plugins, fonts, icons, images and the web-configurator. See [build script in the Docker image](docker/yio-image/scripts/yio.sh) for a quick and dirty approach until each component will be properly released.
+
+Once all resources are in place the build is a simple command:
+
+    cd $SRC_DIR/remote-os
     make
 
 Hint: redirect the `make` output log into a logfile to easy find an error during building or when using `screen` without scrollback capability:
 
     make 2>&1 | tee remote-os_build_$(date +"%Y%m%d_%H%M%S").log
 
-The final SD card image will be written to: `${SRC_DIR}/remote-os/rpi0/output/images/yio-remote-sdcard.img`
+The final SD card image will be written to: `${BUILDROOT_OUTPUT}/images/yio-remote-sdcard.img`
 
 ### Buildroot Commands
 
+All Buildroot make commands must be executed in the `remote-os` project and *not* within the /buildroot sub-directory!
+The main makefile wraps all comands and takes care of configuration handling and output directories.
 Most important commands:
 
 | **Command**              | **Description**  |
@@ -102,7 +129,7 @@ Most important commands:
 |  `make linux-menuconfig` | Configure Linux kernel options. |
 |  `make help`             | Shows all options. |
 
- Thanks to Buildroot Submodule the project configuration in `rpi0/defconfig` is automatically loaded and saved back depending on the Buildroot command (see [common.mk](common.mk)). Manual `make savedefconfig BR2_DEFCONFIG=...` and `make defconfig BR2_DEFCONFIG=...` commands are no longer required and automatically taken care of!
+ The project configuration in `rpi0/defconfig` is automatically loaded and saved back depending on the Buildroot command (see [common.mk](common.mk)). Manual `make savedefconfig BR2_DEFCONFIG=...` and `make defconfig BR2_DEFCONFIG=...` commands are no longer required and automatically taken care of!
 
 ## Write SD Card Image
 
