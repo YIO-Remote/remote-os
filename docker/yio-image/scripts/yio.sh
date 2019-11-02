@@ -7,6 +7,9 @@
 
 set -e
 
+DEBUG_BUILD=y
+CPU_CORES=$(nproc --all)
+
 SDCARD_IMG=${BUILDROOT_OUTPUT}/images/yio-remote-sdcard.img
 BUILD_OUTPUT=/yio-remote/target
 
@@ -47,15 +50,19 @@ init     Initialize build: checkout all projects & prepare buildroot
 bash     Start a shell for manual operations inside the container
          The yio script also works inside the container
 clean    Clean all projects
-build    Build all projects. Initializes projects if required.
-rebuild  Clean and then build all projects
+build [release]   Build all projects with debug or release settings.
+         Initializes projects if required.
+rebuild [release] Clean and then build all projects
 update   Update all repositories on the current branch (git pull)
 git [options] <command> [<args>] Perform Git command on all projects
 
 <project> git [options] <command> [<args>]
                   Perform Git command on given project
 <project> clean   Clean the given project
-<project> build   Build the given project
+<project> build [release]
+                  Build the given project with debug or release settings
+qt build [release]
+                  Build all Qt projects with debug or release settings
 
 EOF
 }
@@ -257,21 +264,26 @@ buildQtProject() {
 
     header "Building Qt project $1 branch $(git rev-parse --abbrev-ref HEAD) (Git commit: $(git log --pretty=format:'%h' -n 1))"
 
-    $QMAKE_CROSSCOMPILE
-
     if [ "$1" = "remote-software" ]; then 
         header "Creating translation files..."
         $LINGUIST_LUPDATE remote.pro
         $LINGUIST_LRELEASE remote.pro
     fi
 
-    # FIXME use build output directory instead of messing up project directory
-    make
+    # do a shadow build to keep project directory clean
+    mkdir -p build
+    cd build
+
+    $QMAKE_CROSSCOMPILE ${YIO_SRC}/$1 "CONFIG+=$(if [ "$DEBUG_BUILD" = "n" ]; then echo "release"; else echo "debug CONFIG+=qml_debug"; fi)"
+    make qmake_all
+
+    make -j$CPU_CORES
 
     if [ "$1" = "remote-software" ]; then 
         header "Copying remote-software binary and plugins to $BUILD_OUTPUT"
-        cp ${YIO_SRC}/$1/remote $BUILD_OUTPUT
-        cp -r ${YIO_SRC}/$1/plugins $BUILD_OUTPUT
+        BUILD_BINARY_DIR=${YIO_SRC}/binaries/linux/gcc/arm/$(if [ "$DEBUG_BUILD" = "n" ]; then echo "release"; else echo "debug"; fi)
+        cp  ${BUILD_BINARY_DIR}/remote $BUILD_OUTPUT
+        cp -r ${BUILD_BINARY_DIR}/plugins $BUILD_OUTPUT
 
         # HACK transfer built remote application and plugins to remote-os.
         # Ok for initial test version, but we need to clean up the binary handling in remote-os!
@@ -281,24 +293,22 @@ buildQtProject() {
 
         rm -Rf $BUILDROOT_DEST/fonts/*
         rm -Rf $BUILDROOT_DEST/icons/*
-        rm -Rf $BUILDROOT_DEST/images/*
         rm -Rf $BUILDROOT_DEST/plugins/*
         rm -Rf $BUILDROOT_DEST/www/config/*
 
         mkdir -p $BUILDROOT_DEST/fonts
         mkdir -p $BUILDROOT_DEST/icons
-        mkdir -p $BUILDROOT_DEST/images
         mkdir -p $BUILDROOT_DEST/plugins
         mkdir -p $BUILDROOT_DEST/www/config
 
-        cp ${YIO_SRC}/$1/config.json ${YIO_SRC}/remote-os/rpi0/boot/
-        cp ${YIO_SRC}/$1/remote $BUILDROOT_DEST
-        cp ${YIO_SRC}/$1/translations.json $BUILDROOT_DEST
+        cp ${BUILD_BINARY_DIR}/config.json ${YIO_SRC}/remote-os/rpi0/boot/
+        cp ${BUILD_BINARY_DIR}/remote $BUILDROOT_DEST
+        chmod 755 $BUILDROOT_DEST/remote
+        cp ${BUILD_BINARY_DIR}/translations.json $BUILDROOT_DEST
 
-        cp -r ${YIO_SRC}/$1/fonts $BUILDROOT_DEST
-        cp -r ${YIO_SRC}/$1/icons $BUILDROOT_DEST
-        cp -r ${YIO_SRC}/$1/images $BUILDROOT_DEST
-        cp -r ${YIO_SRC}/$1/plugins $BUILDROOT_DEST
+        cp -r ${BUILD_BINARY_DIR}/fonts $BUILDROOT_DEST
+        cp -r ${BUILD_BINARY_DIR}/icons $BUILDROOT_DEST
+        cp -r ${BUILD_BINARY_DIR}/plugins $BUILDROOT_DEST
         cp -r ${YIO_SRC}/web-configurator/* $BUILDROOT_DEST/www/config/
     fi
 }
@@ -321,8 +331,8 @@ cleanAllProjects() {
     #cleanRemoteOS
 }
 
-buildAllProjects() {
-    header "Building all projects..."
+buildAllQtProjects() {
+    header "Building all Qt projects..."
 
     subdircount=`find ${YIO_SRC} -maxdepth 1 -type d | wc -l`
     if [ $subdircount -lt 2 ]
@@ -342,7 +352,11 @@ buildAllProjects() {
     done
 
     buildQtProject remote-software
+}
 
+buildAllProjects() {
+    header "Building all projects..."
+    buildAllQtProjects
     buildRemoteOS
 }
 
@@ -361,11 +375,6 @@ elif [ $# -eq 1 ]; then
         initialize
     elif [ "$1" = "clean" ]; then
         cleanAllProjects
-    elif [ "$1" = "build" ]; then
-        buildAllProjects
-    elif [ "$1" = "rebuild" ]; then
-        cleanAllProjects
-        buildAllProjects
     elif [ "$1" = "wait" ]; then
         # helper command for docker-compose 'debugging'
         cat << EOF
@@ -383,6 +392,22 @@ EOF
         echo "ERROR: Invalid command given, exiting!"
         exit 1
     fi
+elif [ "$1" = "build" ]; then
+    if [ "$2" = "release" ]; then
+        DEBUG_BUILD=n
+    fi
+    buildAllProjects
+elif [ "$1" = "rebuild" ]; then
+    if [ "$2" = "release" ]; then
+        DEBUG_BUILD=n
+    fi
+    cleanAllProjects
+    buildAllProjects
+elif [ "$1" = "qt" ] && [ "$2" = "build" ]; then
+    if [ "$3" = "release" ]; then
+        DEBUG_BUILD=n
+    fi
+    buildAllQtProjects
 elif [ "$1" = "buildroot" ]; then
     cd ${YIO_SRC}/remote-os/buildroot
     make ${@:2}
@@ -400,6 +425,9 @@ elif [ "$2" = "clean" ]; then
         cleanQtProject $1
     fi
 elif [ "$2" = "build" ]; then
+    if [ "$3" = "release" ]; then
+        DEBUG_BUILD=n
+    fi
     checkProjectExists $1
     cd ${YIO_SRC}/${1}
     if [ "$1" = "remote-os" ]; then
