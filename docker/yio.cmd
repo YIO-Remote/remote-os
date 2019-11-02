@@ -40,9 +40,14 @@ IF DEFINED YIO_BUILD_SOURCE (
 	IF NOT EXIST "%YIO_BUILD_SOURCE%" (
 		ECHO Source directory defined in 'YIO_BUILD_SOURCE' doesn't exist: '%YIO_BUILD_SOURCE%'
 		EXIT /B 3
+	) ELSE IF "%1" == "info" (
+        ECHO Mounting projects from host directory: %YIO_BUILD_SOURCE%
 	)
 	SET YIO_PROJECTS_SOURCE=%YIO_BUILD_SOURCE%
 ) ELSE (
+	IF "%1" == "info" (
+        ECHO Using Docker Volume for projects: %YIO_PROJECTS_SOURCE%
+	)
 	CALL :checkDockerVolume %YIO_PROJECTS_SOURCE%
 	IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 )

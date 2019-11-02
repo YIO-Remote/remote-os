@@ -57,9 +57,14 @@ if [[ ! -z "${YIO_BUILD_SOURCE}" ]]; then
     if [[ ! -d ${YIO_BUILD_SOURCE} ]]; then
         echo "Source directory defined in 'YIO_BUILD_SOURCE' doesn't exist: '${YIO_BUILD_SOURCE}'"
         exit 1
+    elif [ "$1" = "info" ]; then
+        echo "Mounting projects from host directory: ${YIO_BUILD_SOURCE}"
     fi
     YIO_PROJECTS_SOURCE="${YIO_BUILD_SOURCE}"
 else
+    if [ "$1" = "info" ]; then
+        echo "Using Docker Volume for projects: ${YIO_PROJECTS_SOURCE}"
+    fi
     checkDockerVolume ${YIO_PROJECTS_SOURCE}
 fi
 
