@@ -34,7 +34,7 @@ See dedicated [Docker Readme](docker/README.md) for further information.
 
 ### Linux
 
-The build has been tested on Ubuntu 18.04.3, 19.04 and 19.10. Other Linux distributions should work as well.
+The build process has been tested on Ubuntu 18.04.3, 19.04 and 19.10. Other Linux distributions should work as well.
 
 #### Prepare Build Environment
 
@@ -42,7 +42,7 @@ The minimal [Ubuntu 18.04.3 LTS Server](http://cdimage.ubuntu.com/releases/18.04
 
 Install required tools:
 
-1. Prepare Ubuntu for Buildroot:
+1. Prepare Ubuntu to build the Buildroot toolchain:
 
         sudo apt-get install \
           build-essential \
@@ -54,19 +54,25 @@ Install required tools:
           libtool \
           python \
           texinfo \
-          unzip
+          unzip \
+          screen \
+          openssh-server
 
-2. Optional: Packages for Qt development
+   The system is now ready to compile Buildroot and build the base Linux image for YIO.
 
-        sudo apt-get install --no-install-recommends \
-            qttools5-dev-tools
+2. Optional: Qt Linguist.
+   Qt Linguist is required to compile language files in *remote-software* before cross compilation.
+   - Unfortunately there's no standalone package of the required command line tools `lupdate` and `lrelease`. Therefore the complete Qt development environment needs to be installed!
+   - Attention: only use *apt* to install Qt on Ubuntu 19.10 or newer! Otherwise the Qt version is too old and the command line tools might be incompatible. Use the [Qt online installer](https://www.qt.io/download-open-source) instead.
 
-3. Optional: SSH server for remote access and other convenient tools
+            sudo apt-get install \
+                qttools5-dev-tools qt5-default
 
-        sudo apt-get install openssh-server \
-          mc \
-          nano \
-          screen
+3. Optional: dependencies for Qt development and building Linux target in Qt Creator:
+
+        sudo apt-get install \
+            libavahi-client-dev \
+            libgl1-mesa-dev
 
 #### Build Environment Variables
 
@@ -152,7 +158,7 @@ Using an external toolchain involves the following changes:
         PROJECT_NAME := toolchain
         include common.mk
 
-1. A toolchain subproject with the toolchain configuration: `toolchain/defconfig`
+2. A toolchain subproject with the toolchain configuration: `toolchain/defconfig`
 
         BR2_arm=y
         BR2_arm1176jzf_s=y
@@ -168,7 +174,7 @@ Using an external toolchain involves the following changes:
         # BR2_PACKAGE_BUSYBOX is not set
         # BR2_TARGET_ROOTFS_TAR is not set
 
-1. Referencing the external toolchain in the main project: `rpi0/defconfig`
+3. Referencing the external toolchain in the main project: `rpi0/defconfig`
 
         BR2_TOOLCHAIN_EXTERNAL=y
         BR2_TOOLCHAIN_EXTERNAL_PATH="$(BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH)/toolchain/output/host/usr"
