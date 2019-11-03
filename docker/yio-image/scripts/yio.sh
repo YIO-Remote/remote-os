@@ -153,7 +153,7 @@ gitCommandAll() {
         if [ -d "${YIO_SRC}/${D}/.git" ]; then
             cd "${YIO_SRC}/${D}"
             printf "%-20s: 'git %s" $D
-            echo "$@''" 
+            echo "$@'" 
             git $@
         fi
     done
@@ -375,6 +375,11 @@ elif [ $# -eq 1 ]; then
         initialize
     elif [ "$1" = "clean" ]; then
         cleanAllProjects
+    elif [ "$1" = "build" ]; then
+        buildAllProjects
+    elif [ "$1" = "rebuild" ]; then
+        cleanAllProjects
+        buildAllProjects
     elif [ "$1" = "wait" ]; then
         # helper command for docker-compose 'debugging'
         cat << EOF
@@ -392,15 +397,11 @@ EOF
         echo "ERROR: Invalid command given, exiting!"
         exit 1
     fi
-elif [ "$1" = "build" ]; then
-    if [ "$2" = "release" ]; then
-        DEBUG_BUILD=n
-    fi
+elif [ "$1" = "build" ] && [ "$2" = "release" ]; then
+    DEBUG_BUILD=n
     buildAllProjects
-elif [ "$1" = "rebuild" ]; then
-    if [ "$2" = "release" ]; then
-        DEBUG_BUILD=n
-    fi
+elif [ "$1" = "rebuild" ] && [ "$2" = "release" ]; then
+    DEBUG_BUILD=n
     cleanAllProjects
     buildAllProjects
 elif [ "$1" = "qt" ] && [ "$2" = "build" ]; then
