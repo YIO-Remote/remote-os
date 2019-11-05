@@ -74,4 +74,4 @@ docker run --rm -it \
     -v ${YIO_PROJECTS_SOURCE}:/yio-remote/src \
     -v yio-buildroot:/yio-remote/buildroot \
     -v ${YIO_BUILD_OUTPUT}:/yio-remote/target \
-    gcr.io/yio-remote/build:test $@
+    gcr.io/yio-remote/build $@

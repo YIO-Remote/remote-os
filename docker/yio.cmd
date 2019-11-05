@@ -52,7 +52,7 @@ IF DEFINED YIO_BUILD_SOURCE (
 	IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 )
 
-docker run --rm -it -v %YIO_PROJECTS_SOURCE%:/yio-remote/src -v yio-buildroot:/yio-remote/buildroot -v "%YIO_BUILD_OUTPUT%":/yio-remote/target gcr.io/yio-remote/build:test %*
+docker run --rm -it -v %YIO_PROJECTS_SOURCE%:/yio-remote/src -v yio-buildroot:/yio-remote/buildroot -v "%YIO_BUILD_OUTPUT%":/yio-remote/target gcr.io/yio-remote/build %*
 EXIT /B %ERRORLEVEL%
 
 :checkDockerVolume
