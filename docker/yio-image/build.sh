@@ -6,9 +6,9 @@
 #=============================================================
 
 TARGET_REPO="gcr.io/"
-BASE_IMAGE_NAME="yio-remote/build"
+BASE_IMAGE_NAME="yio-remote/build:test"
 DOCKEROPS="--pull --no-cache=true"
-SKIP_DOCKER_PUSH=true
+DOCKER_PUSH="n"
 
 usage() {
   cat << EOF
@@ -27,13 +27,13 @@ EOF
 #=============================================================
 #== MAIN starts here...
 #=============================================================
-while getopts "hop:" optname; do
+while getopts "ho:p" optname; do
   case "$optname" in
     "h")
       usage
       ;;
     "p")
-      SKIP_DOCKER_PUSH=false
+      DOCKER_PUSH="y"
       ;;
     "o")
       DOCKEROPS="$OPTARG"
@@ -87,13 +87,13 @@ docker build $DOCKER_BUILD || {
 # Remove dangling images (intermitten images with tag <none>)
 yes | docker image prune > /dev/null
 
-if [ "$SKIP_DOCKER_PUSH" = true ] ; then
-  echo "Skipping docker push!"
-else
+if [ "$DOCKER_PUSH" = "y" ] ; then
   docker push $DOCKER_IMG_NAME || {
     echo "There was an error pushing the images."
     exit 1
   } 
+else
+  echo "Skipping docker push!"
 fi
 
 BUILD_END=$(date '+%s')
