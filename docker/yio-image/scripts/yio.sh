@@ -22,6 +22,7 @@ LINGUIST_LRELEASE=/usr/lib/qt5/bin/lrelease
 #=============================================================
 
 GitProjects=(
+    "https://github.com/YIO-Remote/integration.dock.git,dev"
     "https://github.com/YIO-Remote/integration.homey.git,dev"
     "https://github.com/YIO-Remote/integration.home-assistant.git,dev"
     "https://github.com/YIO-Remote/integration.ir.git,dev"
@@ -32,9 +33,9 @@ GitProjects=(
 )
 
 QtIntegrationProjects=(
-    integration.homey
-    integration.home-assistant
     integration.ir
+    integration.home-assistant
+    integration.homey
 )
 
 #=============================================================
@@ -281,7 +282,7 @@ buildQtProject() {
 
     if [ "$1" = "remote-software" ]; then 
         header "Copying remote-software binary and plugins to $BUILD_OUTPUT"
-        BUILD_BINARY_DIR=${YIO_SRC}/binaries/linux/gcc/arm/$(if [ "$DEBUG_BUILD" = "n" ]; then echo "release"; else echo "debug"; fi)
+        BUILD_BINARY_DIR=${YIO_SRC}/binaries/linux-gcc-arm/$(if [ "$DEBUG_BUILD" = "n" ]; then echo "release"; else echo "debug"; fi)
         cp  ${BUILD_BINARY_DIR}/remote $BUILD_OUTPUT
         cp -r ${BUILD_BINARY_DIR}/plugins $BUILD_OUTPUT
 
