@@ -8,7 +8,7 @@
 set -e
 
 DEBUG_BUILD=y
-CPU_CORES=$(nproc --all)
+CPU_CORES=$(getconf _NPROCESSORS_ONLN)
 
 SDCARD_IMG=${BUILDROOT_OUTPUT}/images/yio-remote-sdcard.img
 BUILD_OUTPUT=/yio-remote/target
@@ -33,6 +33,7 @@ GitProjects=(
 )
 
 QtIntegrationProjects=(
+    integration.dock
     integration.ir
     integration.home-assistant
     integration.homey
@@ -77,7 +78,7 @@ header() {
 #=============================================================
 
 gitInfo() {
-    cd ${YIO_SRC}/$1
+    cd "${YIO_SRC}/$1"
     if [ -d ".git" ]; then
         printf "%-30s %-30s %s\n" $1 $(git rev-parse --abbrev-ref HEAD) $(git log --pretty=format:'%h' -n 1)
     fi
@@ -86,7 +87,7 @@ gitInfo() {
 #=============================================================
 
 projectInfo() {
-    subdircount=`find ${YIO_SRC} -maxdepth 1 -type d | wc -l`
+    subdircount=`find "${YIO_SRC}" -maxdepth 1 -type d | wc -l`
     if [ $subdircount -lt 2 ]
     then
         echo "No projects found. Run 'init' first to clone Git projects"
@@ -94,7 +95,7 @@ projectInfo() {
     fi
     echo ""
     echo "Git information:"
-    cd ${YIO_SRC}
+    cd "${YIO_SRC}"
     for D in */; do
         gitInfo "$D"
     done
@@ -110,7 +111,7 @@ checkoutProject() {
 
     if [ ! -d "${YIO_SRC}/${projectName}" ]; then
         header "Git clone $1"
-        cd ${YIO_SRC}
+        cd "${YIO_SRC}"
         git clone $1
         cd ${projectName}
         git checkout $2
@@ -128,7 +129,7 @@ checkoutProjects() {
 #=============================================================
 
 executeOnProject() {
-    cd ${YIO_SRC}/$1
+    cd "${YIO_SRC}/$1"
     if [ "$1" = "remote-os" ]; then
         cd buildroot
         printf "%-20s: '" $1/buildroot
@@ -142,13 +143,13 @@ executeOnProject() {
 #=============================================================
 
 gitCommandAll() {
-    subdircount=`find ${YIO_SRC} -maxdepth 1 -type d | wc -l`
+    subdircount=`find "${YIO_SRC}" -maxdepth 1 -type d | wc -l`
     if [ $subdircount -lt 2 ]
     then
         echo "No projects found. Run 'init' first to clone Git projects"
         return
     fi
-    cd ${YIO_SRC}
+    cd "${YIO_SRC}"
     echo ""
     for D in */; do
         if [ -d "${YIO_SRC}/${D}/.git" ]; then
@@ -186,6 +187,11 @@ checkBuildOutputExists() {
 }
 
 checkToolchainExists() {
+    if [ -z "$BUILDROOT_OUTPUT" ]; then
+        echo "Environment variable BUILDROOT_OUTPUT not defined! Value must point to buildroot output folder of the device. Cross compile not possible!"
+        exit 1
+    fi
+
     if [ ! -x "$QMAKE_CROSSCOMPILE" ]; then
         echo "ERROR: Toolchain for RPi cross compilation hasn't been built yet! Build remote-os first"
         exit 1
@@ -203,7 +209,7 @@ cleanRemoteOS() {
     if [ -f "${YIO_SRC}/remote-os/buildroot/Makefile" ]; then
         header "Cleaning remote-os project..."
 
-        cd ${YIO_SRC}/remote-os
+        cd "${YIO_SRC}/remote-os"
         make clean
     fi
 }
@@ -213,7 +219,7 @@ initRemoteOS() {
 
     checkProjectExists remote-os
 
-    cd ${YIO_SRC}/remote-os
+    cd "${YIO_SRC}/remote-os"
     git submodule init
     git submodule update
 }
@@ -223,14 +229,14 @@ buildRemoteOS() {
     checkBuildOutputExists
     initRemoteOS
 
-    cd ${YIO_SRC}/remote-os
+    cd "${YIO_SRC}/remote-os"
     header "Building remote-os project branch $(git rev-parse --abbrev-ref HEAD) (Git commit: $(git log --pretty=format:'%h' -n 1))"
 
     TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
     echo "Build started at: ${TIMESTAMP}" > $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
     echo "Build command: make $@" >> $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
 
-    cd ${YIO_SRC}/remote-os
+    cd "${YIO_SRC}/remote-os"
     set -o pipefail
     make $@ 2>&1 | tee -a $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
     echo "Build finished at: $(date)" >> $BUILD_OUTPUT/buildroot-${TIMESTAMP}.log
@@ -247,7 +253,7 @@ buildRemoteOS() {
 cleanQtProject() {
     if [ -f "${YIO_SRC}/${1}/Makefile" ]; then
         header "Cleaning Qt project $1..."
-        cd ${YIO_SRC}/$1
+        cd "${YIO_SRC}/$1"
         make clean
     fi
 }
@@ -261,7 +267,7 @@ buildQtProject() {
         return
     fi
 
-    cd ${YIO_SRC}/$1
+    cd "${YIO_SRC}/$1"
 
     header "Building Qt project $1 branch $(git rev-parse --abbrev-ref HEAD) (Git commit: $(git log --pretty=format:'%h' -n 1))"
 
@@ -275,42 +281,42 @@ buildQtProject() {
     mkdir -p build
     cd build
 
-    $QMAKE_CROSSCOMPILE ${YIO_SRC}/$1 "CONFIG+=$(if [ "$DEBUG_BUILD" = "n" ]; then echo "release"; else echo "debug CONFIG+=qml_debug"; fi)"
+    $QMAKE_CROSSCOMPILE "${YIO_SRC}/$1" "CONFIG+=$(if [ "$DEBUG_BUILD" = "n" ]; then echo "release"; else echo "debug CONFIG+=qml_debug"; fi)"
     make qmake_all
 
     make -j$CPU_CORES
 
     if [ "$1" = "remote-software" ]; then 
         header "Copying remote-software binary and plugins to $BUILD_OUTPUT"
-        BUILD_BINARY_DIR=${YIO_SRC}/binaries/linux-gcc-arm/$(if [ "$DEBUG_BUILD" = "n" ]; then echo "release"; else echo "debug"; fi)
-        cp  ${BUILD_BINARY_DIR}/remote $BUILD_OUTPUT
-        cp -r ${BUILD_BINARY_DIR}/plugins $BUILD_OUTPUT
+        BUILD_BINARY_DIR="${YIO_SRC}/binaries/linux-gcc-arm/"$(if [ "$DEBUG_BUILD" = "n" ]; then echo "release"; else echo "debug"; fi)
+        cp  "${BUILD_BINARY_DIR}/remote" $BUILD_OUTPUT
+        cp -r "${BUILD_BINARY_DIR}/plugins" $BUILD_OUTPUT
 
         # HACK transfer built remote application and plugins to remote-os.
         # Ok for initial test version, but we need to clean up the binary handling in remote-os!
-        BUILDROOT_DEST=${YIO_SRC}/remote-os/overlay/usr/bin/yio-remote
+        BUILDROOT_DEST="${YIO_SRC}/remote-os/overlay/usr/bin/yio-remote"
         echo "Copying remote-software binary and plugins to remote-os: $BUILDROOT_DEST"
         header "WARNING: work in progress until there are remote-software & plugin releases!"
 
-        rm -Rf $BUILDROOT_DEST/fonts/*
-        rm -Rf $BUILDROOT_DEST/icons/*
-        rm -Rf $BUILDROOT_DEST/plugins/*
-        rm -Rf $BUILDROOT_DEST/www/config/*
+        rm -Rf "${BUILDROOT_DEST}"/fonts/*
+        rm -Rf "${BUILDROOT_DEST}"/icons/*
+        rm -Rf "${BUILDROOT_DEST}"/plugins/*
+        rm -Rf "${BUILDROOT_DEST}"/www/config/*
 
-        mkdir -p $BUILDROOT_DEST/fonts
-        mkdir -p $BUILDROOT_DEST/icons
-        mkdir -p $BUILDROOT_DEST/plugins
-        mkdir -p $BUILDROOT_DEST/www/config
+        mkdir -p "${BUILDROOT_DEST}"/fonts
+        mkdir -p "${BUILDROOT_DEST}"/icons
+        mkdir -p "${BUILDROOT_DEST}"/plugins
+        mkdir -p "${BUILDROOT_DEST}"/www/config
 
-        cp ${BUILD_BINARY_DIR}/config.json ${YIO_SRC}/remote-os/rpi0/boot/
-        cp ${BUILD_BINARY_DIR}/remote $BUILDROOT_DEST
-        chmod 755 $BUILDROOT_DEST/remote
-        cp ${BUILD_BINARY_DIR}/translations.json $BUILDROOT_DEST
+        cp "${BUILD_BINARY_DIR}"/config.json "${YIO_SRC}"/remote-os/rpi0/boot/
+        cp "${BUILD_BINARY_DIR}"/remote "${BUILDROOT_DEST}"
+        chmod 755 "${BUILDROOT_DEST}"/remote
+        cp "${BUILD_BINARY_DIR}"/translations.json "${BUILDROOT_DEST}"
 
-        cp -r ${BUILD_BINARY_DIR}/fonts $BUILDROOT_DEST
-        cp -r ${BUILD_BINARY_DIR}/icons $BUILDROOT_DEST
-        cp -r ${BUILD_BINARY_DIR}/plugins $BUILDROOT_DEST
-        cp -r ${YIO_SRC}/web-configurator/* $BUILDROOT_DEST/www/config/
+        cp -r "${BUILD_BINARY_DIR}"/fonts "${BUILDROOT_DEST}"
+        cp -r "${BUILD_BINARY_DIR}"/icons "${BUILDROOT_DEST}"
+        cp -r "${BUILD_BINARY_DIR}"/plugins "${BUILDROOT_DEST}"
+        cp -r "${YIO_SRC}"/web-configurator/* "${BUILDROOT_DEST}/www/config/"
     fi
 }
 
@@ -335,7 +341,7 @@ cleanAllProjects() {
 buildAllQtProjects() {
     header "Building all Qt projects..."
 
-    subdircount=`find ${YIO_SRC} -maxdepth 1 -type d | wc -l`
+    subdircount=`find "${YIO_SRC}" -maxdepth 1 -type d | wc -l`
     if [ $subdircount -lt 2 ]
     then
         echo "No projects found. Initializing build..."
@@ -362,6 +368,12 @@ buildAllProjects() {
 }
 
 #=============================================================
+# Script starts here
+#=============================================================
+if [ -z "$YIO_SRC" ]; then 
+    echo "Environment variable YIO_SRC not defined! Value must point to root folder of YIO remote project repositories."
+    exit 1
+fi
 
 if [ $# -eq 1 ] && ([ "$1" = "bash" ] || [ "$1" = "/bin/bash" ]); then
     # manual mode: jump to shell
@@ -411,13 +423,13 @@ elif [ "$1" = "qt" ] && [ "$2" = "build" ]; then
     fi
     buildAllQtProjects
 elif [ "$1" = "buildroot" ]; then
-    cd ${YIO_SRC}/remote-os/buildroot
+    cd "${YIO_SRC}/remote-os/buildroot"
     make ${@:2}
 elif [ "$1" = "git" ]; then
     gitCommandAll ${@:2}
 elif [ "$2" = "git" ] && (( $# > 2 )); then
     checkProjectExists $1
-    cd ${YIO_SRC}/${1}
+    cd "${YIO_SRC}/${1}"
     ${@:2}
 elif [ "$2" = "clean" ]; then
     checkProjectExists $1
@@ -431,7 +443,7 @@ elif [ "$2" = "build" ]; then
         DEBUG_BUILD=n
     fi
     checkProjectExists $1
-    cd ${YIO_SRC}/${1}
+    cd "${YIO_SRC}/${1}"
     if [ "$1" = "remote-os" ]; then
         buildRemoteOS
     else

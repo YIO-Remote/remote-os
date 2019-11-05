@@ -21,6 +21,7 @@ set -e
 #YIO_BUILD_OUTPUT=/projects/yio/build-output 
 
 YIO_PROJECTS_SOURCE=yio-projects
+YIO_DOCKER_IMG=gcr.io/yio-remote/build
 
 # --- Helper functions ---
 
@@ -53,6 +54,11 @@ docker version &> /dev/null || {
     exit 1
 }
 
+if [ "$1" = "info" ]; then
+    echo "Using docker image                   : $YIO_DOCKER_IMG"
+	echo "Storing build output in              : $YIO_BUILD_OUTPUT"
+fi
+
 if [[ ! -z "${YIO_BUILD_SOURCE}" ]]; then
     if [[ ! -d ${YIO_BUILD_SOURCE} ]]; then
         echo "Source directory defined in 'YIO_BUILD_SOURCE' doesn't exist: '${YIO_BUILD_SOURCE}'"
@@ -63,7 +69,7 @@ if [[ ! -z "${YIO_BUILD_SOURCE}" ]]; then
     YIO_PROJECTS_SOURCE="${YIO_BUILD_SOURCE}"
 else
     if [ "$1" = "info" ]; then
-        echo "Using Docker Volume for projects: ${YIO_PROJECTS_SOURCE}"
+        echo "Using Docker Volume for projects     : ${YIO_PROJECTS_SOURCE}"
     fi
     checkDockerVolume ${YIO_PROJECTS_SOURCE}
 fi
@@ -74,4 +80,4 @@ docker run --rm -it \
     -v ${YIO_PROJECTS_SOURCE}:/yio-remote/src \
     -v yio-buildroot:/yio-remote/buildroot \
     -v ${YIO_BUILD_OUTPUT}:/yio-remote/target \
-    gcr.io/yio-remote/build $@
+    $YIO_DOCKER_IMG $@

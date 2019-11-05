@@ -17,6 +17,7 @@ REM
 
 SETLOCAL
 SET YIO_PROJECTS_SOURCE=yio-projects
+SET YIO_DOCKER_IMG=gcr.io/yio-remote/build
 
 IF NOT DEFINED YIO_BUILD_OUTPUT (
 	ECHO Environment variable YIO_BUILD_OUTPUT not defined!
@@ -33,8 +34,10 @@ IF %ERRORLEVEL% NEQ 0 (
 	EXIT /B %ERRORLEVEL%
 )
 
-CALL :checkDockerVolume yio-buildroot
-IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+IF "%1" == "info" (
+    ECHO Using docker image                   : %YIO_DOCKER_IMG%
+	ECHO Storing build output in              : %YIO_BUILD_OUTPUT%
+)
 
 IF DEFINED YIO_BUILD_SOURCE (
 	IF NOT EXIST "%YIO_BUILD_SOURCE%" (
@@ -46,13 +49,16 @@ IF DEFINED YIO_BUILD_SOURCE (
 	SET YIO_PROJECTS_SOURCE=%YIO_BUILD_SOURCE%
 ) ELSE (
 	IF "%1" == "info" (
-        ECHO Using Docker Volume for projects: %YIO_PROJECTS_SOURCE%
+        ECHO Using Docker Volume for projects     : %YIO_PROJECTS_SOURCE%
 	)
 	CALL :checkDockerVolume %YIO_PROJECTS_SOURCE%
 	IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 )
 
-docker run --rm -it -v %YIO_PROJECTS_SOURCE%:/yio-remote/src -v yio-buildroot:/yio-remote/buildroot -v "%YIO_BUILD_OUTPUT%":/yio-remote/target gcr.io/yio-remote/build %*
+CALL :checkDockerVolume yio-buildroot
+IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
+
+docker run --rm -it -v %YIO_PROJECTS_SOURCE%:/yio-remote/src -v yio-buildroot:/yio-remote/buildroot -v "%YIO_BUILD_OUTPUT%":/yio-remote/target %YIO_DOCKER_IMG% %*
 EXIT /B %ERRORLEVEL%
 
 :checkDockerVolume
