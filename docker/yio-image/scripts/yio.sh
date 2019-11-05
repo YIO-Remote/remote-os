@@ -27,7 +27,7 @@ GitProjects=(
     "https://github.com/YIO-Remote/integration.home-assistant.git,dev"
     "https://github.com/YIO-Remote/integration.ir.git,dev"
     "https://github.com/YIO-Remote/integration.openhab.git,dev"
-    "https://github.com/YIO-Remote/remote-os.git,feature/21-Buildroot_Submodule"
+    "https://github.com/YIO-Remote/remote-os.git,feature/dev"
     "https://github.com/YIO-Remote/remote-software.git,dev"
     "https://github.com/YIO-Remote/web-configurator.git,master"
 )
