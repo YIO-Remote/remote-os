@@ -5,3 +5,6 @@
 config BR2SM_PROJECT_NAME
 	string
 	option env="PROJECT_NAME"
+
+# TODO isn't there a variable to use for the external tree directory?
+source "../yio-remote/Config.in"

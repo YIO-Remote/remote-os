@@ -1,0 +1,115 @@
+menuconfig BR2_PACKAGE_YIO_REMOTE
+	bool "yio-remote"
+	depends on BR2_PACKAGE_QT5
+	select BR2_PACKAGE_QT5TOOLS
+	select BR2_PACKAGE_QT5TOOLS_LINGUIST_TOOLS
+	select BR2_PACKAGE_QT5BASE_OPENGL_LIB
+	select BR2_PACKAGE_QT5BASE_EGLFS
+	select BR2_PACKAGE_QT5BASE_FONTCONFIG
+	select BR2_PACKAGE_QT5BASE_GIF
+	select BR2_PACKAGE_QT5BASE_JPEG
+	select BR2_PACKAGE_QT5BASE_PNG
+	select BR2_PACKAGE_QT5BASE_ICU
+	select BR2_PACKAGE_QT5BASE_TSLIB
+	select BR2_PACKAGE_QT5CONNECTIVITY
+	select BR2_PACKAGE_QT5GRAPHICALEFFECTS
+	select BR2_PACKAGE_QT5IMAGEFORMATS
+	select BR2_PACKAGE_QT5QUICKCONTROLS
+	select BR2_PACKAGE_QT5QUICKCONTROLS2
+	select BR2_PACKAGE_QT5VIRTUALKEYBOARD
+	select BR2_PACKAGE_QT5VIRTUALKEYBOARD_HANDWRITING
+	select BR2_PACKAGE_QT5WEBSOCKETS
+	help
+	  YIO Remote software package. Sub-options allow to
+	  customize the installation.
+
+	  https://github.com/YIO-Remote
+
+if BR2_PACKAGE_YIO_REMOTE
+
+choice
+	prompt "Remote app version"
+	help
+	  Select from where the remote app will be installed.
+
+config BR2_PACKAGE_YIO_REMOTE_LATEST_VERSION
+	bool "Latest version (0.1.0)"
+	help
+	  This option downloads the given release version from GitHub.
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
+	bool "Custom version"
+	help
+	  This option allows to use a specific official version from
+	  the GitHub repository.
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_TARBALL
+	bool "Tarball"
+	help
+	  This option allows to specify a URL pointing to an app
+	  source release. This URL can use any protocol recognized
+	  by Buildroot, like http://, ftp://, file:// or scp://.
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR
+	bool "Binary folder"
+	help
+	  This option allows to specify a local folder containing pre-
+	  compiled binaries for the target platform. The folder must
+	  contain debug and release subdirectories.
+	  Attention: Buildroot will cache the synchronized folder after
+	  the first build. To update the binaries execute
+	  make yio-remote-reconfigure
+	  before building a new image!
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_SRC_DIR
+	bool "Source folder"
+	help
+	  This option allows to specify a local folder containing
+	  custom sources for the target platform. The folder must
+	  contain a Makefile.
+	  Attention: Buildroot will cache the synchronized folder after
+	  the first build. To update the sources execute
+	  make yio-remote-reconfigure
+	  before building a new image!
+
+endchoice
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_TARBALL_LOCATION
+	string "URL of custom app source tarball"
+	depends on BR2_PACKAGE_YIO_REMOTE_CUSTOM_TARBALL
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR_LOCATION
+	string "URL of custom app binary folder"
+	depends on BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_SRC_DIR_LOCATION
+	string "URL of custom app sources"
+	depends on BR2_PACKAGE_YIO_REMOTE_CUSTOM_SRC_DIR
+
+config BR2_PACKAGE_YIO_REMOTE_DEBUG
+	bool "Debug version"
+	default y
+	help
+	  Build and install the debug version of the application.
+
+config BR2_PACKAGE_YIO_REMOTE_QT_LINGUIST
+	bool "Handle translation files outside qmake build"
+	help
+	  Call Qt Linguist lupdate and lrelease manually before
+	  the qmake / make build. Only required if qmake doesn't
+	  handle it.
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION_VALUE
+	string "YIO remote app version"
+	depends on BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
+
+config BR2_PACKAGE_YIO_REMOTE_VERSION
+	string
+	default "0.1.0" if BR2_PACKAGE_YIO_REMOTE_LATEST_VERSION
+	default BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION_VALUE \
+		if BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
+	default "custom" if BR2_PACKAGE_YIO_REMOTE_CUSTOM_TARBALL
+	default "custom-bin" if BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR
+	default "custom-src" if BR2_PACKAGE_YIO_REMOTE_CUSTOM_SRC_DIR
+
+endif
