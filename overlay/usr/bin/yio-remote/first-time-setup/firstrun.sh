@@ -64,12 +64,11 @@ then
     #--------------------
     # set static IP address
     #--------------------
-    echo "[Match]" > /etc/systemd/network/20-wireless.network
-    echo "Name=wlan0" >> /etc/systemd/network/20-wireless.network
-    echo "" >> /etc/systemd/network/20-wireless.network
+    echo "[Match]
+Name=wlan0
 
-    echo "[Network]" >> /etc/systemd/network/20-wireless.network
-    echo "Address=10.0.0.1/24" >> /etc/systemd/network/20-wireless.network
+[Network]
+Address=10.0.0.1/24" > /etc/systemd/network/20-wireless.network
 
     systemctl restart systemd-networkd
 

@@ -7,6 +7,7 @@
 mkdir -p /etc/wpa_supplicant
 echo "ctrl_interface=/var/run/wpa_supplicant
 ap_scan=1
+update_config=1
 
 network={
     key_mgmt=WPA-PSK
@@ -14,6 +15,7 @@ network={
     psk="\"$2\""
 }" > /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
 
+# FIXME write complete & valid json structure to /wificred
 echo "{\"ssid\":\"$1\",\"password\":\"$2\"," > /wificred
 echo "$1" > /ssid 
 
