@@ -7,6 +7,9 @@ echo "ctrl_interface=/var/run/wpa_supplicant
 ap_scan=1
 update_config=1
 
+# FIXME issue #25: add country code
+# country=$3
+
 network={
     key_mgmt=WPA-PSK
     ssid="\"$1\""
