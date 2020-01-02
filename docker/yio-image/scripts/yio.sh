@@ -30,7 +30,7 @@ GitProjects=(
     "https://github.com/YIO-Remote/integration.openweather.git,dev"
     "https://github.com/YIO-Remote/integration.roon.git,develop"
     "https://github.com/YIO-Remote/integration.spotify.git,dev"
-    "https://github.com/YIO-Remote/remote-os.git,feature/dev"
+    "https://github.com/YIO-Remote/remote-os.git,feature/develop"
     "https://github.com/YIO-Remote/remote-software.git,develop"
     "https://github.com/YIO-Remote/web-configurator.git,master"
 )
