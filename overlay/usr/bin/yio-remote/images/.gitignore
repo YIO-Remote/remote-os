@@ -1,0 +1,6 @@
+# Do not check in any copied artefacts from remote-software!
+*
+!.gitignore
+!bye.png
+!splash.png
+!update.png
