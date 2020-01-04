@@ -2,7 +2,9 @@
 
 For details about the YIO Remote, please visit our documentation wiki: <https://github.com/YIO-Remote/documentation/wiki>
 
-This repository contains the custom Linux OS built with [buildroot](https://www.buildroot.org/) for the YIO Remote.
+This branch contains the custom developer Linux OS built with [buildroot](https://www.buildroot.org/) for the YIO Remote.
+
+**Attention: this is an old branch and no longer maintained! The developer configuration herein will be added to the regular branch soon as a custom build option.**
 
 ## Build
 
@@ -74,7 +76,7 @@ Install required tools:
     
     # switch to development branch
     cd remote-os
-    git checkout develop
+    git checkout feature/11-dev_image
     
     # checkout buildroot (Git submodule)
     git submodule init
@@ -84,7 +86,7 @@ Install required tools:
 
     cd ${SRC_DIR}/remote-os/buildroot
     
-    make defconfig BR2_DEFCONFIG=../yio_rpi0w_defconfig
+    make defconfig BR2_DEFCONFIG=../yio-dev_rpi0w_defconfig
     make
 
 Hint: redirect the `make` output log into a logfile to easy find an error during building or when using `screen` without scrollback capability:
