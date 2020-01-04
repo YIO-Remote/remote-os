@@ -97,7 +97,7 @@ Checkout project and build full cross compiler toolchain incl. target system:
     
     # switch to development branch
     cd remote-os
-    git checkout dev
+    git checkout feature/21-buildroot_custom-package
     
     # build full toolchain without YIO remote SD card image
     make SKIP_BUILD_IMAGE=y 
