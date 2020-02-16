@@ -68,9 +68,14 @@ sleep 2
 /usr/bin/yio-remote/after-update.sh
 echo $(date -u) "After update commands run" >> /var/log/update.log
 
+#--------------------
+# 10. Delete the downloaded file
+#--------------------
+rm /usr/bin/yio-remote/downloads/latest.zip
+echo $(date -u) "Downloaded file deleted" >> /var/log/update.log
 
 #--------------------
-# 10. Launch the remote app with the launcher bash script
+# 11. Launch the remote app with the launcher bash script
 #--------------------
 echo $(date -u) "Launching app" >> /var/log/update.log
 /usr/bin/yio-remote/app-launch.sh &
