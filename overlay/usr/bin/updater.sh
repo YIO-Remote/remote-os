@@ -20,7 +20,7 @@ echo $(date -u) "Temp dir created" >> /var/log/update.log
 #--------------------
 # 3. Unzip the downloaded file
 #--------------------
-unzip /usr/bin/downloads/latest.zip -d /usr/bin/yio-tmp
+unzip /usr/bin/yio-remote/downloads/latest.zip -d /usr/bin/yio-tmp
 echo $(date -u) "Update unzipped" >> /var/log/update.log
 
 
