@@ -1,7 +1,4 @@
 #!/bin/bash
-# TODO remove dependency in remote-software. Symlink old boot mount until done.
-mkdir -p /mnt
-ln -s /boot /mnt
 
 /usr/bin/yio-remote/wifi-copy-config.sh
 
