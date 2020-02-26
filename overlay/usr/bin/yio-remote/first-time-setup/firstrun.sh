@@ -31,8 +31,8 @@ then
     systemctl restart avahi-daemon
 
     # /wificopy marker file is set in wifi-copy-config.sh which is called from app-launch.sh
-    if [ ! -e /wificopy ]; then
-        # if there was a wifi config on the sd card, script the first time setup
+    if [ -e /wificopy ]; then
+        # if there was a wifi config on the sd card, skip the first time setup
         rm /firstrun
     fi
 fi
