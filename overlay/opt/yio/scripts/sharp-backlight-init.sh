@@ -1,5 +1,5 @@
 #!/bin/bash
-fbv -d 1 /usr/bin/yio-remote/images/splash.png
+fbv -d 1 ${YIO_HOME}/media/splash/splash.png
 gpio -g mode 12 pwm
 gpio pwm-ms
 gpio pwmc 1000

@@ -11,10 +11,8 @@ then
     systemctl disable systemd-timesyncd.service
     systemctl disable dhcpcd.service
     systemctl disable lighttpd.service
-    systemctl disable update.service
 
     systemctl stop dhcpcd.service
-    systemctl stop update.service
 
     systemctl enable shutdown.service
 
