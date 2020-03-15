@@ -26,15 +26,29 @@
 # Exit on all command errors '-e' while still calling error trap '-E'
 # See https://stackoverflow.com/a/35800451
 set -eE
-trap 'log "ERROR ${?} occured in ${0} on line ${LINENO}"' ERR
+trap 'errorTrap ${?} ${LINENO}' ERR
 
 # Helper functions
+errorTrap() {
+  log "ERROR $1 occured in $0 on line $2"
+
+  if [[ -d $TMPDIR ]]; then
+    rm -rf $TMPDIR
+  fi
+}
 
 log() {
   echo "$*"
   if [[ ! -z $LOGFILE ]]; then
 
     echo `date +%FT%T%Z` "$*" >> "$LOGFILE"
+  fi
+}
+
+assertEnvVariable() {
+  if [[ -z $2 ]]; then
+    echo "$1 environment variable not set!"
+    exit 1
   fi
 }
 
@@ -67,25 +81,18 @@ if [[ $UPDATE_FILE != *.tar ]]; then
     exit 1
 fi
 
-if [[ -z $YIO_HOME ]]; then
-  echo "YIO_HOME environment variable not set!"
-  exit 1
-fi
+assertEnvVariable "YIO_HOME" $YIO_HOME
+assertEnvVariable "YIO_APP_DIR" $YIO_APP_DIR
+assertEnvVariable "YIO_LOG_DIR_UPDATE" $YIO_LOG_DIR_UPDATE
 
 if [[ ! -d $YIO_HOME ]]; then
   echo "Installation target does not exist: $YIO_HOME"
   exit 1
 fi
 
-if [[ -z $YIO_LOG_DIR_UPDATE ]]; then
-  echo "YIO_LOG_DIR_UPDATE environment variable not set!"
-  exit 1
-fi
-
 # TODO check free space?
 
-YIO_REMOTE_DIR=${YIO_HOME}/app
-YIO_SPLASH_DIR=${YIO_HOME}/media/splash
+YIO_SPLASH_DIR=${YIO_MEDIA_DIR}/splash
 # write update log into dedicated update log file
 mkdir -p $YIO_LOG_DIR_UPDATE
 LOGFILE=${YIO_LOG_DIR_UPDATE}/appupdate.log
@@ -93,7 +100,7 @@ LOGFILE=${YIO_LOG_DIR_UPDATE}/appupdate.log
 echo "Writing update log file: $LOGFILE"
 echo "YIO Remote App Update Log" > $LOGFILE
 log "Update archive:         $UPDATE_FILE"
-log "Installation directory: $YIO_REMOTE_DIR"
+log "Installation directory: $YIO_APP_DIR"
 
 #------------------------------------------------------------------------------
 # Start update process!
@@ -134,34 +141,39 @@ chmod +x ${TMPDIR}/app/remote >> $LOGFILE 2>&1
 #------------------------------------------------------------------------------
 # Replace old backup with the current app version
 #------------------------------------------------------------------------------
-YIO_BACKUP=${YIO_HOME}/app-previous
+killall -9 remote >> $LOGFILE 2>&1 && sleep 2 || true
 
-if [[ -d $YIO_BACKUP ]]; then
-    rm -rf "${YIO_BACKUP}"
-    log "Removed previous app backup: $YIO_BACKUP"
+if [[ -d $YIO_APP_DIR ]]; then
+  YIO_BACKUP=${YIO_HOME}/app-previous
+
+  if [[ -d $YIO_BACKUP ]]; then
+      log "Removing previous app backup: '$YIO_BACKUP'"
+      rm -rf "${YIO_BACKUP}" >> $LOGFILE 2>&1
+  fi
+
+  log "Renaming current app to: '$YIO_BACKUP'"
+  mv "$YIO_APP_DIR" "$YIO_BACKUP" >> $LOGFILE 2>&1
+else
+  log "Remote app directory doesn't exist: '$YIO_APP_DIR'. Skipping backup."
 fi
 
-killall -9 remote >> $LOGFILE 2>&1 || true
-sleep 2
-
-mv "$YIO_REMOTE_DIR" "$YIO_BACKUP" >> $LOGFILE 2>&1
-log "Renamed current app to: $YIO_BACKUP"
+mkdir -p $YIO_APP_DIR >> $LOGFILE 2>&1
 
 #------------------------------------------------------------------------------
 # Activate new app
 #------------------------------------------------------------------------------
-mv ${TMPDIR}/app "$YIO_REMOTE_DIR" >> $LOGFILE 2>&1
-log "Update ($TMPDIR/yio-remote) is now the active app ($YIO_REMOTE_DIR)"
+mv ${TMPDIR}/app/* "$YIO_APP_DIR" >> $LOGFILE 2>&1
+log "Update ($TMPDIR/yio-remote) is now the active app ($YIO_APP_DIR)"
 
 if [[ -f ${TMPDIR}/hooks/post-install.sh ]]; then
     log "Running post-install script: ${TMPDIR}/hooks/post-install.sh"
     ${TMPDIR}/post-install.sh >> $LOGFILE 2>&1
 fi
 
-rm -rf $TMPDIR
-rm "$UPDATE_FILE"
+log "Deleting update archive files and temporary folder"
+rm -rf $TMPDIR >> $LOGFILE 2>&1
+rm "$UPDATE_FILE" >> $LOGFILE 2>&1
 # TODO remove metadata / markerfile
-log "Deleted update archive file and temporary folder"
 
 #TODO rather reboot? If yes: it would be a good time to check & repair file systems
 log "Update finished! Launching app..."

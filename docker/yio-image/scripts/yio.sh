@@ -314,7 +314,7 @@ buildQtProject() {
         cp "${BUILD_BINARY_DIR}"/config.json "${YIO_SRC}"/remote-os/rpi0/boot/
         cp "${BUILD_BINARY_DIR}"/remote "${BUILDROOT_DEST}"
         chmod 755 "${BUILDROOT_DEST}"/remote
-        cp "${BUILD_BINARY_DIR}"/translations.json "${BUILDROOT_DEST}"
+        cp "${BUILD_BINARY_DIR}"/*.json "${BUILDROOT_DEST}"
 
         cp -r "${BUILD_BINARY_DIR}"/fonts "${BUILDROOT_DEST}"
         cp -r "${BUILD_BINARY_DIR}"/icons "${BUILDROOT_DEST}"
