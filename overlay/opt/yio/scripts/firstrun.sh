@@ -14,8 +14,6 @@ then
 
     systemctl stop dhcpcd.service
 
-    systemctl enable shutdown.service
-
     #--------------------
     # SSID to config
     #--------------------
