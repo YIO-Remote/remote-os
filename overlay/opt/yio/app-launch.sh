@@ -1,4 +1,5 @@
 #!/bin/bash
+. /etc/profile.d/yio.sh
 
 ${YIO_SCRIPT_DIR}/wifi-copy-config.sh
 

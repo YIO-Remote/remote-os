@@ -23,6 +23,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #------------------------------------------------------------------------------
 
+. /etc/profile.d/yio.sh
+
 # Exit on all command errors '-e' while still calling error trap '-E'
 # See https://stackoverflow.com/a/35800451
 set -eE

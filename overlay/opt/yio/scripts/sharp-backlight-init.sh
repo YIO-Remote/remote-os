@@ -1,4 +1,6 @@
 #!/bin/bash
+. /etc/profile.d/yio.sh
+
 fbv -d 1 ${YIO_HOME}/media/splash/splash.png
 gpio -g mode 12 pwm
 gpio pwm-ms
