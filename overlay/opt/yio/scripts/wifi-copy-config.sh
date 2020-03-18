@@ -2,22 +2,25 @@
 
 if [ -e /boot/wpa_supplicant.conf ]
 then
-    # TODO check if config files differ or not: skip if same!
+    if cmp -s /boot/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+    then
+        echo "wpa_supplicant.conf in /boot already copied"
+    else
+        echo "Using provided wpa_supplicant.conf in /boot"
 
-    echo "Using provided wpa config in /boot."
+        # stop wifi
+        systemctl stop wpa_supplicant@wlan0.service
+        sleep 5
+        # copy config file
+        mkdir -p /etc/wpa_supplicant
+        cp /boot/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+        # restart wifi
+        systemctl start wpa_supplicant@wlan0.service
+        sleep 5
 
-    # stop wifi
-    systemctl stop wpa_supplicant@wlan0.service
-    sleep 5
-    # copy config file
-    mkdir -p /etc/wpa_supplicant
-    cp /boot/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-    # restart wifi
-    systemctl start wpa_supplicant@wlan0.service
-    sleep 5
-
-    touch /wificopy
+        touch /wificopy
+    fi
 else
-    echo "No wpa config in /boot."
+    echo "No wpa_supplicant.conf in /boot"
     rm -f  /wificopy
 fi
