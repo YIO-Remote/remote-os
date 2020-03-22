@@ -78,8 +78,8 @@ if [[ ! -f $UPDATE_FILE ]]; then
     exit 1
 fi
 
-if [[ $UPDATE_FILE != *.tar ]]; then
-    echo "Only tar update archive file is supported: $UPDATE_FILE"
+if [[ $UPDATE_FILE != *.tar && $UPDATE_FILE != *.zip ]]; then
+    echo "Only tar and zip update archive files are supported: $UPDATE_FILE"
     exit 1
 fi
 
@@ -108,37 +108,62 @@ log "Installation directory: $YIO_APP_DIR"
 # Start update process!
 #------------------------------------------------------------------------------
 
+# TODO improve sledge hammer approach
+# make sure the screen and backlight are on, otherwise we'll end up with a dark screen!
+${YIO_HOME}/scripts/sharp-init
+
 if [[ -f ${YIO_SPLASH_DIR}/update.png ]]; then
     fbv -d 1 "${YIO_SPLASH_DIR}/update.png"
 fi
 
+gpio -g mode 12 pwm
+gpio pwm-ms
+gpio pwmc 1000
+gpio pwmr 100
+gpio -g pwm 12 100
+
 #------------------------------------------------------------------------------
 # Extract update archive to temp location
 #------------------------------------------------------------------------------
-
-# TODO (sub-) archive hash check?
-tar tf "$UPDATE_FILE" > /dev/null || {
-    log "Invalid tar archive: $UPDATE_FILE"
-    exit 1
-}
 
 # use ${YIO_HOME} base dir for atomic file operation (/tmp might be on another partition)
 TMPDIR=${YIO_HOME}/app-$(date +"%Y%m%d%H%M%S")
 log "Extracting archive to temporary folder: $TMPDIR"
 mkdir -p ${TMPDIR} >> $LOGFILE 2>&1
 
-tar -xf "$UPDATE_FILE" -C ${TMPDIR} >> $LOGFILE 2>&1
+if [[ $UPDATE_FILE == *.tar ]]; then
+    tar tf "$UPDATE_FILE" > /dev/null || {
+        log "Invalid tar archive: $UPDATE_FILE"
+        exit 1
+    }
+
+    tar -xf "$UPDATE_FILE" -C ${TMPDIR} >> $LOGFILE 2>&1
+elif [[ $UPDATE_FILE == *.zip ]]; then
+    unzip -l "$UPDATE_FILE" > /dev/null || {
+        log "Invalid zip archive: $UPDATE_FILE"
+        exit 1
+    }
+
+    unzip "$UPDATE_FILE" -d ${TMPDIR} >> $LOGFILE 2>&1
+else
+    log "Only tar and zip update archive files are supported: $UPDATE_FILE"
+    exit 1
+fi
+
+cd ${TMPDIR}
+if [[ ! -f md5sums || ! -f app.tar.gz ]]; then
+    log "Invalid app update archive: $UPDATE_FILE"
+    exit 1
+fi
+
+md5sum -c md5sums >> $LOGFILE 2>&1
+gunzip -c app.tar.gz | tar -x >> $LOGFILE 2>&1
+rm app.tar.gz
 
 if [[ -f ${TMPDIR}/hooks/pre-install.sh ]]; then
     log "Running pre-install script: ${TMPDIR}/hooks/pre-install.sh"
     ${TMPDIR}/pre-install.sh  >> $LOGFILE 2>&1
 fi
-
-# TODO keep the permission fix?
-# The final tar archive should have everything set correctly!
-# Unless we have cross compiled builds from Windows :-/
-find ${TMPDIR} -type f -name "*.sh" -exec chmod 775 {} + >> $LOGFILE 2>&1
-chmod +x ${TMPDIR}/app/remote >> $LOGFILE 2>&1
 
 #------------------------------------------------------------------------------
 # Replace old backup with the current app version
@@ -179,4 +204,7 @@ rm "$UPDATE_FILE" >> $LOGFILE 2>&1
 
 #TODO rather reboot? If yes: it would be a good time to check & repair file systems
 log "Update finished! Launching app..."
+
+fbv -d 1 "${YIO_SPLASH_DIR}/splash.png"
+
 $YIO_HOME/app-launch.sh &
