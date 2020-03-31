@@ -54,6 +54,25 @@ assertEnvVariable() {
   fi
 }
 
+ensureScreenIsOn() {
+  # TODO improve sledge hammer approach
+  # FIXME this doesn't fully work if screen is put in standby from the YIO app.
+  #       It's not waking up instantly but much later when the update is almost finished!?
+
+  # make sure the screen and backlight are on, otherwise we'll end up with a dark screen!
+  ${YIO_HOME}/scripts/sharp-init
+
+  if [[ -f $1 ]]; then
+      fbv -d 1 "$1"
+  fi
+
+  gpio -g mode 12 pwm
+  gpio pwm-ms
+  gpio pwmc 1000
+  gpio pwmr 100
+  gpio -g pwm 12 100
+}
+
 # TODO function to clean up in case of update error!
 # We don't want to end up in an update loop trying to install a corrupt archive
 
@@ -62,25 +81,43 @@ assertEnvVariable() {
 
 # check command line arguments
 if [ $# -eq 0 ]; then
-    echo "$0 [UPDATE_ARCHIVE_PATH]"
+    echo "Usage: $0 update.(version|zip|tar)"
+    echo "  Updates the YIO remote app with the provided update marker file or  archive."
+    echo "  The archive may be a zip or tar archive. See wiki for update archive format."
+    echo "  The archive and optional marker file are deleted after a success update!"
     exit 1
 fi
-UPDATE_FILE=$1
 
 if [[ $(id -u) -ne 0 ]] ; then
   echo "Must be run as root"
   exit 1
 fi
 
+# handle update marker file which contains a reference to the update archive
+if [[ $1 == *.version ]]; then
+  MARKER_FILE=$1
+  if [[ ! -f $MARKER_FILE ]]; then
+    echo "Update marker file not found: $MARKER_FILE"
+    exit 1
+  fi
+  UPDATE_FILE=$(cat "$MARKER_FILE" | awk '/^Update/{print $3}')
+  if [[ -z $UPDATE_FILE ]]; then
+    echo "Marker file doesn't contain update archive file reference!"
+    exit 1
+  fi
+else
+  UPDATE_FILE=$1
+fi
+
 # verify environment
 if [[ ! -f $UPDATE_FILE ]]; then
-    echo "Update archive file not found: $UPDATE_FILE"
-    exit 1
+  echo "Update archive file not found: $UPDATE_FILE"
+  exit 1
 fi
 
 if [[ $UPDATE_FILE != *.tar && $UPDATE_FILE != *.zip ]]; then
-    echo "Only tar and zip update archive files are supported: $UPDATE_FILE"
-    exit 1
+  echo "Only tar and zip update archive files are supported: $UPDATE_FILE"
+  exit 1
 fi
 
 assertEnvVariable "YIO_HOME" $YIO_HOME
@@ -108,19 +145,7 @@ log "Installation directory: $YIO_APP_DIR"
 # Start update process!
 #------------------------------------------------------------------------------
 
-# TODO improve sledge hammer approach
-# make sure the screen and backlight are on, otherwise we'll end up with a dark screen!
-${YIO_HOME}/scripts/sharp-init
-
-if [[ -f ${YIO_SPLASH_DIR}/update.png ]]; then
-    fbv -d 1 "${YIO_SPLASH_DIR}/update.png"
-fi
-
-gpio -g mode 12 pwm
-gpio pwm-ms
-gpio pwmc 1000
-gpio pwmr 100
-gpio -g pwm 12 100
+ensureScreenIsOn "${YIO_SPLASH_DIR}/update.png"
 
 #------------------------------------------------------------------------------
 # Extract update archive to temp location
@@ -200,7 +225,9 @@ fi
 log "Deleting update archive files and temporary folder"
 rm -rf $TMPDIR >> $LOGFILE 2>&1
 rm "$UPDATE_FILE" >> $LOGFILE 2>&1
-# TODO remove metadata / markerfile
+if [[ -f $MARKER_FILE ]]; then
+  rm -f $MARKER_FILE
+fi
 
 #TODO rather reboot? If yes: it would be a good time to check & repair file systems
 log "Update finished! Launching app..."
