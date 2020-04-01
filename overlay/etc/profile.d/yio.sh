@@ -1,4 +1,10 @@
-export YIO_HOME=/usr/bin/yio-remote
+# home directory is not freely changeable!
+# systemd services don't support env variables in ExecStart!
+export YIO_HOME=/opt/yio
+export YIO_APP_DIR=${YIO_HOME}/app
+export YIO_PLUGIN_DIR=${YIO_HOME}/app-plugins
+export YIO_MEDIA_DIR=${YIO_HOME}/media
+export YIO_SCRIPT_DIR=${YIO_HOME}/scripts
 # remote-os release, set during build
 export YIO_OS_VERSION=$BUILD_VERSION
 # Git hash of the remote-os repo, set during build

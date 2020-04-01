@@ -4,7 +4,7 @@ After=sharp-init.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/yio-remote/app-launch.sh
+ExecStart=/opt/yio/app-launch.sh
 RemainAfterExit=yes
 
 [Install]

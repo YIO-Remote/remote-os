@@ -108,7 +108,13 @@ The `make` command will automatically initialize the buildroot Git submodule (`g
 #### Build SD Card Image
 
 The SD card image build requires at least a YIO remote configuration file in `./rpi0/boot/config.json`. The latest version can be found in the [remote-software](https://github.com/YIO-Remote/remote-software) repository.  
-Furthermore all application binaries and resources have to be put in `./overlay/usr/bin/yio-remote/`. These are the remote-software binary, integration plugins, fonts, icons, images and the web-configurator. See [build script in the Docker image](docker/yio-image/scripts/yio.sh) for a quick and dirty approach until each component will be properly released.
+Furthermore all application binaries and resources have to be put in the appropriate sub-folders of `./overlay/opt/yio/`. These are:
+
+- `app`: the remote-software binary and resources (fonts, icons, images, json schemas)
+- `app-plugins`: the integration plugins
+- `web-configurator`: the web-configurator project
+
+See [build script in the Docker image](docker/yio-image/scripts/yio.sh) for a quick and dirty approach until each component will be properly released.
 
 Once all resources are in place the build is a simple command:
 
