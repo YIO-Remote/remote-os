@@ -1,4 +1,0 @@
-# Do not check in any artefacts!
-# This folder will hold the web-configurator project
-*
-!.gitignore

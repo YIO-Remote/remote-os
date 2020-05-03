@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/yio-remote/sharp-init
+ExecStart=/opt/yio/scripts/sharp-init
 RemainAfterExit=yes
 
 [Install]
