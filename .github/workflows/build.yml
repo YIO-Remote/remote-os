@@ -1,0 +1,67 @@
+# GitHub Action for creating simple (pre-)releases of the YIO remote-os.
+# There are no Buildroot builds involved since they are taking too long for the
+# GitHub runners. (This might be added later with external infrastructure).
+# - Creates a pre-release if pushed on master branch without a version tag.
+# - Creates a release if pushed on master branch with a version tag.
+---
+  name: "Release"
+    
+  on:
+    push:
+      branches:
+        - master
+      tags:
+        - v[0-9]+.[0-9]+.[0-9]+
+
+  env:
+    APP_NAME: app
+    PROJECT_NAME: remote-os
+
+  jobs:
+    release:
+      name: Create Release
+      if: github.ref == 'refs/heads/master' || contains(github.ref, 'tags/v')
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout ${{ env.PROJECT_NAME}}
+          uses: actions/checkout@v2
+          with:
+            # History of 500 should be more than enough to calculate commit count since last release tag.
+            fetch-depth: 500
+            path: ${{ env.PROJECT_NAME}}
+
+        - name: Fetch all tags to determine version
+          run: |
+            cd ${{ env.PROJECT_NAME}}
+            git fetch origin +refs/tags/*:refs/tags/*
+            git describe --match "v[0-9]*" --tags HEAD --always
+  
+        - name: Get artifact version
+          run: |
+            cd ${{ env.PROJECT_NAME}}
+            APP_VERSION=$(git describe --match "v[0-9]*" --tags HEAD --always)
+            echo "::set-env name=APP_VERSION::$APP_VERSION"
+            echo "::set-env name=TIMESTAMP::$(date +"%Y%m%d_%H%M%S")"
+
+        - name: Create Pre-Release ${{ env.APP_VERSION }}
+          uses: "marvinpinto/action-automatic-releases@latest"
+          if: "!contains(github.ref, 'tags/v')"
+          with:
+            repo_token: "${{ secrets.GITHUB_TOKEN }}"
+            automatic_release_tag: "latest"
+            prerelease: true
+            title: "Development Build ${{ env.APP_VERSION }}"
+            # No files yet, added manually for now
+            #files: |
+            #    *.tar
+
+        - name: Create Release ${{ env.APP_VERSION }}
+          uses: "marvinpinto/action-automatic-releases@latest"
+          if: "contains(github.ref, 'tags/v')"
+          with:
+            repo_token: "${{ secrets.GITHUB_TOKEN }}"
+            prerelease: false
+            # No files yet, added manually for now
+            #files: |
+            #  *.tar
