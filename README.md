@@ -1,3 +1,5 @@
+[![Release](https://github.com/YIO-Remote/remote-os/workflows/Release/badge.svg)](https://github.com/YIO-Remote/remote-os/actions?query=workflow%3ARelease)
+
 # YIO Remote OS Repository
 
 For details about the YIO Remote, please visit our documentation wiki: <https://github.com/YIO-Remote/documentation/wiki>
