@@ -22,16 +22,15 @@ LINGUIST_LRELEASE=/usr/lib/qt5/bin/lrelease
 #=============================================================
 
 GitProjects=(
-    "https://github.com/YIO-Remote/integration.dock.git,dev"
-    "https://github.com/YIO-Remote/integration.homey.git,dev"
-    "https://github.com/YIO-Remote/integration.home-assistant.git,dev"
-    "https://github.com/YIO-Remote/integration.ir.git,dev"
-    "https://github.com/YIO-Remote/integration.openhab.git,dev"
-    "https://github.com/YIO-Remote/integration.openweather.git,dev"
-    "https://github.com/YIO-Remote/integration.roon.git,develop"
-    "https://github.com/YIO-Remote/integration.spotify.git,dev"
-    "https://github.com/YIO-Remote/remote-os.git,feature/develop"
-    "https://github.com/YIO-Remote/remote-software.git,develop"
+    "https://github.com/YIO-Remote/integration.dock.git,master"
+    "https://github.com/YIO-Remote/integration.homey.git,master"
+    "https://github.com/YIO-Remote/integration.home-assistant.git,master"
+    "https://github.com/YIO-Remote/integration.openhab.git,master"
+    "https://github.com/YIO-Remote/integration.openweather.git,master"
+    "https://github.com/YIO-Remote/integration.roon.git,master"
+    "https://github.com/YIO-Remote/integration.spotify.git,master"
+    "https://github.com/YIO-Remote/remote-os.git,feature/master"
+    "https://github.com/YIO-Remote/remote-software.git,master"
     "https://github.com/YIO-Remote/web-configurator.git,master"
 )
 
@@ -297,29 +296,30 @@ buildQtProject() {
 
         # HACK transfer built remote application and plugins to remote-os.
         # Ok for initial test version, but we need to clean up the binary handling in remote-os!
-        BUILDROOT_DEST="${YIO_SRC}/remote-os/overlay/usr/bin/yio-remote"
+        BUILDROOT_DEST="${YIO_SRC}/remote-os/overlay/opt/yio/app"
         echo "Copying remote-software binary and plugins to remote-os: $BUILDROOT_DEST"
         header "WARNING: work in progress until there are remote-software & plugin releases!"
 
         rm -Rf "${BUILDROOT_DEST}"/fonts/*
         rm -Rf "${BUILDROOT_DEST}"/icons/*
-        rm -Rf "${BUILDROOT_DEST}"/plugins/*
-        rm -Rf "${BUILDROOT_DEST}"/www/config/*
+        rm -Rf "${YIO_SRC}"/app-plugins/*
+        rm -Rf "${YIO_SRC}"/web-configurator/config/*
 
         mkdir -p "${BUILDROOT_DEST}"/fonts
         mkdir -p "${BUILDROOT_DEST}"/icons
-        mkdir -p "${BUILDROOT_DEST}"/plugins
-        mkdir -p "${BUILDROOT_DEST}"/www/config
+        mkdir -p "${YIO_SRC}"/app-plugins
+        mkdir -p "${YIO_SRC}"/web-configurator/config
 
         cp "${BUILD_BINARY_DIR}"/config.json "${YIO_SRC}"/remote-os/rpi0/boot/
         cp "${BUILD_BINARY_DIR}"/remote "${BUILDROOT_DEST}"
         chmod 755 "${BUILDROOT_DEST}"/remote
-        cp "${BUILD_BINARY_DIR}"/translations.json "${BUILDROOT_DEST}"
+        cp "${BUILD_BINARY_DIR}"/*.json "${BUILDROOT_DEST}"
 
         cp -r "${BUILD_BINARY_DIR}"/fonts "${BUILDROOT_DEST}"
         cp -r "${BUILD_BINARY_DIR}"/icons "${BUILDROOT_DEST}"
-        cp -r "${BUILD_BINARY_DIR}"/plugins "${BUILDROOT_DEST}"
-        cp -r "${YIO_SRC}"/web-configurator/* "${BUILDROOT_DEST}/www/config/"
+
+        cp -r "${BUILD_BINARY_DIR}"/plugins "${YIO_SRC}/app-plugins"
+        cp -r "${BUILD_BINARY_DIR}"/web-configurator/* "${YIO_SRC}/web-configurator/config/"
     fi
 }
 

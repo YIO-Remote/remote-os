@@ -3,6 +3,8 @@
 set -u
 set -e
 
+SCRIPT_DIR=$(dirname $0)
+
 # Add a console on tty1
 if [ -e ${TARGET_DIR}/etc/inittab ]; then
     grep -qE '^tty1::' ${TARGET_DIR}/etc/inittab || \
@@ -25,3 +27,14 @@ rm -rf $1/var/log/journal
 
 #rm -r $1/etc/systemd/system/multi-user.target.wants/dhcpcd.service
 
+# Determine build version
+BUILD_VERSION=$("$SCRIPT_DIR/git-version.sh" "$BR2_EXTERNAL/version")
+
+# We need the Git hash of remote-os and not of the buildroot submodule!
+GIT_HASH=`cd $1; git rev-parse HEAD`
+
+echo "Setting build version in YIO env variable: $BUILD_VERSION"
+sed -i "s/\$BUILD_VERSION/$BUILD_VERSION/g" $1/etc/profile.d/yio.sh
+
+echo "Setting Git hash in YIO env variable: $GIT_HASH"
+sed -i "s/\$GIT_HASH/$GIT_HASH/g" $1/etc/profile.d/yio.sh
