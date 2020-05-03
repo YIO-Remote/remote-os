@@ -119,9 +119,9 @@ Build all:
 
     yio build
 
-Switch Git branch of remote-software project to develop:
+Switch Git branch of remote-software project to a feature branch:
 
-    yio remote-software git checkout develop
+    yio remote-software git checkout feature/foobar
 
 See Git status of remote-os project:
 

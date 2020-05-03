@@ -22,16 +22,15 @@ LINGUIST_LRELEASE=/usr/lib/qt5/bin/lrelease
 #=============================================================
 
 GitProjects=(
-    "https://github.com/YIO-Remote/integration.dock.git,dev"
-    "https://github.com/YIO-Remote/integration.homey.git,dev"
-    "https://github.com/YIO-Remote/integration.home-assistant.git,dev"
-    "https://github.com/YIO-Remote/integration.ir.git,dev"
-    "https://github.com/YIO-Remote/integration.openhab.git,dev"
-    "https://github.com/YIO-Remote/integration.openweather.git,dev"
-    "https://github.com/YIO-Remote/integration.roon.git,develop"
-    "https://github.com/YIO-Remote/integration.spotify.git,dev"
+    "https://github.com/YIO-Remote/integration.dock.git,master"
+    "https://github.com/YIO-Remote/integration.homey.git,master"
+    "https://github.com/YIO-Remote/integration.home-assistant.git,master"
+    "https://github.com/YIO-Remote/integration.openhab.git,master"
+    "https://github.com/YIO-Remote/integration.openweather.git,master"
+    "https://github.com/YIO-Remote/integration.roon.git,master"
+    "https://github.com/YIO-Remote/integration.spotify.git,master"
     "https://github.com/YIO-Remote/remote-os.git,feature/develop"
-    "https://github.com/YIO-Remote/remote-software.git,develop"
+    "https://github.com/YIO-Remote/remote-software.git,master"
     "https://github.com/YIO-Remote/web-configurator.git,master"
 )
 
