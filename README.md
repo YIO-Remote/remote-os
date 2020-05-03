@@ -94,11 +94,7 @@ Checkout project and build full cross compiler toolchain incl. target system:
     mkdir -p $SRC_DIR
     cd $SRC_DIR
     git clone https://github.com/YIO-Remote/remote-os.git
-    
-    # switch to development branch
-    cd remote-os
-    git checkout develop
-    
+        
     # build full toolchain without YIO remote SD card image
     make SKIP_BUILD_IMAGE=y 
 
