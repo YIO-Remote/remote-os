@@ -16,7 +16,7 @@ if [ "$SKIP_BUILD_IMAGE" = "y" ]; then
 fi
 
 cp ${BOARD_DIR}/boot/*.txt ${BINARIES_DIR}/
-cp ${TARGET_DIR}/usr/bin/yio-remote/config.json.def ${BINARIES_DIR}/config.json
+cp ${TARGET_DIR}/opt/yio/app/config.json.def ${BINARIES_DIR}/config.json
 
 mkdir -p ${BINARIES_DIR}/overlays
 cp ${BOARD_DIR}/boot/overlays/*.dtbo ${BINARIES_DIR}/overlays/

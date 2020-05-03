@@ -90,28 +90,28 @@ endif
 ################################################################################
 ifeq ($(BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR),y)
 define YIO_REMOTE_INSTALL_TARGET_CMDS
-    $(INSTALL) -d $(TARGET_DIR)/usr/bin/yio-remote/icons $(TARGET_DIR)/usr/bin/yio-remote/fonts $(TARGET_DIR)/usr/bin/yio-remote/plugins
-    $(INSTALL) -m 0755 $(@D)/remote $(TARGET_DIR)/usr/bin/yio-remote
-    $(INSTALL) -m 0644 $(@D)/*.json $(TARGET_DIR)/usr/bin/yio-remote
-    mv $(TARGET_DIR)/usr/bin/yio-remote/config.json $(TARGET_DIR)/usr/bin/yio-remote/config.json.def
-    $(INSTALL) -m 0644 $(@D)/icons/* $(TARGET_DIR)/usr/bin/yio-remote/icons
-    $(INSTALL) -m 0644 $(@D)/fonts/* $(TARGET_DIR)/usr/bin/yio-remote/fonts
-    $(INSTALL) -m 0644 $(@D)/plugins/* $(TARGET_DIR)/usr/bin/yio-remote/plugins
+    $(INSTALL) -d $(TARGET_DIR)/opt/yio/app/icons $(TARGET_DIR)/opt/yio/app/fonts $(TARGET_DIR)/opt/yio/app-plugins
+    $(INSTALL) -m 0755 $(@D)/remote $(TARGET_DIR)/opt/yio/app
+    $(INSTALL) -m 0644 $(@D)/*.json $(TARGET_DIR)/opt/yio/app
+    mv $(TARGET_DIR)/opt/yio/app/config.json $(TARGET_DIR)/opt/yio/app/config.json.def
+    $(INSTALL) -m 0644 $(@D)/icons/* $(TARGET_DIR)/opt/yio/app/icons
+    $(INSTALL) -m 0644 $(@D)/fonts/* $(TARGET_DIR)/opt/yio/app/fonts
+    $(INSTALL) -m 0644 $(@D)/plugins/* $(TARGET_DIR)/opt/yio/app-plugins
 endef
 else
 define YIO_REMOTE_INSTALL_TARGET_CMDS
-    $(INSTALL) -d $(TARGET_DIR)/usr/bin/yio-remote/icons $(TARGET_DIR)/usr/bin/yio-remote/fonts $(TARGET_DIR)/usr/bin/yio-remote/plugins
+    $(INSTALL) -d $(TARGET_DIR)/opt/yio/app/icons $(TARGET_DIR)/opt/yio/app/fonts $(TARGET_DIR)/opt/yio/app-plugins
     @if [ -f $(@D)/bin/remote ]; then \
-        $(INSTALL) -m 0755 $(@D)/bin/remote $(TARGET_DIR)/usr/bin/yio-remote; \
+        $(INSTALL) -m 0755 $(@D)/bin/remote $(TARGET_DIR)/opt/yio/app; \
     else \
         echo "Old master branch hack until dev is merged"; \
-        $(INSTALL) -m 0755 $(@D)/build/remote $(TARGET_DIR)/usr/bin/yio-remote; \
+        $(INSTALL) -m 0755 $(@D)/build/remote $(TARGET_DIR)/opt/yio/app; \
     fi
-    $(INSTALL) -m 0644 $(@D)/*.json $(TARGET_DIR)/usr/bin/yio-remote
-    mv $(TARGET_DIR)/usr/bin/yio-remote/config.json $(TARGET_DIR)/usr/bin/yio-remote/config.json.def
-    $(INSTALL) -m 0644 $(@D)/icons/* $(TARGET_DIR)/usr/bin/yio-remote/icons
-    $(INSTALL) -m 0644 $(@D)/fonts/* $(TARGET_DIR)/usr/bin/yio-remote/fonts
-    #$(INSTALL) -m 0644 $(@D)/plugins/* $(TARGET_DIR)/usr/bin/yio-remote/plugins
+    $(INSTALL) -m 0644 $(@D)/*.json $(TARGET_DIR)/opt/yio/app
+    mv $(TARGET_DIR)/opt/yio/app/config.json $(TARGET_DIR)/opt/yio/app/config.json.def
+    $(INSTALL) -m 0644 $(@D)/icons/* $(TARGET_DIR)/opt/yio/app/icons
+    $(INSTALL) -m 0644 $(@D)/fonts/* $(TARGET_DIR)/opt/yio/app/fonts
+    #$(INSTALL) -m 0644 $(@D)/plugins/* $(TARGET_DIR)/opt/yio/app-plugins
 endef
 endif
 
