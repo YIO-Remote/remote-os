@@ -4,3 +4,5 @@
 # used for the initial buildroot build to create the toolchain used for Qt compilation
 SKIP_BUILD_IMAGE=n
 export SKIP_BUILD_IMAGE
+
+include ${BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH}/yio-remote/yio-remote.mk

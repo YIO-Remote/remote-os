@@ -2,10 +2,11 @@
 
 # YIO Remote OS Repository
 
-For details about the YIO Remote, please visit our documentation wiki: <https://github.com/YIO-Remote/documentation/wiki>
-
 This repository contains the custom Linux OS for the YIO Remote application.  
-It is built with [Buildroot](https://www.buildroot.org/) and managed with [Buildroot Submodule](README_buildroot-submodule.md).
+It is built with [Buildroot](https://www.buildroot.org/) and managed with [Buildroot Submodule](README_buildroot-submodule.md).  
+The output is a ready to use SD card image for the Raspberry Pi Zero W in the YIO remote and a cross-compile toolchain for Qt Creator.
+
+For details about the YIO Remote, please visit our documentation wiki: <https://github.com/YIO-Remote/documentation/wiki>
 
 ## Build
 
@@ -27,8 +28,8 @@ If you don't have a Linux machine then the easiest way to build all Qt projects 
 
 Features:
 
-- Buildroot build and output directories are stored in a Docker Volume due to hard links performance reasons.
-- Binary outputs are copied to bind mounted directory on the host.
+- Buildroot build and output directories are stored in a Docker Volume due to performance reasons of hard links.
+- Binary outputs are copied to the bind mounted directory on the host.
 - YIO Remote projects can be bind mounted from the host or stored in a Docker Volume.
 - A convenient build script handles all common build tasks (single project builds, full build, Git operations, etc.).
 
@@ -54,6 +55,7 @@ Install required tools:
           git \
           libncurses5-dev \
           libtool \
+          npm \
           python \
           texinfo \
           unzip \
@@ -62,13 +64,7 @@ Install required tools:
 
    The system is now ready to compile Buildroot and build the base Linux image for YIO.
 
-2. Optional: Qt Linguist.
-   Qt Linguist is required to compile language files in *remote-software* before cross compilation.
-   - Unfortunately there's no standalone package of the required command line tools `lupdate` and `lrelease`. Therefore the complete Qt development environment needs to be installed!
-   - Attention: only use *apt* to install Qt on Ubuntu 19.10 or newer! Otherwise the Qt version is too old and the command line tools might be incompatible. Use the [Qt online installer](https://www.qt.io/download-open-source) instead.
-
-            sudo apt-get install \
-                qttools5-dev-tools qt5-default
+2. Optional: install Qt with the [Qt online installer](https://www.qt.io/download-open-source).
 
 3. Optional: dependencies for Qt development and building Linux target in Qt Creator:
 
@@ -76,19 +72,9 @@ Install required tools:
             libavahi-client-dev \
             libgl1-mesa-dev
 
-#### Build Environment Variables
+## Build SD Card Image
 
-The following optional environment variables control where the build output and other artefacts during the build are stored:
-
-| **Variable**             | **Description**  |
-|--------------------------|------------------|
-| `BUILDROOT_OUTPUT`       | Buildroot output directory. Default: ./rpi0/output          |
-| `BR2_DL_DIR`             | Buildroot download directory. Default: $HOME/buildroot/dl   |
-| `BR2_CCACHE_DIR`         | Buildroot ccache directory. Default: $HOME/buildroot/ccache |
-
-#### Initial Checkout and Toolchain Build
-
-Checkout project and build full cross compiler toolchain incl. target system:
+Checkout project:
 
     # define root directory for project checkout
     SRC_DIR=~/projects/yio
@@ -96,30 +82,15 @@ Checkout project and build full cross compiler toolchain incl. target system:
     mkdir -p $SRC_DIR
     cd $SRC_DIR
     git clone https://github.com/YIO-Remote/remote-os.git
-        
-    # build full toolchain without YIO remote SD card image
-    make SKIP_BUILD_IMAGE=y 
 
-This will take at least an hour or much longer on a slower system.
-The `make` command will automatically initialize the buildroot Git submodule (`git submodule init && git submodule update`).
+Build full cross compiler toolchain with YIO remote SD card image:
 
-#### Build SD Card Image
-
-The SD card image build requires at least a YIO remote configuration file in `./rpi0/boot/config.json`. The latest version can be found in the [remote-software](https://github.com/YIO-Remote/remote-software) repository.  
-Furthermore all application binaries and resources have to be put in the appropriate sub-folders of `./overlay/opt/yio/`. These are:
-
-- `app`: the remote-software binary and resources (fonts, icons, images, json schemas)
-- `app-plugins`: the integration plugins
-- `web-configurator`: the web-configurator project
-
-See [build script in the Docker image](docker/yio-image/scripts/yio.sh) for a quick and dirty approach until each component will be properly released.
-
-Once all resources are in place the build is a simple command:
-
-    cd $SRC_DIR/remote-os
     make
 
-Hint: redirect the `make` output log into a logfile to easy find an error during building or when using `screen` without scrollback capability:
+This will take at least one hour or much longer on a slower system.
+The `make` command will automatically initialize the buildroot Git submodule (`git submodule init && git submodule update`).
+
+Hint: redirect the `make` output log into a logfile to easy find an error during building or when using `screen` without or limited scrollback capability:
 
     make 2>&1 | tee remote-os_build_$(date +"%Y%m%d_%H%M%S").log
 
@@ -141,9 +112,97 @@ Most important commands:
 
  The project configuration in `rpi0/defconfig` is automatically loaded and saved back depending on the Buildroot command (see [common.mk](common.mk)). Manual `make savedefconfig BR2_DEFCONFIG=...` and `make defconfig BR2_DEFCONFIG=...` commands are no longer required and automatically taken care of!
 
+### Build Options
+
+#### YIO Packages
+
+Individual YIO components can be selected or deselected within menuconfig:
+
+  make menuconfig
+
+Navigate to: External options -> Yio remote
+
+```
+ → External options → YIO remote ──────────────────────────────────────
+  ┌────────────────────────── YIO remote ───────────────────────────┐
+  │  Arrow keys navigate the menu.  <Enter> selects submenus --->   │
+  │  (or empty submenus ----).  Highlighted letters are hotkeys.    │
+  │  Pressing <Y> selects a feature, while <N> excludes a feature.  │
+  │  Press <Esc><Esc> to exit, <?> for Help, </> for Search.        │
+  │ ┌─────────────────────────────────────────────────────────────┐ │
+  │ │    --- YIO remote                                           │ │
+  │ │          Source (Binary GitHub releases)  --->              │ │
+  │ │    [ ]   Debug build                                        │ │
+  │ │    [ ]   Custom versions (DANGEROUS!)                       │ │
+  │ │    [*]   Remote application                                 │ │
+  │ │    [*]   Web configurator                                   │ │
+  │ │    [*]   Integration plugins                                │ │
+  │ │    [*]     Dock integration                                 │ │
+  │ │    [*]     Home Assistant integration                       │ │
+  │ │    [*]     Homey integration                                │ │
+  │ │    [*]     Spotify integration                              │ │
+  │ │    [*]     OpenWeather integration                          │ │
+  │ │    [ ]     openHAB integration (UNDER DEVELOPMENT)          │ │
+  │ │    [ ]     Roon integration (UNDER DEVELOPMENT)             │ │
+  │ │                                                             │ │
+  │ └─────────────────────────────────────────────────────────────┘ │
+  ├─────────────────────────────────────────────────────────────────┤
+  │    <Select>    < Exit >    < Help >    < Save >    < Load >     │
+  └─────────────────────────────────────────────────────────────────┘
+```
+
+#### Output Directories
+
+The following optional environment variables control where the build output and other artefacts during the build are stored:
+
+| **Variable**             | **Description**  |
+|--------------------------|------------------|
+| `BUILDROOT_OUTPUT`       | Buildroot output directory. Default: ./rpi0/output          |
+| `BR2_DL_DIR`             | Buildroot download directory. Default: $HOME/buildroot/dl   |
+| `BR2_CCACHE_DIR`         | Buildroot ccache directory. Default: $HOME/buildroot/ccache |
+
+#### Further Options
+
+Further `make` arguments:
+
+| **Option**               | **Description**  |
+|--------------------------|------------------|
+| `SKIP_BUILD_IMAGE=y`     | Skip SD card image creation |
+| `BR2_JLEVEL=n`           | Adjust level of build parallelism. n = number of cores. Default: number of CPUs + 1 |
+
 ## Write SD Card Image
 
 Use [balenaEtcher](https://www.balena.io/etcher/) - available for Linux, macOS and Windows - or your favorite tool.
+
+## Troubleshooting
+
+### Build Errors
+
+#### make fails while downloading package
+
+Error symptom: a package cannot be downloaded from <http://sources.buildroot.net/> and fails after the 3rd attempt.
+
+Cause: Buildroot source server is down or overloaded
+
+Solution: try again the next day
+
+#### journald fails to build
+
+Error symptom:
+```
+../src/basic/build.h:4:10: fatal error: version.h: No such file or directory
+ #include "version.h"
+          ^~~~~~~~~~~
+...
+ninja: build stopped: subcommand failed.
+make[2]: *** [package/pkg-generic.mk:241: .../remote-os/rpi0/output/build/systemd-241/.stamp_built] Error 1
+```
+
+Cause: journald build bug when using many cores/threads (> 16)
+
+Solution: reduce make parallelism
+
+    make BR2_JLEVEL=12
 
 ## Technology Research
 

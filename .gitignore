@@ -83,3 +83,4 @@ $RECYCLE.BIN/
 *.old
 *.log
 .toolchain-ready
+rpi0/.*.swp

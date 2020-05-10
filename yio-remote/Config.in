@@ -1,0 +1,148 @@
+menuconfig BR2_PACKAGE_YIO_REMOTE
+	bool "YIO remote"
+	depends on BR2_PACKAGE_QT5
+	select BR2_PACKAGE_QT5TOOLS
+	select BR2_PACKAGE_QT5TOOLS_LINGUIST_TOOLS
+	select BR2_PACKAGE_QT5BASE_OPENGL_LIB
+	select BR2_PACKAGE_QT5BASE_EGLFS
+	select BR2_PACKAGE_QT5BASE_FONTCONFIG
+	select BR2_PACKAGE_QT5BASE_GIF
+	select BR2_PACKAGE_QT5BASE_JPEG
+	select BR2_PACKAGE_QT5BASE_PNG
+	select BR2_PACKAGE_QT5BASE_ICU
+	select BR2_PACKAGE_QT5BASE_TSLIB
+	select BR2_PACKAGE_QT5CONNECTIVITY
+	select BR2_PACKAGE_QT5GRAPHICALEFFECTS
+	select BR2_PACKAGE_QT5IMAGEFORMATS
+	select BR2_PACKAGE_QT5QUICKCONTROLS
+	select BR2_PACKAGE_QT5QUICKCONTROLS2
+	select BR2_PACKAGE_QT5VIRTUALKEYBOARD
+	select BR2_PACKAGE_QT5VIRTUALKEYBOARD_HANDWRITING
+	select BR2_PACKAGE_QT5WEBSOCKETS
+	help
+	  YIO Remote software package. Sub-options allow to customize the
+	  installation.
+	  For more information see: https://github.com/YIO-Remote
+
+if BR2_PACKAGE_YIO_REMOTE
+
+# Default versions of all YIO components which work together in this remote-os release.
+# All YIO components have their own release channel and version numbers don't relate or indicate a compatible version!
+# Custom versions can be enabled with: BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
+config BR2_PACKAGE_YIO_REMOTE_SOFTWARE_VERSION_DEF
+	string
+	default "v0.3.0"
+config BR2_PACKAGE_YIO_WEB_CONFIGURATOR_VERSION_DEF
+	string
+	default "v0.1.1"
+config BR2_PACKAGE_YIO_INTEGRATION_DOCK_VERSION_DEF
+	string
+	default "v0.4.0"
+config BR2_PACKAGE_YIO_INTEGRATION_HOMEASSISTANT_VERSION_DEF
+	string
+	default "v0.4.0"
+config BR2_PACKAGE_YIO_INTEGRATION_HOMEY_VERSION_DEF
+	string
+	default "v0.4.0"
+config BR2_PACKAGE_YIO_INTEGRATION_OPENHAB_VERSION_DEF
+	string
+	default "v0.4.0"
+config BR2_PACKAGE_YIO_INTEGRATION_SPOTIFY_VERSION_DEF
+	string
+	default "v0.4.0"
+config BR2_PACKAGE_YIO_INTEGRATION_OPENWEATHER_VERSION_DEF
+	string
+	default "v0.4.0"
+config BR2_PACKAGE_YIO_INTEGRATION_ROON_VERSION_DEF
+	string
+	default "v0.3.0"
+
+choice
+	prompt "Source"
+	help
+	  Select from where the YIO remote components will be installed.
+	  This only applies to Qt based components, i.e. the web-configurator
+	  will always be packaged from the GitHub sources.
+
+config BR2_PACKAGE_YIO_REMOTE_BIN_RELEASE
+	bool "Binary GitHub releases"
+	help
+	  Use binary releases for Qt based components from GitHub repositories.
+	  Attention: the binary releases are only compatible on the Raspberry Pi!
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR
+	bool "Binary folder"
+	help
+	  This option allows to specify a local folder containing pre-compiled
+	  Qt binaries for the target platform. The folder must contain debug and
+	  release subdirectories.
+	  Attention: Buildroot will cache the synchronized folder after the first
+	  build. To update the binaries all involved packages must be reconfigured
+	  by executing:
+	  make yio-${PACKAGE_NAME}-reconfigure
+	  or the build directories of all yio packages must be deleted:
+	  rm -Rf rpi0/output/build/yio-*
+	  before building a new image!
+
+# TODO Build from source not yet implemented
+# config BR2_PACKAGE_YIO_REMOTE_GITHUB
+# 	bool "Build from source"
+# 	help
+# 	  Use GitHub source repositories to build YIO components.
+
+endchoice
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR_LOCATION
+	string "URL of custom app binary folder"
+	default "~/projects/yio/binaries/linux-gcc-arm"
+	depends on BR2_PACKAGE_YIO_REMOTE_SOFTWARE_CUSTOM_BIN_DIR
+	help
+	  Local folder containing pre-compiled binaries for the target platform.
+	  The folder must contain debug and release subdirectories.
+	  Attention: Buildroot will cache the synchronized folder after the first
+	  build. To update the binaries all involved packages must be reconfigured
+	  by executing:
+	  make yio-${PACKAGE_NAME}-reconfigure
+	  or the build directories of all yio packages must be deleted:
+	  rm -Rf rpi0/output/build/yio-*
+	  before building a new image!
+
+config BR2_PACKAGE_YIO_REMOTE_DEBUG
+	bool "Debug build"
+	help
+	  Build or install the debug version of the Qt based YIO application and
+	  integration plugins.
+	  Attention: Buildroot will cache the build folder after the first build.
+	  To switch between debug an release builds afterwards, all involved
+	  packages must be reconfigured by executing:
+	  make yio-${PACKAGE_NAME}-reconfigure
+	  or the build directories of all yio packages must be deleted:
+	  rm -Rf rpi0/output/build/yio-*
+	  before building a new image!
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
+	bool "Custom versions (DANGEROUS!)"
+	help
+	  Allow to specify custom versions of the application and integration
+	  plugins.
+	  Attention: using custom versions might break compatability between the
+	  remote application and the integration plugins!
+
+source "../yio-remote/yio-remote-software/Config.in"
+source "../yio-remote/yio-web-configurator/Config.in"
+
+config BR2_PACKAGE_YIO_REMOTE_INTEGRATIONS
+	bool "Integration plugins"
+	default y
+	help
+	  Include YIO integration plugins.
+
+source "../yio-remote/yio-integration-dock/Config.in"
+source "../yio-remote/yio-integration-homeassistant/Config.in"
+source "../yio-remote/yio-integration-homey/Config.in"
+source "../yio-remote/yio-integration-spotify/Config.in"
+source "../yio-remote/yio-integration-openhab/Config.in"
+source "../yio-remote/yio-integration-openweather/Config.in"
+source "../yio-remote/yio-integration-roon/Config.in"
+
+endif
