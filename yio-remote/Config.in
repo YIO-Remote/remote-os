@@ -141,8 +141,8 @@ source "../yio-remote/yio-integration-dock/Config.in"
 source "../yio-remote/yio-integration-homeassistant/Config.in"
 source "../yio-remote/yio-integration-homey/Config.in"
 source "../yio-remote/yio-integration-spotify/Config.in"
-source "../yio-remote/yio-integration-openweather/Config.in"
 source "../yio-remote/yio-integration-openhab/Config.in"
+source "../yio-remote/yio-integration-openweather/Config.in"
 source "../yio-remote/yio-integration-roon/Config.in"
 
 endif
