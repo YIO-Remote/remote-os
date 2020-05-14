@@ -57,21 +57,71 @@ assertEnvVariable() {
 # TODO function to clean up in case of update error!
 # We don't want to end up in an update loop trying to install a corrupt archive
 
+usage() {
+  cat << EOF
+
+Usage: $0 (-c|-d DIR|FILE.(version|zip|tar))
+  Updates the YIO remote web-configurator with the provided update marker file or archive.
+  The archive may be a zip or tar archive. See wiki for update archive format.
+  The archive and optional marker file are deleted after a success update!
+
+Parameters:
+   -c: check for latest release version on GitHub
+   -d: download latest releae version from GitHub to given directory
+
+EOF
+  exit 1
+}
+
+getLatestRelease() {
+    LATEST_RELEASE=$(curl -s "https://api.github.com/repos/YIO-Remote/web-configurator/releases/latest" | awk -F '"' '/tag_name/{print $4}')
+    if [[ -z $LATEST_RELEASE ]]; then
+        log "Error getting latest release from GitHub"
+        exit 1
+    fi
+}
+
+downloadLatestRelease() {
+    getLatestRelease
+    LATEST_RELEASE_FILE="YIO-web-configurator-${LATEST_RELEASE}.zip"
+    log "Downloading latest GitHub release $LATEST_RELEASE to: ${1}/${LATEST_RELEASE_FILE}"
+    curl -L --fail -o ${1}/${LATEST_RELEASE_FILE} https://github.com/YIO-Remote/web-configurator/releases/download/${LATEST_RELEASE}/${LATEST_RELEASE_FILE}
+}
+
 #------------------------------------------------------------------------------
 # Start of script
 
 # check command line arguments
 # TODO define archive file naming, this one here is copied from remote-software
-# TODO add download from GitHub option
-# TODO check latest release: curl -s "https://api.github.com/repos/YIO-Remote/web-configurator/releases/latest" | awk -F '"' '/tag_name/{print $4}'
-# TODO download release: curl -L --fail https://github.com/YIO-Remote/web-configurator/releases/download/v0.1.4/YIO-web-configurator-v0.1.4.zip
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 update.(version|zip|tar)"
-    echo "  Updates the YIO remote web-configurator with the provided update marker file or archive."
-    echo "  The archive may be a zip or tar archive. See wiki for update archive format."
-    echo "  The archive and optional marker file are deleted after a success update!"
-    exit 1
+if [ "$#" -eq 0 ]; then
+  usage;
 fi
+
+# TODO add all-in-one option (download from GitHub & update)
+while getopts "cd:h" optname; do
+  case "$optname" in
+    "c")
+      getLatestRelease
+      echo "Latest GitHub release: $LATEST_RELEASE"
+      echo "Local version:         $(< ${YIO_WEB_CONFIGURATOR_DIR}/version.txt)"
+      exit 0
+      ;;
+    "d")
+      downloadLatestRelease "$OPTARG"
+      exit 0
+      ;;
+    "h")
+      usage
+      ;;
+    "?")
+      usage
+      ;;
+    *)
+      # Should not occur
+      echo "Unknown error while processing options"
+      ;;
+  esac
+done
 
 if [[ $(id -u) -ne 0 ]] ; then
   echo "Must be run as root"
@@ -202,7 +252,7 @@ fi
 
 log "Update finished!"
 
-# TODO restart lighttpd if it was started 
+# restart lighttpd if it was running before the update 
 if ! $WEBSERVER_STOPPED; then
     log "Re-launching httpd..."
     systemctl start lighttpd
