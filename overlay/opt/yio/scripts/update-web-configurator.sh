@@ -63,6 +63,8 @@ assertEnvVariable() {
 # check command line arguments
 # TODO define archive file naming, this one here is copied from remote-software
 # TODO add download from GitHub option
+# TODO check latest release: curl -s "https://api.github.com/repos/YIO-Remote/web-configurator/releases/latest" | awk -F '"' '/tag_name/{print $4}'
+# TODO download release: curl -L --fail https://github.com/YIO-Remote/web-configurator/releases/download/v0.1.4/YIO-web-configurator-v0.1.4.zip
 if [ $# -eq 0 ]; then
     echo "Usage: $0 update.(version|zip|tar)"
     echo "  Updates the YIO remote web-configurator with the provided update marker file or archive."
@@ -105,6 +107,7 @@ fi
 
 assertEnvVariable "YIO_HOME" $YIO_HOME
 assertEnvVariable "YIO_APP_DIR" $YIO_APP_DIR
+assertEnvVariable "YIO_WEB_CONFIGURATOR_DIR" $YIO_WEB_CONFIGURATOR_DIR
 assertEnvVariable "YIO_LOG_DIR_UPDATE" $YIO_LOG_DIR_UPDATE
 
 if [[ ! -d $YIO_HOME ]]; then
@@ -121,7 +124,7 @@ LOGFILE=${YIO_LOG_DIR_UPDATE}/web-cfg-update.log
 echo "Writing update log file: $LOGFILE"
 echo "YIO Web-configurator Update Log" > $LOGFILE
 log "Update archive:         $UPDATE_FILE"
-log "Installation directory: $YIO_APP_DIR"
+log "Installation directory: $YIO_WEB_CONFIGURATOR_DIR"
 
 #------------------------------------------------------------------------------
 # Start update process!
@@ -155,13 +158,20 @@ else
     exit 1
 fi
 
+# TODO test if web archive
+
 #------------------------------------------------------------------------------
 # Replace old backup with the current web-configurator version
 #------------------------------------------------------------------------------
-# TODO get status of lighttpd
-systemctl stop lighttpd
+WEBSERVER_STOPPED=$(systemctl is-active --quiet lighttpd || true)
 
-if [[ -d $YIO_APP_DIR ]]; then
+if $WEBSERVER_STOPPED; then
+    log "Web server is not running"
+else
+    systemctl stop lighttpd
+fi
+
+if [[ -d $YIO_WEB_CONFIGURATOR_DIR ]]; then
   YIO_BACKUP=${YIO_HOME}/web-configurator-previous
 
   if [[ -d $YIO_BACKUP ]]; then
@@ -170,18 +180,18 @@ if [[ -d $YIO_APP_DIR ]]; then
   fi
 
   log "Renaming current web-configurator to: '$YIO_BACKUP'"
-  mv "$YIO_APP_DIR" "$YIO_BACKUP" >> $LOGFILE 2>&1
+  mv "$YIO_WEB_CONFIGURATOR_DIR" "$YIO_BACKUP" >> $LOGFILE 2>&1
 else
-  log "Remote web-configurator directory doesn't exist: '$YIO_APP_DIR'. Skipping backup."
+  log "Remote web-configurator directory doesn't exist: '$YIO_WEB_CONFIGURATOR_DIR'. Skipping backup."
 fi
 
-mkdir -p $YIO_APP_DIR >> $LOGFILE 2>&1
+mkdir -p $YIO_WEB_CONFIGURATOR_DIR >> $LOGFILE 2>&1
 
 #------------------------------------------------------------------------------
 # Activate new web-configurator
 #------------------------------------------------------------------------------
-mv ${TMPDIR}/web-configurator/* "$YIO_APP_DIR" >> $LOGFILE 2>&1
-log "Update ($TMPDIR/yio-remote) is now the active web-configurator ($YIO_APP_DIR)"
+mv ${TMPDIR}/* "$YIO_WEB_CONFIGURATOR_DIR" >> $LOGFILE 2>&1
+log "Update ($TMPDIR/yio-remote) is now the active web-configurator ($YIO_WEB_CONFIGURATOR_DIR)"
 
 log "Deleting update archive files and temporary folder"
 rm -rf $TMPDIR >> $LOGFILE 2>&1
@@ -193,4 +203,7 @@ fi
 log "Update finished!"
 
 # TODO restart lighttpd if it was started 
-log "Re-launching httpd..."
+if ! $WEBSERVER_STOPPED; then
+    log "Re-launching httpd..."
+    systemctl start lighttpd
+fi
