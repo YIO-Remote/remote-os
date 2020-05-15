@@ -24,35 +24,7 @@
 #------------------------------------------------------------------------------
 
 . /etc/profile.d/yio.sh
-
-# Exit on all command errors '-e' while still calling error trap '-E'
-# See https://stackoverflow.com/a/35800451
-set -eE
-trap 'errorTrap ${?} ${LINENO}' ERR
-
-# Helper functions
-errorTrap() {
-  log "ERROR $1 occured in $0 on line $2"
-
-  if [[ -d $TMPDIR ]]; then
-    rm -rf $TMPDIR
-  fi
-}
-
-log() {
-  echo "$*"
-  if [[ ! -z $LOGFILE ]]; then
-
-    echo `date +%FT%T%Z` "$*" >> "$LOGFILE"
-  fi
-}
-
-assertEnvVariable() {
-  if [[ -z $2 ]]; then
-    echo "$1 environment variable not set!"
-    exit 1
-  fi
-}
+. $(dirname $0)/common
 
 ensureScreenIsOn() {
   # TODO improve sledge hammer approach

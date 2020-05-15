@@ -1,0 +1,68 @@
+#!/bin/false
+# Common helper functions
+
+# Exit on all command errors '-e' while still calling error trap '-E'
+# See https://stackoverflow.com/a/35800451
+set -eE
+trap 'errorTrap ${?} ${LINENO}' ERR
+
+errorTrap() {
+  log "ERROR $1 occured in $0 on line $2"
+
+  if [[ -d $TMPDIR ]]; then
+    rm -rf $TMPDIR
+  fi
+}
+
+log() {
+  echo "$*"
+  if [[ ! -z $LOGFILE ]]; then
+
+    echo `date +%FT%T%Z` "$*" >> "$LOGFILE"
+  fi
+}
+
+assertEnvVariable() {
+  if [[ -z $2 ]]; then
+    echo "$1 environment variable not set!"
+    exit 1
+  fi
+}
+
+# Retrieve the latest release version from GitHub for the given repository.
+# Parameters:
+# $1: YIO GitHub repository. E.g. web-configurator, remote-software, etc.
+# Output variables:
+# - LATEST_RELEASE: release version. E.g. v0.1.2
+getLatestRelease() {
+    LATEST_RELEASE=$(curl -s "https://api.github.com/repos/YIO-Remote/${1}/releases/latest" | awk -F '"' '/tag_name/{print $4}')
+    if [[ -z $LATEST_RELEASE ]]; then
+        log "Error getting latest release from GitHub"
+        exit 1
+    fi
+}
+
+# Download the given release from the GitHub repository.
+# Parameters:
+# $1: YIO GitHub repository. E.g. web-configurator, remote-software, etc.
+# $2: Version number. E.g. "v0.1.2"
+# $3: Download directory. E.g. "/tmp"
+# Output variables:
+# - LATEST_RELEASE: release version. E.g. v0.1.2
+# - RELEASE_FILE: downloaded file name without path.
+downloadRelease() {
+    RELEASE_FILE="YIO-${1}-${2}.zip"
+    log "Downloading ${1} GitHub release $2 to: ${3}/${RELEASE_FILE}"
+    curl -L --fail -o ${3}/${RELEASE_FILE} https://github.com/YIO-Remote/${1}/releases/download/${2}/${RELEASE_FILE}
+}
+
+# Download the latest release from the GitHub repository.
+# Parameters:
+# $1: YIO GitHub repository. E.g. web-configurator, remote-software, etc.
+# $2: Download directory. E.g. "/tmp"
+# Output variables:
+# - LATEST_RELEASE: release version. E.g. v0.1.2
+downloadLatestRelease() {
+    getLatestRelease $1
+    downloadRelease $1 $LATEST_RELEASE $2
+}
