@@ -1,5 +1,11 @@
 #!/bin/false
+#------------------------------------------------------------------------------
 # Common helper functions
+#
+# Copyright (C) 2020 Markus Zehnder <business@markuszehnder.ch>
+#
+# This file is part of the YIO-Remote software project.
+#------------------------------------------------------------------------------
 
 # Exit on all command errors '-e' while still calling error trap '-E'
 # See https://stackoverflow.com/a/35800451
@@ -89,4 +95,20 @@ checkVersion() {
         log "Installed version $INSTALLED_VERSION is up-to-date. Use -f switch to force re-installing it."
         exit 1
     fi
+}
+
+# Display confirmation message and wait for user input to confirm
+# Parameters:
+# $1: Optional message, otherwise "Are you sure?" will be used
+# Return: true or false
+confirm() {
+    read -r -p "${1:-Are you sure? [y/N]} " response
+    case "$response" in
+        [yY][eE][sS]|[yY]) 
+            true
+            ;;
+        *)
+            false
+            ;;
+    esac
 }

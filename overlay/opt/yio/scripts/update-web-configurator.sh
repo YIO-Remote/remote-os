@@ -53,6 +53,13 @@ EOF
 }
 
 updateLatestRelease() {
+
+    if [[ $FORCE != true ]]; then
+        confirm "Directly installing a release from GitHub may break interoperability with remote-software. Continue? [y/N]" || {
+            exit 1
+        }
+    fi
+
     DOWNLOAD_DIR=/tmp
     getLatestRelease $WEB_CFG_REPO
 
