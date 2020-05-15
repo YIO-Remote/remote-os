@@ -25,60 +25,40 @@
 . /etc/profile.d/yio.sh
 . $(dirname $0)/common
 
-# TODO function to clean up in case of update error!
-# We don't want to end up in an update loop trying to install a corrupt archive
+WEB_CFG_REPO=web-configurator
 
 usage() {
   cat << EOF
 
-Usage:
+Usage (order of parameters is important):
 $0 FILE.(version|zip|tar)
-  Updates the YIO remote web-configurator with the provided update marker
+  Update the YIO remote web-configurator with the provided update marker
   file or archive.
   The archive may be a zip or tar archive. See wiki for update archive format.
   The archive and optional marker file are deleted after a success update!
 
 $0 -c
-  Checks for latest release version on GitHub and exit.
+  Check for latest release version on GitHub and exit.
 
 $0 [-v VERSION] -d DIRECTORY
-  Downloads a release from GitHub to given directory.
-  If version option is not provided, the latest release version is downloaded.
+  Download a release from GitHub to given directory.
+  The latest release version is downloaded if version option is not provided.
 
-$0 -l
+$0 [-f] -l
   Download and install the latest release from GitHub.
+  -f force installation if the local version is the same version.
 
 EOF
   exit 1
 }
 
-isSameVersion() {
-    local INSTALLED_VERSION=$(< ${YIO_WEB_CONFIGURATOR_DIR}/version.txt)
-
-}
-
-getLatestRelease() {
-    LATEST_RELEASE=$(curl -s "https://api.github.com/repos/YIO-Remote/web-configurator/releases/latest" | awk -F '"' '/tag_name/{print $4}')
-    if [[ -z $LATEST_RELEASE ]]; then
-        log "Error getting latest release from GitHub"
-        exit 1
-    fi
-}
-
-downloadRelease() {
-    RELEASE_FILE="YIO-web-configurator-${1}.zip"
-    log "Downloading GitHub release $1 to: ${2}/${RELEASE_FILE}"
-    curl -L --fail -o ${2}/${RELEASE_FILE} https://github.com/YIO-Remote/web-configurator/releases/download/${1}/${RELEASE_FILE}
-}
-
-downloadLatestRelease() {
-    getLatestRelease
-    downloadRelease $LATEST_RELEASE $1
-}
-
 updateLatestRelease() {
     DOWNLOAD_DIR=/tmp
-    downloadLatestRelease $DOWNLOAD_DIR
+    getLatestRelease $WEB_CFG_REPO
+
+    checkVersion $YIO_WEB_CONFIGURATOR_DIR $LATEST_RELEASE $FORCE
+
+    downloadLatestRelease $WEB_CFG_REPO $DOWNLOAD_DIR
     update $DOWNLOAD_DIR/$RELEASE_FILE
 }
 
@@ -177,11 +157,12 @@ update() {
     #------------------------------------------------------------------------------
     # Replace old backup with the current web-configurator version
     #------------------------------------------------------------------------------
-    WEBSERVER_STOPPED=$(systemctl is-active --quiet lighttpd || true)
+    WEBSERVER_RUNNING=$(systemctl is-active --quiet lighttpd && echo true || echo false)
 
-    if $WEBSERVER_STOPPED; then
+    if [[ $WEBSERVER_RUNNING == false ]]; then
         log "Web server is not running"
     else
+        log "Web server is running: stopping it..."
         systemctl stop lighttpd
     fi
 
@@ -214,13 +195,13 @@ update() {
         rm -f $MARKER_FILE
     fi
 
-    log "Update finished!"
-
     # restart lighttpd if it was running before the update 
-    if ! $WEBSERVER_STOPPED; then
-        log "Re-launching httpd..."
+    if [[ $WEBSERVER_RUNNING == true ]]; then
+        log "Re-launching web server..."
         systemctl start lighttpd
     fi
+
+    log "Update finished!"
 }
 
 #------------------------------------------------------------------------------
@@ -235,7 +216,7 @@ fi
 while getopts "cd:v:flh" optname; do
   case "$optname" in
     "c")
-      getLatestRelease
+      getLatestRelease $WEB_CFG_REPO
       echo "Latest GitHub release: $LATEST_RELEASE"
       echo "Local version:         $(< ${YIO_WEB_CONFIGURATOR_DIR}/version.txt)"
       exit 0
@@ -265,9 +246,9 @@ done
 
 if [[ $DOWNLOAD = true ]]; then
     if [[ $VERSION != "" ]]; then
-        downloadRelease $VERSION $DOWNLOAD_DIR
+        downloadRelease $WEB_CFG_REPO $VERSION $DOWNLOAD_DIR
     else
-        downloadLatestRelease $DOWNLOAD_DIR
+        downloadLatestRelease $WEB_CFG_REPO $DOWNLOAD_DIR
     fi
     exit 0
 fi

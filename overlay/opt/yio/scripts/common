@@ -66,3 +66,27 @@ downloadLatestRelease() {
     getLatestRelease $1
     downloadRelease $1 $LATEST_RELEASE $2
 }
+
+# Check installed component version against provided version.
+# Exits with return code 1 if the versions matches.
+# Parameters:
+# $1: YIO component installation directory with version.txt 
+# $2: Version number to compare against. E.g. "v0.1.2"
+# $3: Force flag (boolean) to ignore matching versions
+checkVersion() {
+    if [[ ! -f ${1}/version.txt ]]; then
+        return
+    fi
+
+    local INSTALLED_VERSION=$(< ${1}/version.txt)
+
+    if [[ $2 == $INSTALLED_VERSION ]]; then
+        if [[ $3 = true ]]; then
+            log "Forcing re-installation of version $INSTALLED_VERSION."
+            return
+        fi
+
+        log "Installed version $INSTALLED_VERSION is up-to-date. Use -f switch to force re-installing it."
+        exit 1
+    fi
+}
