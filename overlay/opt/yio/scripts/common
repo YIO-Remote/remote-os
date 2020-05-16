@@ -43,7 +43,7 @@ assertEnvVariable() {
 getLatestRelease() {
     LATEST_RELEASE=$(curl -s "https://api.github.com/repos/YIO-Remote/${1}/releases/latest" | awk -F '"' '/tag_name/{print $4}')
     if [[ -z $LATEST_RELEASE ]]; then
-        log "Error getting latest release from GitHub"
+        log "Error getting latest $1 release from GitHub"
         exit 1
     fi
 }

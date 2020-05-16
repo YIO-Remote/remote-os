@@ -1,6 +1,6 @@
 #!/bin/bash
 #------------------------------------------------------------------------------
-# YIO updater script
+# YIO app updater script
 #
 # Copyright (C) 2020 Markus Zehnder <business@markuszehnder.ch>
 # Copyright (C) 2018-2020 Marton Borzak <hello@martonborzak.com>
