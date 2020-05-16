@@ -22,9 +22,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #------------------------------------------------------------------------------
 
+DIR=$(dirname $0)
 . /etc/profile.d/yio.sh
-. $(dirname $0)/common
-. $(dirname $0)/util.bash
+. $DIR/common
+. $DIR/util.bash
 
 WEB_CFG_REPO=web-configurator
 
@@ -54,10 +55,10 @@ $0 -u
   ! NOT YET IMPLEMENTED !
   Check for available updates and exit.
 
-$0 [-v VERSION] -d DIRECTORY
-  ! NOT YET IMPLEMENTED !
-  Download a release from GitHub to given directory.
+$0 -d COMPONENT [-v VERSION] [-o DIRECTORY]
+  Download a release from GitHub to given output directory.
   The latest release version is downloaded if version option is not provided.
+  If the output directory is not provided, /tmp is used.
 
 EOF
   exit 1
@@ -77,14 +78,6 @@ PluginRepos=(
 
 #=============================================================
 
-checkRelease() {
-    getLatestRelease $1
-    echo -e "$1 GitHub release:\t$LATEST_RELEASE"
-    if [[ -z ${2}/version.txt && -f ${2}/version.txt ]]; then
-        echo -e "$1 local version :\t$(< ${2}/version.txt)"
-    fi
-}
-
 appendReleaseInfo() {
     local LOCAL_VERSION=?
     getLatestRelease $2
@@ -99,21 +92,55 @@ appendReleaseInfo() {
 
 checkReleases() {
     echo "Retrieving version information from GitHub..."
-    echo ""
-
-    echo "Component,GitHub,Installed" > /tmp/versions.txt
-    appendReleaseInfo /tmp/versions.txt remote-software $YIO_APP_DIR
-    appendReleaseInfo /tmp/versions.txt $WEB_CFG_REPO $YIO_WEB_CONFIGURATOR_DIR
-    echo "remote-os,$(getLatestRelease remote-os),$YIO_OS_VERSION" >> /tmp/versions.txt
+    local VERSION_FILE=/tmp/versions.txt
+    echo "Component,GitHub,Installed" > $VERSION_FILE
+    appendReleaseInfo $VERSION_FILE remote-software $YIO_APP_DIR
+    appendReleaseInfo $VERSION_FILE $WEB_CFG_REPO $YIO_WEB_CONFIGURATOR_DIR
+    getLatestRelease remote-os
+    echo "remote-os,$LATEST_RELEASE,$YIO_OS_VERSION" >> $VERSION_FILE
 
     for item in ${PluginRepos[*]}; do
         local PROJECT=$(awk -F, '{print $1}' <<< $item)
         local LIBFILE=${YIO_PLUGIN_DIR}/$(awk -F, '{print $2}' <<< $item)
 
-        appendReleaseInfo /tmp/versions.txt $PROJECT "" $LIBFILE
+        appendReleaseInfo $VERSION_FILE $PROJECT "" $LIBFILE
     done
     
-    printTable ',' "$(cat /tmp/versions.txt)"
+    echo ""
+    printTable ',' "$(cat $VERSION_FILE)"
+}
+
+#=============================================================
+
+parseDownloadArgs() {
+    DOWNLOAD_DIR=/tmp
+    # Process additional download options
+    while getopts ":v:o:" opt; do
+        case ${opt} in
+            v )
+            VERSION=$OPTARG
+            ;;
+            o )
+            DOWNLOAD_DIR=$OPTARG
+            ;;
+            \? )
+            echo "Invalid download option: -$OPTARG"
+            usage
+            ;;
+            : )
+            echo "Invalid download option: -$OPTARG requires an argument"
+            usage
+            ;;
+        esac
+    done
+
+    if [[ ! -z $VERSION ]]; then
+        echo "debug: downloading version $VERSION, COMPONENT=$COMPONENT, DOWNLOAD_DIR=$DOWNLOAD_DIR"
+        downloadRelease $COMPONENT $VERSION $DOWNLOAD_DIR
+    else
+        echo "debug: downloading latest release, COMPONENT=$COMPONENT, DOWNLOAD_DIR=$DOWNLOAD_DIR"
+        downloadLatestRelease $COMPONENT $DOWNLOAD_DIR
+    fi
 }
 
 #------------------------------------------------------------------------------
@@ -121,34 +148,63 @@ checkReleases() {
 #------------------------------------------------------------------------------
 # check command line arguments
 if [ "$#" -eq 0 ]; then
-  usage
+    usage
 fi
 
-while getopts "cd:v:frh" optname; do
-  case "$optname" in
-    "r")
-      checkReleases
-      exit 0
-      ;;
-    "d")
-      DOWNLOAD=true
-      DOWNLOAD_DIR="$OPTARG"
-      echo "NOT YET IMPLEMENTED!"
-      ;;
-    "v")
-      VERSION="$OPTARG"
-      ;;
-    "u")
-      echo "NOT YET IMPLEMENTED!"
-      exit 0
-      ;;
-    "h" | "?")
-      usage
-      ;;
-    *)
-      echo "Bug alert: error while processing options, check getopts definition"
-      ;;
+while getopts ":d:ruh" opt; do
+  case ${opt} in
+    r )
+        checkReleases
+        exit 0
+        ;;
+    u )
+        echo "NOT YET IMPLEMENTED!"
+        exit 1
+        ;;
+    d )
+        COMPONENT="$OPTARG"
+        shift $((OPTIND -1))
+        OPTIND=1
+        parseDownloadArgs $@
+        exit 0
+        ;;
+    h )
+        usage
+        ;;
+    : )
+        echo "Option: -$OPTARG requires an argument" 1>&2
+        usage
+        ;;
+   \? )
+        echo "Invalid option: -$OPTARG" 1>&2
+        usage
+        ;;
   esac
 done
 
-echo "NOT YET IMPLEMENTED!"
+shift $((OPTIND -1))
+OPTIND=1
+
+COMPONENT=$1; shift 
+case "$COMPONENT" in
+  app)
+    $DIR/app-update.sh $@ || exit $?
+    exit 0
+    ;;
+  web)
+    $DIR/web-configurator-update.sh $@ || exit $?
+    exit 1
+    ;;
+  os)
+    echo "os NOT YET IMPLEMENTED!"
+    exit 1
+    ;;
+  plugin)
+    echo "plugin NOT YET IMPLEMENTED!"
+    exit 1
+    ;;
+  *)
+    echo "Invalid component: $COMPONENT"
+    exit 1
+    ;;
+esac

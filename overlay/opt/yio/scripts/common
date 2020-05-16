@@ -41,9 +41,10 @@ assertEnvVariable() {
 # Output variables:
 # - LATEST_RELEASE: release version. E.g. v0.1.2
 getLatestRelease() {
-    LATEST_RELEASE=$(curl -s "https://api.github.com/repos/YIO-Remote/${1}/releases/latest" | awk -F '"' '/tag_name/{print $4}')
+    local response=$(curl -s "https://api.github.com/repos/YIO-Remote/${1}/releases/latest")
+    LATEST_RELEASE=$(echo -e "$response" | awk -F '"' '/tag_name/{print $4}')
     if [[ -z $LATEST_RELEASE ]]; then
-        log "Error getting latest $1 release from GitHub"
+        log "Error getting latest $1 release from GitHub: $response"
         exit 1
     fi
 }
@@ -57,7 +58,11 @@ getLatestRelease() {
 # - LATEST_RELEASE: release version. E.g. v0.1.2
 # - RELEASE_FILE: downloaded file name without path.
 downloadRelease() {
-    RELEASE_FILE="YIO-${1}-${2}.zip"
+    if [[ $1 == web-configurator ]]; then
+      RELEASE_FILE="YIO-${1}-${2}.zip"
+    else
+      RELEASE_FILE="YIO-${1}-${2}-RPI0-release.tar"
+    fi
     log "Downloading ${1} GitHub release $2 to: ${3}/${RELEASE_FILE}"
     curl -L --fail -o ${3}/${RELEASE_FILE} https://github.com/YIO-Remote/${1}/releases/download/${2}/${RELEASE_FILE}
 }
