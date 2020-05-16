@@ -155,6 +155,7 @@ fi
 
 md5sum -c md5sums >> $LOGFILE 2>&1
 gunzip -c app.tar.gz | tar -x >> $LOGFILE 2>&1
+cp version.txt app/ >> $LOGFILE 2>&1
 rm app.tar.gz
 
 if [[ -f ${TMPDIR}/hooks/pre-install.sh ]]; then
