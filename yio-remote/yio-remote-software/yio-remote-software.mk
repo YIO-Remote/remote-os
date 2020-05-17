@@ -112,6 +112,7 @@ define YIO_REMOTE_SOFTWARE_INSTALL_TARGET_CMDS
     $(INSTALL) -d $(TARGET_DIR)/opt/yio/app/icons $(TARGET_DIR)/opt/yio/app/fonts $(TARGET_DIR)/opt/yio/app-plugins
     $(INSTALL) -m 0755 $(@D)/app/remote $(TARGET_DIR)/opt/yio/app
     $(INSTALL) -m 0644 $(@D)/app/*.json $(TARGET_DIR)/opt/yio/app
+    $(INSTALL) -m 0644 $(@D)/version.txt $(TARGET_DIR)/opt/yio/app
     mv $(TARGET_DIR)/opt/yio/app/config.json $(TARGET_DIR)/opt/yio/app/config.json.def
     $(INSTALL) -m 0644 $(@D)/app/icons/* $(TARGET_DIR)/opt/yio/app/icons
     $(INSTALL) -m 0644 $(@D)/app/fonts/* $(TARGET_DIR)/opt/yio/app/fonts

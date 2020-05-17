@@ -5,6 +5,7 @@ export YIO_APP_DIR=${YIO_HOME}/app
 export YIO_PLUGIN_DIR=${YIO_HOME}/app-plugins
 export YIO_MEDIA_DIR=${YIO_HOME}/media
 export YIO_SCRIPT_DIR=${YIO_HOME}/scripts
+export YIO_WEB_CONFIGURATOR_DIR=${YIO_HOME}/web-configurator
 # remote-os release, set during build
 export YIO_OS_VERSION=$BUILD_VERSION
 # Git hash of the remote-os repo, set during build

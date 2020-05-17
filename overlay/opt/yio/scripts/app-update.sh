@@ -1,6 +1,7 @@
 #!/bin/bash
 #------------------------------------------------------------------------------
-# YIO updater script
+# YIO app updater script.
+# Called from main the update.sh script and remote-software.
 #
 # Copyright (C) 2020 Markus Zehnder <business@markuszehnder.ch>
 # Copyright (C) 2018-2020 Marton Borzak <hello@martonborzak.com>
@@ -24,35 +25,7 @@
 #------------------------------------------------------------------------------
 
 . /etc/profile.d/yio.sh
-
-# Exit on all command errors '-e' while still calling error trap '-E'
-# See https://stackoverflow.com/a/35800451
-set -eE
-trap 'errorTrap ${?} ${LINENO}' ERR
-
-# Helper functions
-errorTrap() {
-  log "ERROR $1 occured in $0 on line $2"
-
-  if [[ -d $TMPDIR ]]; then
-    rm -rf $TMPDIR
-  fi
-}
-
-log() {
-  echo "$*"
-  if [[ ! -z $LOGFILE ]]; then
-
-    echo `date +%FT%T%Z` "$*" >> "$LOGFILE"
-  fi
-}
-
-assertEnvVariable() {
-  if [[ -z $2 ]]; then
-    echo "$1 environment variable not set!"
-    exit 1
-  fi
-}
+. $(dirname $0)/lib/common.bash
 
 ensureScreenIsOn() {
   # TODO improve sledge hammer approach
@@ -82,7 +55,7 @@ ensureScreenIsOn() {
 # check command line arguments
 if [ $# -eq 0 ]; then
     echo "Usage: $0 update.(version|zip|tar)"
-    echo "  Updates the YIO remote app with the provided update marker file or  archive."
+    echo "  Updates the YIO remote app with the provided update marker file or archive."
     echo "  The archive may be a zip or tar archive. See wiki for update archive format."
     echo "  The archive and optional marker file are deleted after a success update!"
     exit 1
@@ -183,6 +156,7 @@ fi
 
 md5sum -c md5sums >> $LOGFILE 2>&1
 gunzip -c app.tar.gz | tar -x >> $LOGFILE 2>&1
+cp version.txt app/ >> $LOGFILE 2>&1
 rm app.tar.gz
 
 if [[ -f ${TMPDIR}/hooks/pre-install.sh ]]; then
