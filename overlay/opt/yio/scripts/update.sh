@@ -24,8 +24,8 @@
 
 DIR=$(dirname $0)
 . /etc/profile.d/yio.sh
-. $DIR/common
-. $DIR/util.bash
+. $DIR/lib/common.bash
+. $DIR/lib/util.bash
 
 #=============================================================
 
@@ -139,10 +139,8 @@ doComponentDownload() {
     done
 
     if [[ ! -z $VERSION ]]; then
-        echo "debug: downloading version $VERSION, COMPONENT=$COMPONENT, DOWNLOAD_DIR=$DOWNLOAD_DIR"
         downloadRelease $COMPONENT $VERSION $DOWNLOAD_DIR
     else
-        echo "debug: downloading latest release, COMPONENT=$COMPONENT, DOWNLOAD_DIR=$DOWNLOAD_DIR"
         downloadLatestRelease $COMPONENT $DOWNLOAD_DIR
     fi
 }

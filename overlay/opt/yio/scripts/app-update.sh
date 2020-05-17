@@ -25,7 +25,7 @@
 #------------------------------------------------------------------------------
 
 . /etc/profile.d/yio.sh
-. $(dirname $0)/common
+. $(dirname $0)/lib/common.bash
 
 ensureScreenIsOn() {
   # TODO improve sledge hammer approach

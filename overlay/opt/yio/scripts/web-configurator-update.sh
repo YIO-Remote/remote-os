@@ -24,7 +24,7 @@
 #------------------------------------------------------------------------------
 
 . /etc/profile.d/yio.sh
-. $(dirname $0)/common
+. $(dirname $0)/lib/common.bash
 
 WEB_CFG_REPO=web-configurator
 
