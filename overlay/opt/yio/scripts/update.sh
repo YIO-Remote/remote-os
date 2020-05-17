@@ -83,7 +83,7 @@ PluginRepos=(
 #=============================================================
 
 appendReleaseInfo() {
-    local LOCAL_VERSION=?
+    local LOCAL_VERSION=-
     getLatestRelease $2
     if [[ ! -z $3 && -f ${3}/version.txt ]]; then
         LOCAL_VERSION=$(< ${3}/version.txt)
