@@ -1,6 +1,7 @@
 #!/bin/bash
 #------------------------------------------------------------------------------
-# YIO app updater script
+# YIO app updater script.
+# Called from main the update.sh script and remote-software.
 #
 # Copyright (C) 2020 Markus Zehnder <business@markuszehnder.ch>
 # Copyright (C) 2018-2020 Marton Borzak <hello@martonborzak.com>

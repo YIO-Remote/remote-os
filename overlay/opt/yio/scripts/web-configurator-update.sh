@@ -1,6 +1,7 @@
 #!/bin/bash
 #------------------------------------------------------------------------------
-# YIO updater script for web-configurator
+# YIO updater script for web-configurator.
+# Called from main the update.sh script.
 #
 # Copyright (C) 2020 Markus Zehnder <business@markuszehnder.ch>
 #

@@ -1,6 +1,6 @@
 #!/bin/bash
 #------------------------------------------------------------------------------
-# YIO updater script
+# Main updater script for all YIO components.
 #
 # Copyright (C) 2020 Markus Zehnder <business@markuszehnder.ch>
 #
@@ -27,23 +27,25 @@ DIR=$(dirname $0)
 . $DIR/common
 . $DIR/util.bash
 
-WEB_CFG_REPO=web-configurator
-
 #=============================================================
 
 usage() {
   cat << EOF
 
 Usage:
-$0 COMPONENT FILE.(version|zip|tar)
-  ! NOT YET IMPLEMENTED !
+$0 COMPONENT PARAMETERS
   Update a YIO component with the provided update marker file or archive.
   The archive may be a zip or tar archive. See wiki for update archive format.
   The archive and optional marker file are deleted after a success update!
   COMPONENT:
-    app - remote-software application
-    os  - remote-os (NOT YET IMPLEMENTED)
-    web - web-configurator
+    app     remote-software application
+    web     web-configurator
+    os      remote-os (NOT YET IMPLEMENTED)
+    plugin  integration plugin (NOT YET IMPLEMTED)
+
+  PARAMETERS:
+    FILE.(version|zip|tar)  update marker file or archive
+    -h                      show help for specific component
 
 $0 -r
   Check for latest release versions on GitHub and exit.
@@ -53,12 +55,14 @@ $0 -r
 
 $0 -u
   ! NOT YET IMPLEMENTED !
-  Check for available updates and exit.
+  Check for available updates using the YIO update server and exit.
 
-$0 -d COMPONENT [-v VERSION] [-o DIRECTORY]
+$0 -d REPO [-v VERSION] [-o DIRECTORY]
   Download a release from GitHub to given output directory.
   The latest release version is downloaded if version option is not provided.
   If the output directory is not provided, /tmp is used.
+  REPO   the YIO GitHub repository name:
+         remote-software, web-configurator, integration.dock, ...
 
 EOF
   exit 1
@@ -95,7 +99,7 @@ checkReleases() {
     local VERSION_FILE=/tmp/versions.txt
     echo "Component,GitHub,Installed" > $VERSION_FILE
     appendReleaseInfo $VERSION_FILE remote-software $YIO_APP_DIR
-    appendReleaseInfo $VERSION_FILE $WEB_CFG_REPO $YIO_WEB_CONFIGURATOR_DIR
+    appendReleaseInfo $VERSION_FILE web-configurator $YIO_WEB_CONFIGURATOR_DIR
     getLatestRelease remote-os
     echo "remote-os,$LATEST_RELEASE,$YIO_OS_VERSION" >> $VERSION_FILE
 
@@ -112,7 +116,7 @@ checkReleases() {
 
 #=============================================================
 
-parseDownloadArgs() {
+doComponentDownload() {
     DOWNLOAD_DIR=/tmp
     # Process additional download options
     while getopts ":v:o:" opt; do
@@ -165,7 +169,7 @@ while getopts ":d:ruh" opt; do
         COMPONENT="$OPTARG"
         shift $((OPTIND -1))
         OPTIND=1
-        parseDownloadArgs $@
+        doComponentDownload $@
         exit 0
         ;;
     h )
