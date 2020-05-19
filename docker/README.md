@@ -82,11 +82,11 @@ By default the YIO Remote projects are stored in a Docker volume named `yio-proj
 
 Windows:
 
-        SET YIO_BUILD_OUTPUT=d:/projects/yio
+        SET YIO_BUILD_SOURCE=d:/projects/yio
 
 Linux & macOS:
 
-        export YIO_BUILD_OUTPUT=/projects/yio
+        export YIO_BUILD_SOURCE=/projects/yio
 
 Note: bind mounting the project folder from the host will have a negative build performance impact on macOS and Windows.
 

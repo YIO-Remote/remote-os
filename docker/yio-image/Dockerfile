@@ -35,6 +35,7 @@ RUN sed --in-place "s@http://archive\.ubuntu\.com@$UBUNTU_MIRROR@g" /etc/apt/sou
     git \
     libncurses5-dev \
     libtool \
+    npm \
     patch \
     python \
     qt5-qmake \
