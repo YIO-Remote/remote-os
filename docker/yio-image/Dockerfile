@@ -47,7 +47,8 @@ RUN sed --in-place "s@http://archive\.ubuntu\.com@$UBUNTU_MIRROR@g" /etc/apt/sou
     tzdata \
     wget \
     whois \
-	&& apt-get clean
+	&& apt-get clean \
+	&& npm i npm@latest -g
 
 # -----------------------------------------------------------------------------
 # Start new stage for installing Qt
