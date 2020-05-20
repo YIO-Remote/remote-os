@@ -21,6 +21,7 @@ VERSION_FILE=$1
 DEF_VER=UNKNOWN
 LF='
 '
+cd $(dirname $0)
 
 if test -f "$VERSION_FILE"
 then
@@ -40,7 +41,6 @@ then
 	# BUILD_VERSION=$(echo "$BUILD_VERSION" | sed -e 's/-/./g');
 	:
 else
-    # TODO add version logic for develop and feature branches?
 	BUILD_VERSION="$DEF_VER"
 fi
 
