@@ -75,7 +75,9 @@ DOCKER_IMG_NAME=${TARGET_REPO}${BASE_IMAGE_NAME}
 echo "Building image '$DOCKER_IMG_NAME' ..."
 
 BUILD_START=$(date '+%s')
-DOCKER_BUILD="$DOCKEROPS $PROXY_SETTINGS -t $DOCKER_IMG_NAME -f Dockerfile ."
+VERSION=`git describe --match "v[0-9]*" --tags HEAD --always`
+REVISION=`git rev-parse HEAD`
+DOCKER_BUILD="$DOCKEROPS --build-arg BUILD_DATE=`date +%FT%TZ` --build-arg VERSION=$VERSION --build-arg REVISION=$REVISION $PROXY_SETTINGS -t $DOCKER_IMG_NAME -f Dockerfile ."
 echo "#####################################################"
 echo "INFO: docker build $DOCKER_BUILD"
 echo "#####################################################"
