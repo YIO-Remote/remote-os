@@ -56,6 +56,7 @@ docker version &> /dev/null || {
 
 if [ "$1" = "info" ]; then
     echo "Using docker image                   : $YIO_DOCKER_IMG"
+    echo "Docker image version                 : `docker inspect --format '{{ index .Config.Labels "org.opencontainers.image.version"}}' $YIO_DOCKER_IMG`"
 	echo "Storing build output in              : $YIO_BUILD_OUTPUT"
 fi
 

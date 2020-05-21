@@ -1,6 +1,19 @@
 FROM ubuntu:19.10 as base
 
-LABEL maintainer="Markus.Zehnder@trivadis.com"
+# Labels, see: https://github.com/opencontainers/image-spec/blob/master/annotations.md
+ARG BUILD_DATE
+ARG VERSION
+ARG REVISION
+LABEL org.opencontainers.image.created=$BUILD_DATE
+LABEL org.opencontainers.image.authors="markus.zehnder@trivadis.com"
+LABEL org.opencontainers.image.url="https://github.com/YIO-Remote/remote-os/tree/master/docker"
+LABEL org.opencontainers.image.source="https://github.com/YIO-Remote/remote-os.git"
+LABEL org.opencontainers.image.version=$VERSION
+LABEL org.opencontainers.image.revision=$REVISION
+LABEL org.opencontainers.image.vendor="YIO"
+LABEL org.opencontainers.image.title="YIO Build Image"
+LABEL org.opencontainers.image.description="Buildroot cross compile image for YIO remote-os running on Raspberry Pi 0 W"
+# END Labels
 
 ARG UBUNTU_MIRROR="http://mirror.init7.net"
 ARG YIO_REMOTE_UID=1000
@@ -30,23 +43,29 @@ RUN sed --in-place "s@http://archive\.ubuntu\.com@$UBUNTU_MIRROR@g" /etc/apt/sou
     build-essential \
     ca-certificates \
     cpio \
+    curl \
+    file \
     g++ \
     gettext \
     git \
+    gzip \
     libncurses5-dev \
+    libssl-dev \
     libtool \
+    mc \
+    nano \
+    npm \
     patch \
     python \
     qt5-qmake \
-    texinfo \
-    unzip \
-    mc \
-    nano \
     rsync \
+    tar \
+    texinfo \
     tzdata \
+    unzip \
     wget \
-    whois \
-	&& apt-get clean
+	&& apt-get clean \
+	&& npm i npm@latest -g
 
 # -----------------------------------------------------------------------------
 # Start new stage for installing Qt
