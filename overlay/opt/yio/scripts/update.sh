@@ -76,8 +76,9 @@ PluginRepos=(
     "integration.home-assistant,libhomeassistant.so"
     "integration.openhab,libopenhab.so"
     "integration.spotify,libspotify.so"
-    "integration.openweather,libopenweather.so"
+    "integration.bangolufsen,libbangolufsen.so"
     "integration.roon,libroon.so"
+    "integration.openweather,libopenweather.so"
 )
 
 #=============================================================

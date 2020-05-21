@@ -14,6 +14,7 @@ include ../yio-remote/yio-integration-dock/yio-integration-dock.mk
 include ../yio-remote/yio-integration-homeassistant/yio-integration-homeassistant.mk
 include ../yio-remote/yio-integration-homey/yio-integration-homey.mk
 include ../yio-remote/yio-integration-spotify/yio-integration-spotify.mk
+include ../yio-remote/yio-integration-bangolufsen/yio-integration-bangolufsen.mk
 include ../yio-remote/yio-integration-openhab/yio-integration-openhab.mk
 include ../yio-remote/yio-integration-openweather/yio-integration-openweather.mk
 include ../yio-remote/yio-integration-roon/yio-integration-roon.mk
