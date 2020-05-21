@@ -1,7 +1,7 @@
 if BR2_PACKAGE_YIO_REMOTE_INTEGRATIONS
 
 config BR2_PACKAGE_YIO_INTEGRATION_OPENWEATHER
-	bool "OpenWeather integration (UNDER DEVELOPMENT)"
+	bool "OpenWeather integration (EXPERIMENTAL!)"
 	default n
 	# only binary GitHub support for now
 	depends on BR2_PACKAGE_YIO_REMOTE_BIN_RELEASE
