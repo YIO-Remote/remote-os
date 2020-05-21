@@ -35,7 +35,9 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 IF "%1" == "info" (
+	FOR /F "tokens=* USEBACKQ" %%g IN (`docker inspect --format '{{ index .Config.Labels "org.opencontainers.image.version"}}' %YIO_DOCKER_IMG%`) do (SET "IMG_VERSION=%%g")
     ECHO Using docker image                   : %YIO_DOCKER_IMG%
+	ECHO Docker image version                 : %IMG_VERSION%
 	ECHO Storing build output in              : %YIO_BUILD_OUTPUT%
 )
 
