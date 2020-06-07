@@ -1,3 +1,2 @@
 #!/bin/bash
-#awk '{print int($1/3600)":"int(($1%3600)/60)":"int($1%60)}' /proc/uptime
-uptime | awk -F'( |,|:)+' '{print $6,"hours,",$7,"minutes"}'
+uptime | awk -F'( |,|:)+' '{d=h=m=0; if ($7=="min") m=$6; else {if ($7~/^day/) {d=$6;h=$8;m=$9} else {h=$6;m=$7}}} {print d+0,"d",h+0,"h",m+0,"m"}'
