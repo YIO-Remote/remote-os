@@ -35,6 +35,13 @@ assertEnvVariable() {
   fi
 }
 
+assertInstalled() {
+  command -v $1 >/dev/null 2>&1 || { 
+    echo >&2 "Program $1 not installed. Aborting.";
+    exit 1;
+  }
+}
+
 # Retrieve the latest release version from GitHub for the given repository.
 # Parameters:
 # $1: YIO GitHub repository. E.g. web-configurator, remote-software, etc.
@@ -116,4 +123,23 @@ confirm() {
             false
             ;;
     esac
+}
+
+ensureScreenIsOn() {
+  # TODO improve sledge hammer approach
+  # FIXME this doesn't fully work if screen is put in standby from the YIO app.
+  #       It's not waking up instantly but much later when the update is almost finished!?
+
+  # make sure the screen and backlight are on, otherwise we'll end up with a dark screen!
+  ${YIO_HOME}/scripts/sharp-init
+
+  if [[ -f $1 ]]; then
+      fbv -d 1 "$1"
+  fi
+
+  gpio -g mode 12 pwm
+  gpio pwm-ms
+  gpio pwmc 1000
+  gpio pwmr 100
+  gpio -g pwm 12 100
 }

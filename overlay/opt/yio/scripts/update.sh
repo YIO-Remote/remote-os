@@ -40,8 +40,8 @@ $0 COMPONENT PARAMETERS
   COMPONENT:
     app     remote-software application
     web     web-configurator
+    plugin  integration plugin
     os      remote-os (NOT YET IMPLEMENTED)
-    plugin  integration plugin (NOT YET IMPLEMTED)
 
   PARAMETERS:
     FILE.(version|zip|tar)  update marker file or archive
@@ -88,14 +88,23 @@ appendReleaseInfo() {
     getLatestRelease $2
     if [[ ! -z $3 && -f ${3}/version.txt ]]; then
         LOCAL_VERSION=$(< ${3}/version.txt)
-    elif [[ ! -z $4 && -f $4 ]]; then
-        # TODO query plugin metadata. Probably need to write a little qt utility...
-        LOCAL_VERSION=x
+    fi
+    echo "$2,$LATEST_RELEASE,$LOCAL_VERSION" >> $1
+}
+
+appendPluginReleaseInfo() {
+    local LOCAL_VERSION=-
+    getLatestRelease $2
+    if [[ -f $3 ]]; then
+        LOCAL_VERSION=`qtplugininfo --full-json -f compact $3 | jq '.MetaData.version' | tr -d '"'`
     fi
     echo "$2,$LATEST_RELEASE,$LOCAL_VERSION" >> $1
 }
 
 checkReleases() {
+    assertInstalled qtplugininfo
+    assertInstalled jq
+
     echo "Retrieving version information from GitHub..."
     local VERSION_FILE=/tmp/versions.txt
     echo "Component,GitHub,Installed" > $VERSION_FILE
@@ -108,7 +117,7 @@ checkReleases() {
         local PROJECT=$(awk -F, '{print $1}' <<< $item)
         local LIBFILE=${YIO_PLUGIN_DIR}/$(awk -F, '{print $2}' <<< $item)
 
-        appendReleaseInfo $VERSION_FILE $PROJECT "" $LIBFILE
+        appendPluginReleaseInfo $VERSION_FILE $PROJECT $LIBFILE
     done
     
     echo ""
@@ -203,8 +212,8 @@ case "$COMPONENT" in
     exit 1
     ;;
   plugin)
-    echo "plugin NOT YET IMPLEMENTED!"
-    exit 1
+    $DIR/app-plugin-update.sh $@ || exit $?
+    exit 0
     ;;
   *)
     echo "Invalid component: $COMPONENT"
