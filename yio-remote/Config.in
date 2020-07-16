@@ -98,7 +98,7 @@ endchoice
 config BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR_LOCATION
 	string "URL of custom app binary folder"
 	default "~/projects/yio/binaries/linux-gcc-arm"
-	depends on BR2_PACKAGE_YIO_REMOTE_SOFTWARE_CUSTOM_BIN_DIR
+	depends on BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR
 	help
 	  Local folder containing pre-compiled binaries for the target platform.
 	  The folder must contain debug and release subdirectories.
