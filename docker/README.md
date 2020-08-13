@@ -2,9 +2,11 @@
 
 This Docker image builds the Buildroot toolchain,  cross compiles all required Qt projects from the [YIO-Remote Git repositories](https://github.com/YIO-Remote) and builds the SD card image for the Raspberry Pi Zero.
 
-Image name: `gcr.io/yio-remote/build`
+Image name: ~~`gcr.io/yio-remote/build`~~ 
 
-For now the image is publicly available in the gcr.io container registry and doesn't need to be built manually. Docker will automatically download it.
+~~For now the image is publicly available in the gcr.io container registry and doesn't need to be built manually. Docker will automatically download it.~~
+
+> The image is currently unavailable. It will be made available soon on Docker hub!
 
 Further documentation can be found in the documentation wiki: <https://github.com/YIO-Remote/documentation/wiki>
 
