@@ -33,7 +33,7 @@ Features:
 - YIO Remote projects can be bind mounted from the host or stored in a Docker Volume.
 - A convenient build script handles all common build tasks (single project builds, full build, Git operations, etc.).
 
-See dedicated [Docker Readme](docker/README.md) for further information.
+See dedicated [docker-build project](https://github.com/YIO-Remote/docker-build) for further information.
 
 ### Linux
 
