@@ -1,2 +1,4 @@
 /dev/root       /           auto    rw         0 1
 /dev/mmcblk0p1  /boot       vfat    rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro    0 2
+/dev/mmcblk0p6  /var        auto    rw         0 2
+/dev/mmcblk0p7  /user       auto    rw         0 2

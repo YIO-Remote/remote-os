@@ -42,6 +42,18 @@ unix2dos ${BINARIES_DIR}/README.md
 # create SD card image
 rm -rf "${GENIMAGE_TMP}"
 
+rm -rf ${BINARIES_DIR}/recovery.ext4
+dd if=/dev/zero of=${BINARIES_DIR}/recovery.ext4 bs=1M count=752
+mke2fs -t ext4 -L 'YIO recovery' ${BINARIES_DIR}/recovery.ext4
+
+rm -rf ${BINARIES_DIR}/varfs.ext4
+dd if=/dev/zero of=${BINARIES_DIR}/varfs.ext4 bs=1M count=356
+mke2fs -t ext4 -L 'YIO var' ${BINARIES_DIR}/varfs.ext4
+
+rm -rf ${BINARIES_DIR}/userdata.ext4
+dd if=/dev/zero of=${BINARIES_DIR}/userdata.ext4 bs=1M count=280
+mke2fs -t ext4 -L 'YIO data' ${BINARIES_DIR}/userdata.ext4
+
 genimage                           \
 	--rootpath "${TARGET_DIR}"     \
 	--tmppath "${GENIMAGE_TMP}"    \
