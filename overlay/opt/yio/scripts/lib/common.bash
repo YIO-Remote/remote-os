@@ -11,12 +11,23 @@
 # See https://stackoverflow.com/a/35800451
 set -eE
 trap 'errorTrap ${?} ${LINENO}' ERR
+trap finish EXIT
 
 errorTrap() {
   log "ERROR $1 occured in $0 on line $2"
 
   if [[ -d $TMPDIR ]]; then
     rm -rf $TMPDIR
+  fi
+
+  log "Remounting root filesystem as ro"
+  mount -o ro,remount /
+}
+
+finish() {
+  if cat /proc/mounts | grep " / " | grep "[ ,]rw[ ,]"; then
+    log "Remounting root filesystem as ro"
+    mount -o ro,remount /  || true
   fi
 }
 

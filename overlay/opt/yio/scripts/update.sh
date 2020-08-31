@@ -127,7 +127,7 @@ checkReleases() {
 #=============================================================
 
 doComponentDownload() {
-    DOWNLOAD_DIR=/tmp
+    DOWNLOAD_DIR=/data/download
     # Process additional download options
     while getopts ":v:o:" opt; do
         case ${opt} in
@@ -147,6 +147,8 @@ doComponentDownload() {
             ;;
         esac
     done
+
+    mkdir -p $DOWNLOAD_DIR
 
     if [[ ! -z $VERSION ]]; then
         downloadRelease $COMPONENT $VERSION $DOWNLOAD_DIR

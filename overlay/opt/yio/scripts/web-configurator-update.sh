@@ -128,6 +128,10 @@ update() {
     # Start update process!
     #------------------------------------------------------------------------------
 
+    log "Remounting root filesystem as rw"
+    mount -o rw,remount /
+    # ro re-mount is done in exit handler!
+
     #------------------------------------------------------------------------------
     # Extract update archive to temp location
     #------------------------------------------------------------------------------

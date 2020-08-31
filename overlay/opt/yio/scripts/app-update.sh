@@ -101,6 +101,10 @@ log "Installation directory: $YIO_APP_DIR"
 
 ensureScreenIsOn "${YIO_SPLASH_DIR}/update.png"
 
+log "Remounting root filesystem as rw"
+mount -o rw,remount /
+# ro re-mount is done in exit handler!
+
 #------------------------------------------------------------------------------
 # Extract update archive to temp location
 #------------------------------------------------------------------------------
