@@ -1,4 +1,7 @@
-/dev/root       /           auto    rw         0 1
-/dev/mmcblk0p1  /boot       vfat    rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro    0 2
-/dev/mmcblk0p6  /var        auto    rw         0 2
-/dev/mmcblk0p7  /user       auto    rw         0 2
+/dev/root       /             auto    ro                   0 0
+/dev/mmcblk0p1  /boot         vfat    rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro    0 2
+/dev/mmcblk0p6  /var          auto    rw,x-systemd.growfs  0 2
+/dev/mmcblk0p7  /home         auto    rw,x-systemd.growfs  0 2
+/var/home       /root         none    defaults,bind        0 0
+/var/hostname   /etc/hostname none    defaults,bind,nofail 0 0
+/var/wpa_supplicant  /etc/wpa_supplicant  none  defaults,bind  0 0

@@ -40,19 +40,17 @@ sed -i "s/\$BUILD_DATE/$BUILD_DATE/g" ${BINARIES_DIR}/README.md
 unix2dos ${BINARIES_DIR}/README.md
 
 # create SD card image
+rm -rf "${TARGET_DIR}/var"
+mv "${GENIMAGE_TMP}/var" "${TARGET_DIR}/"
+
 rm -rf "${GENIMAGE_TMP}"
 
+cp ${TARGET_DIR}/etc/hostname ${TARGET_DIR}/var/hostname
+
+# TODO implement recovery image. This is just a placeholder partition for now.
 rm -rf ${BINARIES_DIR}/recovery.ext4
 dd if=/dev/zero of=${BINARIES_DIR}/recovery.ext4 bs=1M count=752
 mke2fs -t ext4 -L 'YIO recovery' ${BINARIES_DIR}/recovery.ext4
-
-rm -rf ${BINARIES_DIR}/varfs.ext4
-dd if=/dev/zero of=${BINARIES_DIR}/varfs.ext4 bs=1M count=356
-mke2fs -t ext4 -L 'YIO var' ${BINARIES_DIR}/varfs.ext4
-
-rm -rf ${BINARIES_DIR}/userdata.ext4
-dd if=/dev/zero of=${BINARIES_DIR}/userdata.ext4 bs=1M count=280
-mke2fs -t ext4 -L 'YIO data' ${BINARIES_DIR}/userdata.ext4
 
 genimage                           \
 	--rootpath "${TARGET_DIR}"     \
@@ -77,5 +75,9 @@ zip -j ${BINARIES_DIR}/yio-remote-sdcard.zip ${BINARIES_DIR}/yio-remote-sdcard.i
 
 echo "Cleaning up partition image files ..."
 rm ${BINARIES_DIR}/kernel.img
+
+rm ${BINARIES_DIR}/recovery.ext4
+rm ${BINARIES_DIR}/varfs.ext4
+rm ${BINARIES_DIR}/homefs.ext4
 
 exit $?

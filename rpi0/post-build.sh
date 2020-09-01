@@ -17,6 +17,7 @@ BUILD_VERSION=$("$SCRIPT_DIR/git-version.sh" "$BR2_EXTERNAL/version")
 
 echo "Setting build version in YIO env variable: $BUILD_VERSION"
 sed -i "s/\$BUILD_VERSION/$BUILD_VERSION/g" $1/etc/profile.d/yio.sh
+echo "$BUILD_VERSION" > ${TARGET_DIR}/etc/VERSION.txt
 
 # We need the Git hash of remote-os and not of the buildroot submodule!
 GIT_HASH=`cd $SCRIPT_DIR; git rev-parse HEAD`
@@ -27,3 +28,8 @@ sed -i "s/\$GIT_HASH/$GIT_HASH/g" $1/etc/profile.d/yio.sh
 QT_VERSION=`$HOST_DIR/bin/qmake -query QT_VERSION`
 echo "Setting Qt version in env variable: $QT_VERSION"
 sed -i "s/\$QT_VERSION/$QT_VERSION/g" $1/etc/profile.d/qt.sh
+
+# Relocate dropbear's key storage from /etc/dropbear to /var/lib/dropbear
+# See also: ../overlay/etc/systemd/system/dropbear.service.d/create-host-key-directory.conf
+rm -f ${TARGET_DIR}/etc/dropbear
+ln -s /var/lib/dropbear ${TARGET_DIR}/etc/dropbear

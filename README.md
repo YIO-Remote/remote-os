@@ -51,6 +51,7 @@ Install required tools:
           bzip2 \
           g++ \
           gdb-multiarch \
+          genext2fs \
           gettext \
           git \
           libavahi-client-dev \
@@ -177,8 +178,8 @@ Use [balenaEtcher](https://www.balena.io/etcher/) - available for Linux, macOS a
 
 If something doesn't work correctly, especially after changing any Buildroot configuration settings, do a clean rebuild:
 
-  make clean
-  make
+    make clean
+    make
 
 Buildroot uses agressive caching and in many cases doesn't support incremental builds.
 

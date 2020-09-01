@@ -11,9 +11,7 @@ then
         # stop wifi
         systemctl stop wpa_supplicant@wlan0.service
         sleep 5
-        # copy config file
-        # FIXME(zehnm) re-configure wpa_supplicant to use /data/etc/wpa_supplicant-wlan0.conf: /etc is no longer writeable!
-        mkdir -p /etc/wpa_supplicant
+        # copy config file (Note: /etc/wpa_supplicant is bind mounted to /var/wpa_supplicant)
         cp /boot/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
         # restart wifi
         systemctl start wpa_supplicant@wlan0.service
