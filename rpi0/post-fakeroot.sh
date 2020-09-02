@@ -5,3 +5,8 @@ set -ev
 rm -rf "${GENIMAGE_TMP}/var"
 mv "${TARGET_DIR}/var" "${GENIMAGE_TMP}/"
 mkdir -p "${TARGET_DIR}/var"
+
+# Add mount points
+mkdir -p "${TARGET_DIR}/boot"
+mkdir -p "${TARGET_DIR}/home"
+mkdir -p "${TARGET_DIR}/etc/wpa_supplicant"
