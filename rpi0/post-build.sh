@@ -33,3 +33,11 @@ sed -i "s/\$QT_VERSION/$QT_VERSION/g" $1/etc/profile.d/qt.sh
 # See also: ../overlay/etc/systemd/system/dropbear.service.d/create-host-key-directory.conf
 rm -f ${TARGET_DIR}/etc/dropbear
 ln -s /var/lib/dropbear ${TARGET_DIR}/etc/dropbear
+
+# Add mount points
+mkdir -p "${TARGET_DIR}/boot"
+mkdir -p "${TARGET_DIR}/etc/wpa_supplicant"
+
+# additional directories
+# - due to log error: bluetoothd[135]: Unable to open adapter storage directory: /var/lib/bluetooth/<MAC:ADDR>
+mkdir -p "${TARGET_DIR}/var/lib/bluetooth"

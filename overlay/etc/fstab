@@ -4,4 +4,7 @@
 /dev/mmcblk0p7  /home         auto    rw,x-systemd.growfs  0 2
 /var/home       /root         none    defaults,bind        0 0
 /var/hostname   /etc/hostname none    defaults,bind,nofail 0 0
+/var/hosts      /etc/hosts    none    defaults,bind,nofail 0 0
+/var/machine-id /etc/machine-id  none    defaults,bind,nofail 0 0
+#/var/timezone   /etc/timezone    none    defaults,bind,nofail 0 0
 /var/wpa_supplicant  /etc/wpa_supplicant  none  defaults,bind  0 0

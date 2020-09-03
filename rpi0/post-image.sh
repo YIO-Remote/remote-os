@@ -40,12 +40,16 @@ sed -i "s/\$BUILD_DATE/$BUILD_DATE/g" ${BINARIES_DIR}/README.md
 unix2dos ${BINARIES_DIR}/README.md
 
 # create SD card image
+# restore /var which we excluded from the root file system in post-fakeroot.sh.
+# genimage will reference it for the var image creation with the mountpoint parameter
 rm -rf "${TARGET_DIR}/var"
 mv "${GENIMAGE_TMP}/var" "${TARGET_DIR}/"
 
 rm -rf "${GENIMAGE_TMP}"
 
 cp ${TARGET_DIR}/etc/hostname ${TARGET_DIR}/var/hostname
+cp ${TARGET_DIR}/etc/hosts ${TARGET_DIR}/var/hosts
+cp ${TARGET_DIR}/etc/machine-id ${TARGET_DIR}/var/machine-id
 
 # TODO implement recovery image. This is just a placeholder partition for now.
 rm -rf ${BINARIES_DIR}/recovery.ext4
