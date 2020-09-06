@@ -8,6 +8,7 @@ then
     #--------------------
     # Do some setup with services
     #--------------------
+    systemctl disable systemd-timesyncd.service
     systemctl disable dhcpcd.service
     systemctl disable lighttpd.service
 
