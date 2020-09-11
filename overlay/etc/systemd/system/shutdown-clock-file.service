@@ -1,0 +1,11 @@
+[Unit]
+Description=Final clock file update before shutdown
+RequiresMountsFor=/
+
+[Service]
+ExecStop=/etc/update_clock_file.sh
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
