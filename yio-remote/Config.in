@@ -31,7 +31,7 @@ if BR2_PACKAGE_YIO_REMOTE
 # Custom versions can be enabled with: BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
 config BR2_PACKAGE_YIO_REMOTE_SOFTWARE_VERSION_DEF
 	string
-	default "v0.5.3"
+	default "v0.6.0"
 config BR2_PACKAGE_YIO_WEB_CONFIGURATOR_VERSION_DEF
 	string
 	default "v0.2.1"
