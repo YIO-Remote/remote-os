@@ -3,7 +3,7 @@
 set -u
 set -e
 
-SCRIPT_DIR=$(dirname $0)
+SCRIPT_DIR="$(dirname $0)"
 
 # Add a console on tty1
 if [ -e ${TARGET_DIR}/etc/inittab ]; then
