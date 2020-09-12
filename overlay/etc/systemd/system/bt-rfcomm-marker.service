@@ -1,7 +1,8 @@
 [Unit]
-Description=RFCOMM service
+Description=Bluetooth console activated with /boot/btconsole marker
 After=bluetooth.service
-Requires=bluetooth.service
+PartOf=bluetooth.service
+Requires=bluetooth.service bt-agent-marker.service
 RequiresMountsFor=/boot
 ConditionPathExists=/boot/btconsole
 
@@ -12,4 +13,4 @@ ExecStartPre=/bin/hciconfig hci0 piscan
 ExecStart=/bin/rfcomm watch hci0 1 getty rfcomm0 115200 vt100
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=bluetooth.target

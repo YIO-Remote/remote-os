@@ -1,14 +1,12 @@
 #!/bin/bash
+
+# This script is started by systemd and profile.d environment is not set!
 . /etc/profile.d/yio.sh
+. /etc/profile.d/qt.sh
 
 ${YIO_SCRIPT_DIR}/wifi-copy-config.sh
 
 ${YIO_SCRIPT_DIR}/firstrun.sh
-
-export QT_QPA_EVDEV_TOUCHSCREEN_PARAMETERS=/dev/input/event0:rotate=90:invertx
-export QT_QPA_EGLFS_PHYSICAL_WIDTH=46
-export QT_QPA_EGLFS_PHYSICAL_HEIGHT=76
-export QT_QPA_EGLFS_FORCE888=1
 
 # check if something went wrong during the last app update
 if [[ ! -d $YIO_APP_DIR ]] && [[ -d ${YIO_HOME}/app-previous ]]; then

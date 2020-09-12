@@ -4,7 +4,7 @@ DefaultDependencies=false
 
 [Service]
 Type=simple
-ExecStart=/opt/yio/scripts/sharp-backlight-init.sh
+ExecStart=/opt/yio/scripts/backlight-init
 RemainAfterExit=yes
 
 [Install]

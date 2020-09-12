@@ -17,8 +17,7 @@ Requirements:
 - At least 4 GB RAM. More RAM = better file system caching.
 - Fast CPU. More cores = quicker build times.
 - Internet connection: packages will be downloaded during the build.
-- 1+ GB microSD card
-  - Future images might be larger!
+- 4 GB microSD card
   - Recommended card: Samsung EVO Plus (64 and 128GB have much higher write speed!)
   - See: [RPi microSD card performance comparison 2019](https://www.jeffgeerling.com/blog/2019/raspberry-pi-microsd-card-performance-comparison-2019)
 
@@ -176,6 +175,13 @@ Use [balenaEtcher](https://www.balena.io/etcher/) - available for Linux, macOS a
 
 ## Troubleshooting
 
+If something doesn't work correctly, especially after changing any Buildroot configuration settings, do a clean rebuild:
+
+  make clean
+  make
+
+Buildroot uses agressive caching and in many cases doesn't support incremental builds.
+
 ### Build Errors
 
 #### make fails while downloading package
@@ -185,21 +191,3 @@ Error symptom: a package cannot be downloaded from <http://sources.buildroot.net
 Cause: Buildroot source server is down or overloaded
 
 Solution: try again the next day
-
-#### journald fails to build
-
-Error symptom:
-```
-../src/basic/build.h:4:10: fatal error: version.h: No such file or directory
- #include "version.h"
-          ^~~~~~~~~~~
-...
-ninja: build stopped: subcommand failed.
-make[2]: *** [package/pkg-generic.mk:241: .../remote-os/rpi0/output/build/systemd-241/.stamp_built] Error 1
-```
-
-Cause: journald build bug when using many cores/threads (> 16)
-
-Solution: reduce make parallelism
-
-    make BR2_JLEVEL=12

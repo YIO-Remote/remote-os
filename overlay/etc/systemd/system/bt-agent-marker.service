@@ -1,0 +1,14 @@
+[Unit]
+Description=Simple Bluetooth agent for boot serial console activated with /boot/btconsole marker
+After=bluetooth.service
+PartOf=bluetooth.service
+Requires=bluetooth.service
+RequiresMountsFor=/boot
+ConditionPathExists=/boot/btconsole
+
+[Service]
+Type=simple
+ExecStart=/bin/bt-agent -c NoInputNoOutput
+
+[Install]
+WantedBy=bluetooth.target

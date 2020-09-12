@@ -68,7 +68,13 @@ downloadRelease() {
     if [[ $1 == web-configurator ]]; then
       RELEASE_FILE="YIO-${1}-${2}.zip"
     else
-      RELEASE_FILE="YIO-${1}-${2}-RPI0-release.tar"
+      if [[ -z $QT_VERSION ]]; then
+        log "WARN: Env variable QT_VERSION not defined"
+        OS_ARCH="RPI0-release"
+      else
+        OS_ARCH="RPI0-Qt$QT_VERSION"
+      fi
+      RELEASE_FILE="YIO-${1}-${2}-${OS_ARCH}.tar"
     fi
     log "Downloading ${1} GitHub release $2 to: ${3}/${RELEASE_FILE}"
     curl -L --fail -o ${3}/${RELEASE_FILE} https://github.com/YIO-Remote/${1}/releases/download/${2}/${RELEASE_FILE}
