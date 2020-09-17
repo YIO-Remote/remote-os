@@ -1,0 +1,16 @@
+# Workaround: Buildroot 2020.02.6 insists on using dbus with wpa_supplicant and doesn't support interface templates anymore.
+# It even deletes the wpa_supplicant@wlan0.service symlink in multi-user.target.wants just before creating the file system image.
+# So we just put the template version with hard coded wlan0 interface name in its target place...
+[Unit]
+Description=WPA supplicant daemon (interface-specific version)
+Requires=sys-subsystem-net-devices-wlan0.device
+After=sys-subsystem-net-devices-wlan0.device
+Before=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/wpa_supplicant -c/etc/wpa_supplicant/wpa_supplicant-wlan0.conf -iwlan0
+
+[Install]
+WantedBy=multi-user.target
