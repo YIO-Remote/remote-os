@@ -3,8 +3,6 @@ if BR2_PACKAGE_YIO_REMOTE_INTEGRATIONS
 config BR2_PACKAGE_YIO_INTEGRATION_HOMEASSISTANT
 	bool "Home Assistant integration"
 	default y
-	# only binary GitHub support for now
-	depends on BR2_PACKAGE_YIO_REMOTE_BIN_RELEASE
 	help
 	  Includes the YIO Home Assistant integration plugin.
 	  https://github.com/YIO-Remote/integration.home-assistant
@@ -16,9 +14,11 @@ config BR2_PACKAGE_YIO_INTEGRATION_HOMEASSISTANT_CUSTOM_VERSION
 	default BR2_PACKAGE_YIO_INTEGRATION_HOMEASSISTANT_VERSION_DEF
 	depends on BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
 	help
-	  Custom version. Set version number with 'v' prefix,
-	  e.g. v0.3.0 or v0.4.0
+	  Custom version. Either a GitHub tag or commit hash.
+	  Set version number with 'v' prefix, e.g. v0.3.0 or v0.4.0
 	  See https://github.com/YIO-Remote/integration.home-assistant/releases
+	  Attention: Git branch names are not supported!
+	  See Buildroot manual for details.
 
 config BR2_PACKAGE_YIO_INTEGRATION_HOMEASSISTANT_VERSION
 	string

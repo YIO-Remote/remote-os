@@ -37,7 +37,7 @@ See dedicated [docker-build project](https://github.com/YIO-Remote/docker-build)
 
 ### Linux
 
-The build process has been tested on Ubuntu 18.04.3, 19.04 and 19.10. Other Linux distributions should work as well.
+The build process has been tested on Ubuntu 18.04.3, and 20.04. Other Linux distributions should work as well.
 
 #### Prepare Build Environment
 
@@ -45,18 +45,24 @@ The minimal [Ubuntu 18.04.3 LTS Server](http://cdimage.ubuntu.com/releases/18.04
 
 Install required tools:
 
-1. Prepare Ubuntu to build the Buildroot toolchain:
+1. Prepare Ubuntu to build the Buildroot toolchain and compile the YIO Qt projects:
 
         sudo apt-get install \
           build-essential \
+          bzip2 \
           g++ \
+          gdb-multiarch \
           gettext \
-          patch \
           git \
+          libavahi-client-dev \
+          libgl1-mesa-dev \
           libncurses5-dev \
           libtool \
           npm \
+          patch \
           python \
+          rsync \
+          tar \
           texinfo \
           unzip \
           screen \
@@ -65,12 +71,6 @@ Install required tools:
    The system is now ready to compile Buildroot and build the base Linux image for YIO.
 
 2. Optional: install Qt with the [Qt online installer](https://www.qt.io/download-open-source).
-
-3. Optional: dependencies for Qt development and building Linux target in Qt Creator:
-
-        sudo apt-get install \
-            libavahi-client-dev \
-            libgl1-mesa-dev
 
 ## Build SD Card Image
 
@@ -123,32 +123,32 @@ Individual YIO components can be selected or deselected within menuconfig:
 Navigate to: External options -> Yio remote
 
 ```
- → External options → YIO remote ──────────────────────────────────────
-  ┌────────────────────────── YIO remote ───────────────────────────┐
-  │  Arrow keys navigate the menu.  <Enter> selects submenus --->   │
-  │  (or empty submenus ----).  Highlighted letters are hotkeys.    │
-  │  Pressing <Y> selects a feature, while <N> excludes a feature.  │
-  │  Press <Esc><Esc> to exit, <?> for Help, </> for Search.        │
-  │ ┌─────────────────────────────────────────────────────────────┐ │
-  │ │    --- YIO remote                                           │ │
-  │ │          Source (Binary GitHub releases)  --->              │ │
-  │ │    [ ]   Debug build                                        │ │
-  │ │    [ ]   Custom versions (DANGEROUS!)                       │ │
-  │ │    [*]   Remote application                                 │ │
-  │ │    [*]   Web configurator                                   │ │
-  │ │    [*]   Integration plugins                                │ │
-  │ │    [*]     Dock integration                                 │ │
-  │ │    [*]     Home Assistant integration                       │ │
-  │ │    [*]     Homey integration                                │ │
-  │ │    [*]     Spotify integration                              │ │
-  │ │    [*]     OpenWeather integration                          │ │
-  │ │    [ ]     openHAB integration (UNDER DEVELOPMENT)          │ │
-  │ │    [ ]     Roon integration (UNDER DEVELOPMENT)             │ │
-  │ │                                                             │ │
-  │ └─────────────────────────────────────────────────────────────┘ │
-  ├─────────────────────────────────────────────────────────────────┤
-  │    <Select>    < Exit >    < Help >    < Save >    < Load >     │
-  └─────────────────────────────────────────────────────────────────┘
+ → External options → YIO remote ──────────────────────────────────────────────
+  ┌────────────────────────────── YIO remote ───────────────────────────────┐
+  │  Arrow keys navigate the menu.  <Enter> selects submenus ---> (or empty │  
+  │  submenus ----).  Highlighted letters are hotkeys.  Pressing <Y>        │  
+  │  selects a feature, while <N> excludes a feature.  Press <Esc><Esc> to  │  
+  │  exit, <?> for Help, </> for Search.  Legend: [*] feature is selected   │  
+  │ ┌─────────────────────────────────────────────────────────────────────┐ │  
+  │ │    --- YIO remote                                                   │ │  
+  │ │    [ ]   Debug build                                                │ │  
+  │ │    [ ]   Custom versions (DANGEROUS!)                               │ │  
+  │ │    [*]   Remote application                                         │ │  
+  │ │    [*]   Integration library                                        │ │  
+  │ │    [*]   Web configurator                                           │ │  
+  │ │    [*]   Integration plugins                                        │ │  
+  │ │    [*]     Dock integration                                         │ │  
+  │ │    [*]     Home Assistant integration                               │ │  
+  │ │    [*]     Homey integration                                        │ │  
+  │ │    [*]     Spotify integration                                      │ │  
+  │ │    [*]     Bang & Olufsen integration                               │ │  
+  │ │    [ ]     openHAB integration (UNDER DEVELOPMENT)                  │ │  
+  │ │    [ ]     Roon integration (UNDER DEVELOPMENT)                     │ │  
+  │ │    [ ]     OpenWeather integration (EXPERIMENTAL!)                  │ │  
+  │ └─────────────────────────────────────────────────────────────────────┘ │  
+  ├─────────────────────────────────────────────────────────────────────────┤  
+  │        <Select>    < Exit >    < Help >    < Save >    < Load >         │  
+  └─────────────────────────────────────────────────────────────────────────┘  
 ```
 
 #### Output Directories
@@ -203,61 +203,3 @@ Cause: journald build bug when using many cores/threads (> 16)
 Solution: reduce make parallelism
 
     make BR2_JLEVEL=12
-
-## Technology Research
-
-The following technologies were / are investigated for finding an easy and automated solution to build the RPi image.
-
-### Build and Use external Toolchain with Buildroot
-
-A separate toolchain would speed up the build process. This can easily be achieved with [Buildroot Submodule](https://github.com/Openwide-Ingenierie/buildroot-submodule#using-buildroot-submodule-to-build-a-toolchain-separately).
-
-A *make clean* will no longer erase the compiler toolchain and therefore speedup a new full build. Since Qt is required to build the YIO remote projects the complete Qt tools would have to be included as well to use the separate toolchain for the remote-software and -plugin projects. Therefore we are not using this feature to keep it simple and not to introduce another build dependency.
-
-Using an external toolchain involves the following changes:
-
-1. Dedicated Makefile for the toolchain: `Makefile.toolchain`
-
-        PROJECT_NAME := toolchain
-        include common.mk
-
-2. A toolchain subproject with the toolchain configuration: `toolchain/defconfig`
-
-        BR2_arm=y
-        BR2_arm1176jzf_s=y
-        BR2_DL_DIR="$(HOME)/buildroot/dl"
-        BR2_PACKAGE_OVERRIDE_FILE="$(BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH)/local.mk"
-        BR2_GLOBAL_PATCH_DIR="$(BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH)/patch"
-        BR2_TOOLCHAIN_BUILDROOT_GLIBC=y
-        BR2_KERNEL_HEADERS_CUSTOM_TARBALL=y
-        BR2_KERNEL_HEADERS_CUSTOM_TARBALL_LOCATION="https://github.com/raspberrypi/linux/archive/raspberrypi-kernel_1.20190401-1.tar.gz"
-        BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_4_14=y
-        BR2_TOOLCHAIN_BUILDROOT_CXX=y
-        BR2_INIT_NONE=y
-        # BR2_PACKAGE_BUSYBOX is not set
-        # BR2_TARGET_ROOTFS_TAR is not set
-
-3. Referencing the external toolchain in the main project: `rpi0/defconfig`
-
-        BR2_TOOLCHAIN_EXTERNAL=y
-        BR2_TOOLCHAIN_EXTERNAL_PATH="$(BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH)/toolchain/output/host/usr"
-        BR2_TOOLCHAIN_EXTERNAL_GCC_8=y
-        BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_14=y
-        BR2_TOOLCHAIN_EXTERNAL_CUSTOM_GLIBC=y
-        BR2_TOOLCHAIN_EXTERNAL_CXX=y
-
-### Vagrant
-
-Vagrant would be perfect for building the RPi image. Everything could be automated and one would only have to type `vagrant up`.
-
-Found issues so far:
-
-- Almost all official Linux boxes have a 'small' 10 GB disk:
-  - Not enough to build the image.
-  - No standard way of extending the disk, or limited to one virtualization provider (vagrant-disksize plugin).
-  - Synced folders don't work because of hard links
-- Serious issues with VirtualBox 6 in combination with newer Ubuntu images
-  - Bootup takes 5+ minutes instead of seconds
-  - Issue is something with the UART console
-
-Vagrant might be investigated again in the future. For now the Docker Image provides an easy way to build on Linux, macOS and Windows.
