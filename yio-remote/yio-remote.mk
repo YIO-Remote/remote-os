@@ -8,6 +8,7 @@
 YIO_REMOTE_DEBUG = $(call qstrip,$(BR2_PACKAGE_YIO_REMOTE_DEBUG))
 
 include ../yio-remote/yio-remote-software/yio-remote-software.mk
+include ../yio-remote/yio-integrations-library/yio-integrations-library.mk
 include ../yio-remote/yio-web-configurator/yio-web-configurator.mk
 
 include ../yio-remote/yio-integration-dock/yio-integration-dock.mk

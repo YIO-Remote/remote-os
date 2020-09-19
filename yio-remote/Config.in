@@ -28,10 +28,12 @@ if BR2_PACKAGE_YIO_REMOTE
 
 # Default versions of all YIO components which work together in this remote-os release.
 # All YIO components have their own release channel and version numbers don't relate or indicate a compatible version!
-# Custom versions can be enabled with: BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
 config BR2_PACKAGE_YIO_REMOTE_SOFTWARE_VERSION_DEF
 	string
 	default "v0.6.0"
+config BR2_PACKAGE_YIO_INTEGRATIONS_LIBRARY_VERSION_DEF
+	string
+	default "v0.5.1"
 config BR2_PACKAGE_YIO_WEB_CONFIGURATOR_VERSION_DEF
 	string
 	default "v0.2.1"
@@ -60,56 +62,6 @@ config BR2_PACKAGE_YIO_INTEGRATION_ROON_VERSION_DEF
 	string
 	default "v0.4.1"
 
-choice
-	prompt "Source"
-	help
-	  Select from where the YIO remote components will be installed.
-	  This only applies to Qt based components, i.e. the web-configurator
-	  will always be packaged from the GitHub sources.
-
-config BR2_PACKAGE_YIO_REMOTE_BIN_RELEASE
-	bool "Binary GitHub releases"
-	help
-	  Use binary releases for Qt based components from GitHub repositories.
-	  Attention: the binary releases are only compatible on the Raspberry Pi!
-
-config BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR
-	bool "Binary folder"
-	help
-	  This option allows to specify a local folder containing pre-compiled
-	  Qt binaries for the target platform. The folder must contain debug and
-	  release subdirectories.
-	  Attention: Buildroot will cache the synchronized folder after the first
-	  build. To update the binaries all involved packages must be reconfigured
-	  by executing:
-	  make yio-${PACKAGE_NAME}-reconfigure
-	  or the build directories of all yio packages must be deleted:
-	  rm -Rf rpi0/output/build/yio-*
-	  before building a new image!
-
-# TODO Build from source not yet implemented
-# config BR2_PACKAGE_YIO_REMOTE_GITHUB
-# 	bool "Build from source"
-# 	help
-# 	  Use GitHub source repositories to build YIO components.
-
-endchoice
-
-config BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR_LOCATION
-	string "URL of custom app binary folder"
-	default "~/projects/yio/binaries/linux-gcc-arm"
-	depends on BR2_PACKAGE_YIO_REMOTE_CUSTOM_BIN_DIR
-	help
-	  Local folder containing pre-compiled binaries for the target platform.
-	  The folder must contain debug and release subdirectories.
-	  Attention: Buildroot will cache the synchronized folder after the first
-	  build. To update the binaries all involved packages must be reconfigured
-	  by executing:
-	  make yio-${PACKAGE_NAME}-reconfigure
-	  or the build directories of all yio packages must be deleted:
-	  rm -Rf rpi0/output/build/yio-*
-	  before building a new image!
-
 config BR2_PACKAGE_YIO_REMOTE_DEBUG
 	bool "Debug build"
 	help
@@ -132,6 +84,7 @@ config BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
 	  remote application and the integration plugins!
 
 source "../yio-remote/yio-remote-software/Config.in"
+source "../yio-remote/yio-integrations-library/Config.in"
 source "../yio-remote/yio-web-configurator/Config.in"
 
 config BR2_PACKAGE_YIO_REMOTE_INTEGRATIONS
@@ -149,4 +102,4 @@ source "../yio-remote/yio-integration-openhab/Config.in"
 source "../yio-remote/yio-integration-roon/Config.in"
 source "../yio-remote/yio-integration-openweather/Config.in"
 
-endif
+endif # BR2_PACKAGE_YIO_REMOTE
