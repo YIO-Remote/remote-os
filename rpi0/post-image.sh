@@ -27,6 +27,8 @@ cp ${BOARD_DIR}/boot/overlays/*.dtbo ${BINARIES_DIR}/overlays/
 
 cp ${BINARIES_DIR}/zImage ${BINARIES_DIR}/kernel.img
 
+echo "Generating file systems and SD card image ..."
+
 # patch README file with build version and build timestamp
 BUILD_VERSION=$("$SCRIPT_DIR/git-version.sh" "$BR2_EXTERNAL/version")
 BUILD_DATE=$(date --iso-8601=seconds)
@@ -47,6 +49,21 @@ genimage                           \
 	--outputpath "${BINARIES_DIR}" \
 	--config "${GENIMAGE_CFG}"
 
+echo "Generating hash for rootfs.ext4 ..."
+shasum -a 256 ${BINARIES_DIR}/rootfs.ext4 | grep -oh "^.\+ " > ${BINARIES_DIR}/rootfs.ext4.hash
+
+echo "Generating hash for boot.vfat ..."
+shasum -a 256 ${BINARIES_DIR}/boot.vfat | grep -oh "^.\+ " > ${BINARIES_DIR}/boot.vfat.hash
+
+echo "Generating hash for yio-remote-sdcard.img ..."
+shasum -a 256 ${BINARIES_DIR}/yio-remote-sdcard.img | grep -oh "^.\+ " > ${BINARIES_DIR}/yio-remote-sdcard.img.hash
+
+echo "Zipping SD card image ..."
+rm -f ${BINARIES_DIR}/yio-remote-sdcard.zip
+# TODO include release notes
+zip -j ${BINARIES_DIR}/yio-remote-sdcard.zip ${BINARIES_DIR}/yio-remote-sdcard.img ${BINARIES_DIR}/yio-remote-sdcard.img.hash ${BINARIES_DIR}/README.md
+
+echo "Cleaning up partition image files ..."
 rm ${BINARIES_DIR}/kernel.img
 
 exit $?
