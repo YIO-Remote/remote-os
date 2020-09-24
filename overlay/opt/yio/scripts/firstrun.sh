@@ -29,5 +29,7 @@ then
     if [ -e /wificopy ]; then
         # if there was a wifi config on the sd card, skip the first time setup
         rm /firstrun
+        # quick fix: initial reboot to settle wifi configuration
+        reboot
     fi
 fi

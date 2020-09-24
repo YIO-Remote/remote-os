@@ -1,6 +1,6 @@
 [Unit]
-Description=Remote app
-After=sharp-init.service
+Description=YIO remote app
+After=display-init.service
 
 [Service]
 Type=simple
