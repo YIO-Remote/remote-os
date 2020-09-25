@@ -2,7 +2,6 @@ config BR2_PACKAGE_QTMQTT
 	bool "Qt MQTT library"
 	depends on BR2_PACKAGE_QT5
 	select BR2_PACKAGE_QT5BASE
-	select BR2_PACKAGE_QT5TOOLS
 	help
 	  Qt Module to implement MQTT protocol version 3.1 and 3.1.1
 	  https://doc.qt.io/QtMQTT/index.html

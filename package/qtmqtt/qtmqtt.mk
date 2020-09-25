@@ -13,10 +13,6 @@ QTMQTT_SITE = git://github.com/qt/qtmqtt.git
 QTMQTT_INSTALL_STAGING = YES
 
 ################################################################################
-# PRE_CONFIGURE_HOOKS
-################################################################################
-
-################################################################################
 # CONFIGURE_CMDS
 ################################################################################
 define QTMQTT_CONFIGURE_CMDS
@@ -28,10 +24,12 @@ endef
 # BUILD_CMDS
 ################################################################################
 define QTMQTT_BUILD_CMDS
-	# HACK didn't find another way to compile QtMqtt 5.12.8
+	# HACK didn't find another way to compile QtMqtt 5.12.8: header files are not re-located to $(@D)/include/QtMqtt
 	mkdir -p $(@D)/include/QtMqtt
 	cp $(@D)/src/mqtt/*.h $(@D)/include/QtMqtt
+	rm $(@D)/include/QtMqtt/*_p.h
 	# END HACK
+
 	($(TARGET_MAKE_ENV) $(MAKE) -C $(@D))
 endef
 
@@ -40,6 +38,10 @@ endef
 ################################################################################
 define QTMQTT_INSTALL_STAGING_CMDS
 	$(TARGET_MAKE_ENV) $(MAKE) -C $(@D) install
+
+	# HACK same issue as during build: header files are somehow missing
+	cd $(@D)/include/QtMqtt && find . -type f -exec $(INSTALL) -Dm 644 "{}" "$(STAGING_DIR)/usr/include/qt5/QtMqtt/{}" \;
+	# END HACK
 endef
 
 define QTMQTT_INSTALL_TARGET_CMDS
