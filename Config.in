@@ -8,3 +8,4 @@ config BR2SM_PROJECT_NAME
 
 # TODO isn't there a variable to use for the external tree directory?
 source "../package/yio-remote/Config.in"
+source "../package/qtmqtt/Config.in"
