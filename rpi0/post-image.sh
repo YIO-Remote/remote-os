@@ -49,21 +49,26 @@ genimage                           \
 	--outputpath "${BINARIES_DIR}" \
 	--config "${GENIMAGE_CFG}"
 
+cd ${BINARIES_DIR}
+
+SDCARD_IMG_NAME=yio-remote-sdcard-v${BUILD_VERSION}
+mv yio-remote-sdcard.img ${SDCARD_IMG_NAME}.img
+
 echo "Generating hash for rootfs.ext4 ..."
-shasum -a 256 ${BINARIES_DIR}/rootfs.ext4 | grep -oh "^.\+ " > ${BINARIES_DIR}/rootfs.ext4.hash
+shasum -a 256 rootfs.ext4 > rootfs.ext4.sha256sum
 
 echo "Generating hash for boot.vfat ..."
-shasum -a 256 ${BINARIES_DIR}/boot.vfat | grep -oh "^.\+ " > ${BINARIES_DIR}/boot.vfat.hash
+shasum -a 256 boot.vfat > boot.vfat.sha256sum
 
-echo "Generating hash for yio-remote-sdcard.img ..."
-shasum -a 256 ${BINARIES_DIR}/yio-remote-sdcard.img | grep -oh "^.\+ " > ${BINARIES_DIR}/yio-remote-sdcard.img.hash
+echo "Generating hash for ${SDCARD_IMG_NAME}.img ..."
+shasum -a 256 ${SDCARD_IMG_NAME}.img > ${SDCARD_IMG_NAME}.img.sha256sum
 
 echo "Zipping SD card image ..."
-rm -f ${BINARIES_DIR}/yio-remote-sdcard.zip
+rm -f ${SDCARD_IMG_NAME}.zip
 # TODO include release notes
-zip -j ${BINARIES_DIR}/yio-remote-sdcard.zip ${BINARIES_DIR}/yio-remote-sdcard.img ${BINARIES_DIR}/yio-remote-sdcard.img.hash ${BINARIES_DIR}/README.md
+zip -j ${SDCARD_IMG_NAME}.zip ${SDCARD_IMG_NAME}.img ${SDCARD_IMG_NAME}.img.sha256sum README.md
 
 echo "Cleaning up partition image files ..."
-rm ${BINARIES_DIR}/kernel.img
+rm kernel.img
 
 exit $?
