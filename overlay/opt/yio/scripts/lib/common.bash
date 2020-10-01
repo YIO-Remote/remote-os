@@ -137,7 +137,7 @@ ensureScreenIsOn() {
   #       It's not waking up instantly but much later when the update is almost finished!?
 
   # make sure the screen and backlight are on, otherwise we'll end up with a dark screen!
-  ${YIO_HOME}/scripts/sharp-init
+  ${YIO_HOME}/scripts/display-init
 
   if [[ -f $1 ]]; then
       fbv -d 1 "$1"
