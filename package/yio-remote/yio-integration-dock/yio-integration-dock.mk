@@ -23,7 +23,7 @@ endif
 define YIO_INTEGRATION_DOCK_CONFIGURE_CMDS
     @echo "Creating Makefile..."
     @mkdir -p $(@D)/build
-    (cd $(@D)/build; $(TARGET_MAKE_ENV) YIO_BIN=$(@D)/bin YIO_SRC="$(STAGING_DIR)/usr/include/yio" $(HOST_DIR)/bin/qmake $(@D) $(YIO_INTEGRATION_DOCK_QMAKE_ARGS))
+    (cd $(@D)/build; $(TARGET_MAKE_ENV) YIO_BIN=$(@D)/bin YIO_SRC="$(STAGING_DIR)/usr/include/yio" $(HOST_DIR)/bin/qmake $(@D) $(YIO_INTEGRATION_DOCK_QMAKE_ARGS) "YIO_BUILD_VERSION = $(YIO_INTEGRATION_DOCK_VERSION)")
     (cd $(@D)/build; $(TARGET_MAKE_ENV) YIO_BIN=$(@D)/bin YIO_SRC="$(STAGING_DIR)/usr/include/yio" $(MAKE) qmake_all)
 endef
 

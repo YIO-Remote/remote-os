@@ -30,7 +30,7 @@ if BR2_PACKAGE_YIO_REMOTE
 # All YIO components have their own release channel and version numbers don't relate or indicate a compatible version!
 config BR2_PACKAGE_YIO_REMOTE_SOFTWARE_VERSION_DEF
 	string
-	default "v0.6.1"
+	default "v0.6.2"
 config BR2_PACKAGE_YIO_INTEGRATIONS_LIBRARY_VERSION_DEF
 	string
 	default "v0.5.1"
@@ -39,28 +39,28 @@ config BR2_PACKAGE_YIO_WEB_CONFIGURATOR_VERSION_DEF
 	default "v0.2.1"
 config BR2_PACKAGE_YIO_INTEGRATION_DOCK_VERSION_DEF
 	string
-	default "v0.6.2"
+	default "v0.6.3"
 config BR2_PACKAGE_YIO_INTEGRATION_HOMEASSISTANT_VERSION_DEF
 	string
-	default "v0.5.4"
+	default "v0.5.5"
 config BR2_PACKAGE_YIO_INTEGRATION_HOMEY_VERSION_DEF
 	string
-	default "v0.5.2"
+	default "v0.5.3"
 config BR2_PACKAGE_YIO_INTEGRATION_OPENHAB_VERSION_DEF
 	string
-	default "v0.5.2"
+	default "v0.5.3"
 config BR2_PACKAGE_YIO_INTEGRATION_SPOTIFY_VERSION_DEF
 	string
-	default "v0.5.2"
+	default "v0.5.3"
 config BR2_PACKAGE_YIO_INTEGRATION_BANGOLUFSEN_VERSION_DEF
 	string
-	default "v0.2.3"
+	default "v0.2.4"
 config BR2_PACKAGE_YIO_INTEGRATION_OPENWEATHER_VERSION_DEF
 	string
-	default "v0.5.2"
+	default "v0.5.3"
 config BR2_PACKAGE_YIO_INTEGRATION_ROON_VERSION_DEF
 	string
-	default "v0.4.2"
+	default "v0.4.3"
 
 config BR2_PACKAGE_YIO_REMOTE_DEBUG
 	bool "Debug build"
