@@ -95,10 +95,11 @@ define UPDATE_DEFCONFIG
 endef
 
 define INIT_BUILDROOT
-		rm -f .toolchain-ready
+        rm -f .toolchain-ready
         @if [ ! -d buildroot/.git ]; then \
                 echo "Initializing Git submodule 'buildroot'"; \
                 git submodule init; \
                 git submodule update; \
         fi
+        scripts/patch-buildroot.sh
 endef
