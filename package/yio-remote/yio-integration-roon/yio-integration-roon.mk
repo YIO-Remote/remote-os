@@ -8,7 +8,7 @@ YIO_INTEGRATION_ROON_VERSION = $(call qstrip,$(BR2_PACKAGE_YIO_INTEGRATION_ROON_
 YIO_INTEGRATION_ROON_DEBUG = $(call qstrip,$(BR2_PACKAGE_YIO_REMOTE_DEBUG))
 YIO_INTEGRATION_ROON_LICENSE = GPL-3.0
 YIO_INTEGRATION_ROON_LICENSE_FILES = LICENSE
-YIO_REMOTE_SOFTWARE_DEPENDENCIES = qt5base qt5connectivity qt5tools qt5websockets yio-integrations-library
+YIO_INTEGRATION_ROON_DEPENDENCIES = qt5base qt5connectivity qt5tools qt5websockets yio-integrations-library
 YIO_INTEGRATION_ROON_SITE = git://github.com/YIO-Remote/integration.roon.git
 
 ifeq ($(YIO_REMOTE_SOFTWARE_DEBUG),y)

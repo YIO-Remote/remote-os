@@ -8,7 +8,7 @@ YIO_INTEGRATION_OPENHAB_VERSION = $(call qstrip,$(BR2_PACKAGE_YIO_INTEGRATION_OP
 YIO_INTEGRATION_OPENHAB_DEBUG = $(call qstrip,$(BR2_PACKAGE_YIO_REMOTE_DEBUG))
 YIO_INTEGRATION_OPENHAB_LICENSE = GPL-3.0
 YIO_INTEGRATION_OPENHAB_LICENSE_FILES = LICENSE
-YIO_REMOTE_SOFTWARE_DEPENDENCIES = qt5base qt5connectivity qt5tools qt5websockets yio-integrations-library
+YIO_INTEGRATION_OPENHAB_DEPENDENCIES = qt5base qt5connectivity qt5tools qt5websockets yio-integrations-library
 YIO_INTEGRATION_OPENHAB_SITE = git://github.com/YIO-Remote/integration.openhab.git
 
 ifeq ($(YIO_REMOTE_SOFTWARE_DEBUG),y)
