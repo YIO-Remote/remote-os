@@ -83,9 +83,9 @@ config BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
 	  Attention: using custom versions might break compatability between the
 	  remote application and the integration plugins!
 
-source "../package/yio-remote/yio-remote-software/Config.in"
-source "../package/yio-remote/yio-integrations-library/Config.in"
-source "../package/yio-remote/yio-web-configurator/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-remote-software/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-integrations-library/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-web-configurator/Config.in"
 
 config BR2_PACKAGE_YIO_REMOTE_INTEGRATIONS
 	bool "Integration plugins"
@@ -93,13 +93,13 @@ config BR2_PACKAGE_YIO_REMOTE_INTEGRATIONS
 	help
 	  Include YIO integration plugins.
 
-source "../package/yio-remote/yio-integration-dock/Config.in"
-source "../package/yio-remote/yio-integration-homeassistant/Config.in"
-source "../package/yio-remote/yio-integration-homey/Config.in"
-source "../package/yio-remote/yio-integration-spotify/Config.in"
-source "../package/yio-remote/yio-integration-bangolufsen/Config.in"
-source "../package/yio-remote/yio-integration-openhab/Config.in"
-source "../package/yio-remote/yio-integration-roon/Config.in"
-source "../package/yio-remote/yio-integration-openweather/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-integration-dock/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-integration-homeassistant/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-integration-homey/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-integration-spotify/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-integration-bangolufsen/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-integration-openhab/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-integration-roon/Config.in"
+source "$BR2_EXTERNAL_BUILDROOT_SUBMODULE_PATH/package/yio-remote/yio-integration-openweather/Config.in"
 
 endif # BR2_PACKAGE_YIO_REMOTE
