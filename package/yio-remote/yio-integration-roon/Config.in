@@ -1,7 +1,7 @@
 if BR2_PACKAGE_YIO_REMOTE_INTEGRATIONS
 
 config BR2_PACKAGE_YIO_INTEGRATION_ROON
-	bool "Roon integration (UNDER DEVELOPMENT)"
+	bool "Roon integration (UNMAINTAINED!)"
 	default n
 	help
 	  Includes the YIO Roon integration plugin.

@@ -142,7 +142,7 @@ Navigate to: External options -> Yio remote
   │ │    [*]     Spotify integration                                      │ │  
   │ │    [*]     Bang & Olufsen integration                               │ │  
   │ │    [ ]     openHAB integration (UNDER DEVELOPMENT)                  │ │  
-  │ │    [ ]     Roon integration (UNDER DEVELOPMENT)                     │ │  
+  │ │    [ ]     Roon integration (UNMAINTAINED!)                         │ │  
   │ │    [ ]     OpenWeather integration (EXPERIMENTAL!)                  │ │  
   │ └─────────────────────────────────────────────────────────────────────┘ │  
   ├─────────────────────────────────────────────────────────────────────────┤  
