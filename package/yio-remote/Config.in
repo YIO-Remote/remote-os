@@ -33,7 +33,7 @@ config BR2_PACKAGE_YIO_REMOTE_SOFTWARE_VERSION_DEF
 	default "v0.7.0"
 config BR2_PACKAGE_YIO_INTEGRATIONS_LIBRARY_VERSION_DEF
 	string
-	default "v0.5.2"
+	default "v0.5.3"
 config BR2_PACKAGE_YIO_WEB_CONFIGURATOR_VERSION_DEF
 	string
 	default "v0.2.1"
