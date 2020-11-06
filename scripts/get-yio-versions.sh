@@ -24,9 +24,9 @@
 
 set -e
 
-DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+SCRIPT_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-. $DIR/lib/common.bash
+. $SCRIPT_DIR/lib/common.sh
 
 #=============================================================
 
