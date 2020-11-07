@@ -16,7 +16,7 @@ index a3c7281d75..22712dcae6 100644
  # Locally computed
 -sha256 51a33d23127300dffd6ac088f372b83ab862053f5e4dc7130676ebaaa824e626  rpi-bt-firmware-688531da4bcf802a814d9cb0c8b6d62e3b8a3327.tar.gz
 -sha256 b16056fc91b82a0e3e8de8f86c2dac98201aa9dc3cbd33e8d38f1b087fcec30d  LICENCE.broadcom_bcm43xx
-+sha256 ec762f5cde18329fe9c271bfec9af3895852601d6432632232cb0167b24bbd06  rpi-bt-firmware-929b7af9c43e7edc8b289435a9981b240f47b218.tar.gz
++sha256 5f5dad1f1a3e90948893fcca2d19cac4f280e4baf76b6ff3e7d57f8218a97583  rpi-bt-firmware-a4e08822e3f24a6211f6ac94bc98b7ef87700c70.tar.gz
 +sha256 092aaac7a0743f6e98ef224dfd68cac7554aa267581121fadcace8599b7d29dd  broadcom/BCM-LEGAL.txt
 diff --git a/package/rpi-bt-firmware/rpi-bt-firmware.mk b/package/rpi-bt-firmware/rpi-bt-firmware.mk
 index 23923453c4..48856fefad 100644
@@ -28,7 +28,7 @@ index 23923453c4..48856fefad 100644
  
 -RPI_BT_FIRMWARE_VERSION = 688531da4bcf802a814d9cb0c8b6d62e3b8a3327
 -RPI_BT_FIRMWARE_SITE = $(call github,LibreELEC,brcmfmac_sdio-firmware-rpi,$(RPI_BT_FIRMWARE_VERSION))
-+RPI_BT_FIRMWARE_VERSION = 929b7af9c43e7edc8b289435a9981b240f47b218
++RPI_BT_FIRMWARE_VERSION = a4e08822e3f24a6211f6ac94bc98b7ef87700c70
 +RPI_BT_FIRMWARE_SITE = $(call github,RPi-Distro,bluez-firmware,$(RPI_BT_FIRMWARE_VERSION))
  RPI_BT_FIRMWARE_LICENSE = PROPRIETARY
 -RPI_BT_FIRMWARE_LICENSE_FILES = LICENCE.broadcom_bcm43xx
