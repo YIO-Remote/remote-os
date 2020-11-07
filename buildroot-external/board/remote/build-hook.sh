@@ -12,14 +12,26 @@ function yios_post_build() {
 }
 
 function yios_pre_image() {
-    # gather files for boot partition
-    cp ${BOARD_DIR}/boot/*.txt ${BINARIES_DIR}/
-    cp ${TARGET_DIR}/opt/yio/app/config.json.def ${BINARIES_DIR}/config.json
-    cp ${BOARD_DIR}/boot/*.md ${BINARIES_DIR}/
-    cp ${BOARD_DIR}/boot/*.template ${BINARIES_DIR}/
+    local BOOT_OVERLAY="${BOARD_DIR}/boot-overlay"
+    local BOOT_DATA="${BINARIES_DIR}/boot"
 
-    mkdir -p ${BINARIES_DIR}/overlays
-    cp ${BOARD_DIR}/boot/overlays/*.dtbo ${BINARIES_DIR}/overlays/
+    mkdir -p ${BOOT_DATA}
+
+    # gather files for boot partition
+    cp -r "${BOOT_OVERLAY}"/* "${BOOT_DATA}/"
+    cp "${TARGET_DIR}/opt/yio/app/config.json.def" "${BOOT_DATA}/config.json"
+
+    cp "${BINARIES_DIR}"/*.dtb "${BOOT_DATA}/"
+
+    cp -t "${BOOT_DATA}" \
+        "${BINARIES_DIR}/rpi-firmware/fixup.dat" \
+        "${BINARIES_DIR}/rpi-firmware/start.elf" \
+        "${BINARIES_DIR}/rpi-firmware/bootcode.bin"
+
+    # move README file for /scrips/post-image.sh to patch common placeholders
+    mv "${BOOT_DATA}/README.md" "${BINARIES_DIR}/"
+
+    cp "${BINARIES_DIR}"/kernel.img "${BOOT_DATA}/"
 }
 
 function yios_post_image() {

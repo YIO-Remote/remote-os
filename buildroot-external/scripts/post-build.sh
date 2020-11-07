@@ -2,7 +2,7 @@
 #
 # Buildroot post-build script: configured in BR2_ROOTFS_POST_BUILD_SCRIPT.
 # Parameters:
-# $1: target output directory (Buildroot default)
+# $1: target output directory (Buildroot default, also set in $TARGET_DIR)
 # $2: board directory (configured in BR2_ROOTFS_POST_SCRIPT_ARGS)
 # $3: board hook file (configured in BR2_ROOTFS_POST_SCRIPT_ARGS)
 
