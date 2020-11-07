@@ -1,0 +1,1 @@
+logo.nologo root=/dev/mmcblk0p2 rootwait rootfstype=ext4 dwc_otg.lpm_enable=0 console=tty1
