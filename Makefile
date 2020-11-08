@@ -1,20 +1,70 @@
-# This file is part of buildroot-submodule.
-#
-#    buildroot-submodule is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    buildroot-submodule is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with buildroot-submodule.  If not, see <http://www.gnu.org/licenses/>. 2
+#Makefile for the YIO Operating System project
+
+RELEASE_DIR = $(CURDIR)/release
+
+BUILDROOT=$(CURDIR)/buildroot
+BUILDROOT_EXTERNAL=$(CURDIR)/buildroot-external
+DEFCONFIG_DIR = $(BUILDROOT_EXTERNAL)/configs
+
+TARGETS := $(notdir $(patsubst %_defconfig,%,$(wildcard $(DEFCONFIG_DIR)/*_defconfig)))
+TARGETS_CONFIG := $(notdir $(patsubst %_defconfig,%-config,$(wildcard $(DEFCONFIG_DIR)/*_defconfig)))
+TARGETS_MENUCONFIG := $(notdir $(patsubst %_defconfig,%-menuconfig,$(wildcard $(DEFCONFIG_DIR)/*_defconfig)))
+
+# Set O variable if not already done on the command line
+ifneq ("$(origin O)", "command line")
+O := $(BUILDROOT)/output
+else
+override O := $(BUILDROOT)/$(O)
+endif
+
+.NOTPARALLEL: $(TARGETS) $(TARGETS_CONFIG) $(TARGETS_MENUCONFIG) all
+
+.PHONY: $(TARGETS) $(TARGETS_CONFIG) $(TARGETS_MENUCONFIG) all clean help
+
+all: $(TARGETS)
+
+$(RELEASE_DIR):
+	mkdir -p $(RELEASE_DIR)
+
+$(TARGETS_CONFIG): %-config:
+	@echo "Board configuration: $*"
+	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL) "$*_defconfig"
+
+$(TARGETS): %: $(RELEASE_DIR) %-config
+	@echo "Building board: $@"
+	$(call CLEAR_TOOLCHAIN)
+	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL)
+	cp -f $(O)/images/yio-* $(RELEASE_DIR)/
+
+	# Do not clean when building for one target
+ifneq ($(words $(filter $(TARGETS),$(MAKECMDGOALS))), 1)
+	@echo "Cleaning $@"
+	$(call CLEAR_TOOLCHAIN)
+	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL) clean
+endif
+	@echo "Finished building board: $@"
+
+$(TARGETS_MENUCONFIG): %-menuconfig:
+	@echo "menuconfig $*"
+	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL) "$*_defconfig"
+	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL) menuconfig
+	cp "$(DEFCONFIG_DIR)/$*_defconfig" "$(DEFCONFIG_DIR)/$*_defconfig.bak"
+	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL) BR2_DEFCONFIG="$(DEFCONFIG_DIR)/$*_defconfig" savedefconfig
 
 
-#Makefile for the YIO-remote rpi0 project
-PROJECT_NAME := rpi0
+clean:
+	$(call CLEAR_TOOLCHAIN)
+	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL) clean
 
-include common.mk
+
+help:
+	@echo "Supported targets: $(TARGETS)"
+	@echo "Run 'make <target>' to build a target image and keep build artefacts."
+	@echo "Run 'make all' to build all target images."
+	@echo "Run 'make clean' to clean the build output."
+	@echo "Run 'make <target>-config' to initialize buildroot for a target."
+	@echo "Run 'make <target>-menuconfig' to configure a target."
+
+define CLEAR_TOOLCHAIN
+	rm -f $(BUILDROOT_EXTERNAL)/.toolchain-ready
+endef

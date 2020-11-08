@@ -24,9 +24,9 @@
 
 set -e
 
-DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+SCRIPT_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-. $DIR/lib/common.bash
+. $SCRIPT_DIR/lib/common.sh
 
 #=============================================================
 
@@ -119,7 +119,7 @@ createReleaseHash() {
         PACKAGE_VERSION=$LATEST_RELEASE
     fi
 
-    local PACKAGE_DIR=$DIR/../package/yio-remote/$PACKAGE_NAME/$PACKAGE_VERSION
+    local PACKAGE_DIR=$SCRIPT_DIR/../buildroot-external/package/yio-remote/$PACKAGE_NAME/$PACKAGE_VERSION
     local ARCHIVE_FILE=$PACKAGE_NAME-$PACKAGE_VERSION.tar.gz
     local HASH_FILE=$PACKAGE_NAME.hash
 

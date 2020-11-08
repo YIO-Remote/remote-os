@@ -1,0 +1,106 @@
+menuconfig BR2_PACKAGE_YIO_REMOTE
+	bool "YIO remote"
+	depends on BR2_PACKAGE_QT5
+	select BR2_PACKAGE_QT5TOOLS
+	select BR2_PACKAGE_QT5TOOLS_LINGUIST_TOOLS
+	select BR2_PACKAGE_QT5BASE_OPENGL_LIB
+	select BR2_PACKAGE_QT5BASE_EGLFS
+	select BR2_PACKAGE_QT5BASE_FONTCONFIG
+	select BR2_PACKAGE_QT5BASE_GIF
+	select BR2_PACKAGE_QT5BASE_JPEG
+	select BR2_PACKAGE_QT5BASE_PNG
+	select BR2_PACKAGE_QT5BASE_ICU
+	select BR2_PACKAGE_QT5BASE_TSLIB
+	select BR2_PACKAGE_QT5CONNECTIVITY
+	select BR2_PACKAGE_QT5GRAPHICALEFFECTS
+	select BR2_PACKAGE_QT5IMAGEFORMATS
+	select BR2_PACKAGE_QT5QUICKCONTROLS
+	select BR2_PACKAGE_QT5QUICKCONTROLS2
+	select BR2_PACKAGE_QT5VIRTUALKEYBOARD
+	select BR2_PACKAGE_QT5VIRTUALKEYBOARD_HANDWRITING
+	select BR2_PACKAGE_QT5WEBSOCKETS
+	select BR2_PACKAGE_YIO_INTEGRATIONS_LIBRARY
+	help
+	  YIO Remote software package. Sub-options allow to customize the
+	  installation.
+	  For more information see: https://github.com/YIO-Remote
+
+if BR2_PACKAGE_YIO_REMOTE
+
+# Default versions of all YIO components which work together in this remote-os release.
+# All YIO components have their own release channel and version numbers don't relate or indicate a compatible version!
+config BR2_PACKAGE_YIO_REMOTE_SOFTWARE_VERSION_DEF
+	string
+	default "v0.7.0"
+config BR2_PACKAGE_YIO_INTEGRATIONS_LIBRARY_VERSION_DEF
+	string
+	default "v0.5.3"
+config BR2_PACKAGE_YIO_WEB_CONFIGURATOR_VERSION_DEF
+	string
+	default "v0.2.1"
+config BR2_PACKAGE_YIO_INTEGRATION_DOCK_VERSION_DEF
+	string
+	default "v0.6.4"
+config BR2_PACKAGE_YIO_INTEGRATION_HOMEASSISTANT_VERSION_DEF
+	string
+	default "v0.5.7"
+config BR2_PACKAGE_YIO_INTEGRATION_HOMEY_VERSION_DEF
+	string
+	default "v0.5.4"
+config BR2_PACKAGE_YIO_INTEGRATION_OPENHAB_VERSION_DEF
+	string
+	default "v0.5.4"
+config BR2_PACKAGE_YIO_INTEGRATION_SPOTIFY_VERSION_DEF
+	string
+	default "v0.5.4"
+config BR2_PACKAGE_YIO_INTEGRATION_BANGOLUFSEN_VERSION_DEF
+	string
+	default "v0.2.5"
+config BR2_PACKAGE_YIO_INTEGRATION_OPENWEATHER_VERSION_DEF
+	string
+	default "v0.5.4"
+config BR2_PACKAGE_YIO_INTEGRATION_ROON_VERSION_DEF
+	string
+	default "v0.4.4"
+
+config BR2_PACKAGE_YIO_REMOTE_DEBUG
+	bool "Debug build"
+	help
+	  Build or install the debug version of the Qt based YIO application and
+	  integration plugins.
+	  Attention: Buildroot will cache the build folder after the first build.
+	  To switch between debug an release builds afterwards, all involved
+	  packages must be reconfigured by executing:
+	  make yio-${PACKAGE_NAME}-reconfigure
+	  or the build directories of all yio packages must be deleted:
+	  rm -Rf rpi0/output/build/yio-*
+	  before building a new image!
+
+config BR2_PACKAGE_YIO_REMOTE_CUSTOM_VERSION
+	bool "Custom versions (DANGEROUS!)"
+	help
+	  Allow to specify custom versions of the application and integration
+	  plugins.
+	  Attention: using custom versions might break compatability between the
+	  remote application and the integration plugins!
+
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-remote-software/Config.in"
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-integrations-library/Config.in"
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-web-configurator/Config.in"
+
+config BR2_PACKAGE_YIO_REMOTE_INTEGRATIONS
+	bool "Integration plugins"
+	default y
+	help
+	  Include YIO integration plugins.
+
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-integration-dock/Config.in"
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-integration-homeassistant/Config.in"
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-integration-homey/Config.in"
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-integration-spotify/Config.in"
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-integration-bangolufsen/Config.in"
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-integration-openhab/Config.in"
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-integration-roon/Config.in"
+source "$BR2_EXTERNAL_YIOS_PATH/package/yio-remote/yio-integration-openweather/Config.in"
+
+endif # BR2_PACKAGE_YIO_REMOTE

@@ -1,0 +1,13 @@
+config BR2_PACKAGE_YIO_WIRINGPI
+	bool "WiringPi"
+	depends on !BR2_STATIC_LIBS
+	depends on BR2_USE_MMU # fork()
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+    help
+      Legacy wiringPi libraries (and gpio command).
+      Taken from Buildroot 2020.02.6 and adapted to unofficial
+      https://github.com/WiringPi/WiringPi mirror.
+
+comment "wiringpi needs a toolchain w/ threads, dynamic library"
+	depends on BR2_USE_MMU
+	depends on BR2_STATIC_LIBS || !BR2_TOOLCHAIN_HAS_THREADS
