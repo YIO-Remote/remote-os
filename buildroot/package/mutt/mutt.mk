@@ -16,6 +16,9 @@ MUTT_AUTORECONF = YES
 # 0003-Prevent-possible-IMAP-MITM-via-PREAUTH-response.patch
 MUTT_IGNORE_CVES += CVE-2020-14093
 
+# 0004-Ensure-IMAP-connection-is-closed-after-a-connection-error.patch
+MUTT_IGNORE_CVES += CVE-2020-28896
+
 ifeq ($(BR2_PACKAGE_LIBICONV),y)
 MUTT_DEPENDENCIES += libiconv
 MUTT_CONF_OPTS += --enable-iconv
@@ -45,7 +48,7 @@ MUTT_CONF_OPTS += --disable-pop
 endif
 
 # SSL support is only used by imap or pop3 module
-ifneq ($(BR2_PACKAGET_MUTT_IMAP)$(BR2_PACKAGE_MUTT_POP3),)
+ifneq ($(BR2_PACKAGE_MUTT_IMAP)$(BR2_PACKAGE_MUTT_POP3),)
 ifeq ($(BR2_PACKAGE_OPENSSL),y)
 MUTT_DEPENDENCIES += openssl
 MUTT_CONF_OPTS += --with-ssl=$(STAGING_DIR)/usr
