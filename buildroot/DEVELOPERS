@@ -428,6 +428,7 @@ F:	package/perl-netaddr-ip/
 F:	package/perl-timedate/
 F:	package/perl-uri/
 F:	package/perl-www-robotrules/
+F:	package/php/
 F:	package/pixman/
 F:	package/pngquant/
 F:	package/pound/
@@ -798,6 +799,8 @@ F:	package/libmaxminddb/
 F:	package/openzwave/
 
 N:	Fabrice Fontaine <fontaine.fabrice@gmail.com>
+F:	package/belle-sip/
+F:	package/belr/
 F:	package/boinc/
 F:	package/cairo/
 F:	package/duktape/
@@ -835,6 +838,7 @@ F:	package/libmatroska/
 F:	package/libmpdclient/
 F:	package/libnetfilter_conntrack/
 F:	package/libnetfilter_queue/
+F:	package/libnpupnp/
 F:	package/liboping/
 F:	package/libpfm4/
 F:	package/libraw/
@@ -845,7 +849,6 @@ F:	package/librsync/
 F:	package/libsoup/
 F:	package/libsoxr/
 F:	package/libupnp/
-F:	package/libupnp18/
 F:	package/libv4l/
 F:	package/libxslt/
 F:	package/mbedtls/
@@ -2121,6 +2124,7 @@ F:	package/ogre/
 F:	package/openpowerlink/
 F:	package/physfs/
 F:	package/piglit/
+F:	package/qemu/
 F:	package/solarus/
 F:	package/stress-ng/
 F:	package/supertux/
@@ -2414,7 +2418,7 @@ F:	toolchain/
 N:	Timo Ketola <timo.ketola@exertus.fi>
 F:	package/fbgrab/
 
-N:	Titouan Christophe <titouan.christophe@railnova.eu>
+N:	Titouan Christophe <titouanchristophe@gmail.com>
 F:	package/avro-c/
 F:	package/mosquitto/
 F:	package/python-avro/
