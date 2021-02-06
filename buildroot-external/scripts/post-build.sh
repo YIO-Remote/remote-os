@@ -13,6 +13,8 @@ SCRIPT_DIR="$(dirname $0)"
 BOARD_DIR="$2"
 HOOK_FILE="$3"
 
+. "${BOARD_DIR}/meta.sh"
+
 . "${HOOK_FILE}"
 
 
