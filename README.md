@@ -243,7 +243,6 @@ Further `make` arguments:
 
 | **Option**               | **Description**  |
 |--------------------------|------------------|
-| `SKIP_BUILD_IMAGE=y`     | Skip SD card image creation |
 | `BR2_JLEVEL=n`           | Adjust level of build parallelism. n = number of cores. Default: number of CPUs + 1 |
 
 ### Troubleshooting

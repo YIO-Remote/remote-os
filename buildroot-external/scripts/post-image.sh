@@ -21,11 +21,6 @@ HOOK_FILE="$3"
 
 touch ${BR2_EXTERNAL_YIOS_PATH}/.toolchain-ready
 
-if [ "$SKIP_BUILD_IMAGE" = "y" ]; then
-    echo "WARN: not building SD card image: disabled with SKIP_BUILD_IMAGE"
-    exit
-fi
-
 BUILD_VERSION=$("$SCRIPT_DIR/git-version.sh" "$BR2_EXTERNAL/version")
 BUILD_DATE=$(date --iso-8601=seconds)
 
