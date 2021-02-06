@@ -9,6 +9,7 @@ DEFCONFIG_DIR = $(BUILDROOT_EXTERNAL)/configs
 TARGETS := $(notdir $(patsubst %_defconfig,%,$(wildcard $(DEFCONFIG_DIR)/*_defconfig)))
 TARGETS_CONFIG := $(notdir $(patsubst %_defconfig,%-config,$(wildcard $(DEFCONFIG_DIR)/*_defconfig)))
 TARGETS_MENUCONFIG := $(notdir $(patsubst %_defconfig,%-menuconfig,$(wildcard $(DEFCONFIG_DIR)/*_defconfig)))
+TARGETS_SDK := $(notdir $(patsubst %_defconfig,%-sdk,$(wildcard $(DEFCONFIG_DIR)/*_defconfig)))
 
 # Set O variable if not already done on the command line
 ifneq ("$(origin O)", "command line")
@@ -19,7 +20,7 @@ endif
 
 .NOTPARALLEL: $(TARGETS) $(TARGETS_CONFIG) $(TARGETS_MENUCONFIG) all
 
-.PHONY: $(TARGETS) $(TARGETS_CONFIG) $(TARGETS_MENUCONFIG) all clean help
+.PHONY: $(TARGETS) $(TARGETS_CONFIG) $(TARGETS_MENUCONFIG) $(TARGETS_SDK) all clean help
 
 all: $(TARGETS)
 
@@ -51,6 +52,11 @@ $(TARGETS_MENUCONFIG): %-menuconfig:
 	cp "$(DEFCONFIG_DIR)/$*_defconfig" "$(DEFCONFIG_DIR)/$*_defconfig.bak"
 	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL) BR2_DEFCONFIG="$(DEFCONFIG_DIR)/$*_defconfig" savedefconfig
 
+$(TARGETS_SDK): %-sdk:
+	@echo "Building external toolchain for $*"
+	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL) "$*_defconfig"
+	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL) sdk
+
 
 clean:
 	$(call CLEAR_TOOLCHAIN)
@@ -64,6 +70,7 @@ help:
 	@echo "Run 'make clean' to clean the build output."
 	@echo "Run 'make <target>-config' to initialize buildroot for a target."
 	@echo "Run 'make <target>-menuconfig' to configure a target."
+	@echo "Run 'make <target>-sdk' to build the external toolchain."
 
 define CLEAR_TOOLCHAIN
 	rm -f $(BUILDROOT_EXTERNAL)/.toolchain-ready
