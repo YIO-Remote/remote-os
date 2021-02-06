@@ -167,13 +167,13 @@ List of Examples
 
 ---------------------------------------------------------------------
 
-Buildroot 2020.02.9 manual generated on 2020-12-27 16:56:22 UTC from
-git revision 15a05e6d5a
+Buildroot 2020.02.10 manual generated on 2021-01-31 21:24:51 UTC from
+git revision e5d3fc5a53
 
 The Buildroot manual is written by the Buildroot developers. It is
 licensed under the GNU General Public License, version 2. Refer to
 the COPYING [http://git.buildroot.org/buildroot/tree/COPYING?id=
-15a05e6d5a875759d217d61b3c7b31ec87ea4eb5] file in the Buildroot
+e5d3fc5a53ec4dabfa25e6b7478e8dc9cb0c9588] file in the Buildroot
 sources for the full text of this license.
 
 Copyright © 2004-2020 The Buildroot developers
@@ -5071,13 +5071,17 @@ typical packages will therefore only use a few of them.
   * LIBFOO_MAKE_OPTS, to specify additional variables to pass to make
     in the build step. These are passed after the make command. By
     default, empty.
+  * LIBFOO_INSTALL_OPTS contains the make options used to install the
+    package to the host directory. By default, the value is install,
+    which is correct for most CMake packages. It is still possible to
+    override it.
   * LIBFOO_INSTALL_STAGING_OPTS contains the make options used to
     install the package to the staging directory. By default, the
-    value is DESTDIR=$(STAGING_DIR) install, which is correct for
-    most CMake packages. It is still possible to override it.
+    value is DESTDIR=$(STAGING_DIR) install/fast, which is correct
+    for most CMake packages. It is still possible to override it.
   * LIBFOO_INSTALL_TARGET_OPTS contains the make options used to
     install the package to the target directory. By default, the
-    value is DESTDIR=$(TARGET_DIR) install. The default value is
+    value is DESTDIR=$(TARGET_DIR) install/fast. The default value is
     correct for most CMake packages, but it is still possible to
     override it if needed.
 
