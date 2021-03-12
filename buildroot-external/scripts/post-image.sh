@@ -16,6 +16,7 @@ HOOK_FILE="$3"
 . "${BOARD_DIR}/meta.sh"
 
 . "${SCRIPT_DIR}/disk-image.sh"
+. "${SCRIPT_DIR}/swupdate-image.sh"
 . "${HOOK_FILE}"
 
 
@@ -40,6 +41,7 @@ if [[ -f ${BINARIES_DIR}/README.md ]]; then
 fi
 
 create_disk_image
+create_ota_update
 
 yios_post_image
 

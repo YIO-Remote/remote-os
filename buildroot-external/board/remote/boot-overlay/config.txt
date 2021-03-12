@@ -1,3 +1,5 @@
+kernel=u-boot.bin
+
 dtoverlay=sharp
 overscan_left=0
 overscan_right=0
@@ -18,6 +20,8 @@ boot_delay=0
 disable_splash=1
 
 gpu_mem=256
+
+# frequency must be fixed for miniuart
 core_freq=250
 
 dtoverlay=pi3-miniuart-bt

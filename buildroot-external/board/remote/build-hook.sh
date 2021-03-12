@@ -9,6 +9,8 @@ function yios_post_build() {
 	    sed -i '/GENERIC_SERIAL/a\
     tty1::respawn:/sbin/getty -L  tty1 0 vt100 # HDMI console' ${TARGET_DIR}/etc/inittab
     fi
+
+    cp "${BINARIES_DIR}/zImage" "${TARGET_DIR}/"
 }
 
 function yios_pre_image() {
@@ -30,8 +32,6 @@ function yios_pre_image() {
 
     # move README file for /scrips/post-image.sh to patch common placeholders
     mv "${BOOT_DATA}/README.md" "${BINARIES_DIR}/"
-
-    cp "${BINARIES_DIR}"/kernel.img "${BOOT_DATA}/"
 }
 
 function yios_post_image() {

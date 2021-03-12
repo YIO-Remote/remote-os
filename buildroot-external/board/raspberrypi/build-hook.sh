@@ -5,6 +5,8 @@
 function yios_post_build() {
     echo "Patching YIO app start script to use RPi hardware configuration"
     sed -i "s/\${YIO_APP_DIR}\/remote/\${YIO_APP_DIR}\/remote --cfg \"\/boot\/config.json\" --hw-cfg \"\${YIO_HOME}\/hardware-rpi.json\"/g" "${TARGET_DIR}/opt/yio/app-launch.sh"
+
+    cp "${BINARIES_DIR}/zImage" "${TARGET_DIR}/"
 }
 
 function yios_pre_image() {
@@ -41,8 +43,6 @@ function yios_pre_image() {
     if [[ "${BOARD_ID}" =~ "64" ]]; then
         sed -i "s|#arm_64bit|arm_64bit|g" "${BOOT_DATA}/config.txt"
     fi
-
-    cp "${BINARIES_DIR}"/kernel.img "${BOOT_DATA}/"
 }
 
 
