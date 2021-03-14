@@ -3,13 +3,18 @@
 # Some settings may impact device functionality. See link above for details
 
 disable_splash=1
+kernel=u-boot.bin
 gpu_mem=256
 
 # uncomment for aarch64 bit support
 #arm_64bit=1
 
 # uncomment to enable primary UART console
-#enable_uart=1
+enable_uart=1
+
+# frequency must be fixed for miniuart
+core_freq=250
+dtoverlay=pi3-miniuart-bt
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1

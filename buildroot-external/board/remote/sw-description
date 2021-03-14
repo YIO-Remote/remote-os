@@ -1,0 +1,39 @@
+software = {
+    version = "$BUILD_VERSION";
+    description = "Firmware update for YIO remote";
+
+    rootfs = {
+        rootfs-1: {
+            images: (
+                {
+                    filename = "rootfs.ext4.gz";
+                    compressed = "zlib";
+                    installed-directly = true;
+                    device = "/dev/mmcblk0p2";
+                }
+            );
+            bootenv: (
+                {
+                    name = "yiospart";
+                    value = "2";
+                }
+            );
+        }
+        rootfs-2: {
+            images: (
+                {
+                    filename = "rootfs.ext4.gz";
+                    compressed = "zlib";
+                    installed-directly = true;
+                    device = "/dev/mmcblk0p3";
+                }
+            );
+            bootenv: (
+                {
+                    name = "yiospart";
+                    value = "3";
+                }
+            );
+        }
+    }
+}
