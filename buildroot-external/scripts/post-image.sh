@@ -25,8 +25,6 @@ touch ${BR2_EXTERNAL_YIOS_PATH}/.toolchain-ready
 BUILD_VERSION=$("$SCRIPT_DIR/git-version.sh" "$BR2_EXTERNAL/version")
 BUILD_DATE=$(date --iso-8601=seconds)
 
-cp ${BINARIES_DIR}/zImage ${BINARIES_DIR}/kernel.img
-
 echo "Generating file systems and SD card image ..."
 
 yios_pre_image
@@ -44,6 +42,3 @@ create_disk_image
 create_ota_update
 
 yios_post_image
-
-echo "Cleaning up partition image files ..."
-rm kernel.img

@@ -35,7 +35,8 @@ $(TARGETS): %: $(RELEASE_DIR) %-config
 	@echo "Building board: $@"
 	$(call CLEAR_TOOLCHAIN)
 	$(MAKE) -C $(BUILDROOT) BR2_EXTERNAL=$(BUILDROOT_EXTERNAL)
-	cp -f $(O)/images/yio-* $(RELEASE_DIR)/
+	@echo "Moving images to: $(RELEASE_DIR)"
+	mv -f $(O)/images/yio-* $(RELEASE_DIR)/
 
 	# Do not clean when building for one target
 ifneq ($(words $(filter $(TARGETS),$(MAKECMDGOALS))), 1)
