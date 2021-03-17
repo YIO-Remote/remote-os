@@ -2,6 +2,8 @@ software = {
     version = "$BUILD_VERSION";
     description = "Firmware update for YIO remote";
 
+    hardware-compatibility: [ "$BOARD_ID"];
+
     rootfs = {
         rootfs-1: {
             images: (

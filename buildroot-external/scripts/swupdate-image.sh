@@ -5,8 +5,9 @@ function create_ota_update() {
 
     cp ${BOARD_DIR}/sw-description ${BINARIES_DIR}
 
-    # replace version tag in sw-description
+    # replace tags in sw-description
     sed -i "s/\$BUILD_VERSION/$BUILD_VERSION/g" ${BINARIES_DIR}/sw-description
+    sed -i "s/\$BOARD_ID/$BOARD_ID/g" ${BINARIES_DIR}/sw-description
 
     pushd ${BINARIES_DIR}
     for f in ${OTA_IMG_FILES} ; do

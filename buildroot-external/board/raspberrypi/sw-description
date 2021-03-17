@@ -2,6 +2,8 @@ software = {
     version = "$BUILD_VERSION";
     description = "Firmware update for YIO RPi dev board";
 
+    hardware-compatibility: [ "$BOARD_ID" ];
+
     rootfs = {
         rootfs-1: {
             images: (
