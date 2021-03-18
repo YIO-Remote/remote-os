@@ -3,9 +3,14 @@ Description=YIO remote app
 After=display-init.service
 
 [Service]
-Type=simple
+Type=exec
 ExecStart=/opt/yio/app-launch.sh
-RemainAfterExit=yes
+# Force reboot if app failed to startup 2 times within 60 seconds
+StartLimitIntervalSec=60
+StartLimitBurst=2
+Restart=always
+RestartSec=1
+StartLimitAction=reboot-force
 
 [Install]
 WantedBy=multi-user.target

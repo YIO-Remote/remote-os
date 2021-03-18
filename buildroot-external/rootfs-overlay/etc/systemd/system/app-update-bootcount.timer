@@ -1,0 +1,8 @@
+[Unit]
+Description=Bootcount reset check after app update timer
+
+[Timer]
+OnBootSec=180
+
+[Install]
+WantedBy=multi-user.target

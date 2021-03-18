@@ -151,8 +151,7 @@ fi
 # Replace old backup with the current app version
 #------------------------------------------------------------------------------
 log "Stopping remote app..."
-killall -9 remote >> $LOGFILE 2>&1 && sleep 2 || true
-#stopService app >> $LOGFILE 2>&1#
+stopService app >> $LOGFILE 2>&1
 
 #fbv -d 1 "${YIO_SPLASH_DIR}/update.png"
 
@@ -195,6 +194,4 @@ fbv -d 1 "${YIO_SPLASH_DIR}/splash.png"
 #TODO rather reboot? If yes: it would be a good time to check & repair file systems
 log "Update finished! Launching app..."
 
-# 'systemctl start app' doesn't work reliably!?
-# startService app
-$YIO_HOME/app-launch.sh >> /dev/null 2>&1
+startService app

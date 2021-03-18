@@ -14,4 +14,5 @@ if [[ ! -d $YIO_APP_DIR ]] && [[ -d ${YIO_HOME}/app-previous ]]; then
     mv ${YIO_HOME}/app-previous $YIO_APP_DIR
 fi
 
-${YIO_APP_DIR}/remote &
+# Do not fork! Otherwise systemd unit service doesn't work anymore
+${YIO_APP_DIR}/remote

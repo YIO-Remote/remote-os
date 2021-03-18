@@ -148,7 +148,7 @@ fi
 #------------------------------------------------------------------------------
 # Replace old backup with the current app version
 #------------------------------------------------------------------------------
-killall -9 remote >> $LOGFILE 2>&1 && sleep 2 || true
+stopService app >> $LOGFILE 2>&1
 
 if [[ -d $YIO_APP_DIR ]]; then
   YIO_BACKUP=${YIO_HOME}/app-previous
@@ -189,4 +189,4 @@ log "Update finished! Launching app..."
 
 fbv -d 1 "${YIO_SPLASH_DIR}/splash.png"
 
-$YIO_HOME/app-launch.sh >> /dev/null 2>&1
+startService app
