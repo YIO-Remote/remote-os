@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-SWUPDATE_VERSION = 2020.04
+SWUPDATE_VERSION = 2020.11
 SWUPDATE_SITE = $(call github,sbabic,swupdate,$(SWUPDATE_VERSION))
 SWUPDATE_LICENSE = GPL-2.0+ with OpenSSL exception, LGPL-2.1+, MIT
 SWUPDATE_LICENSE_FILES = Licenses/Exceptions Licenses/gpl-2.0.txt \
@@ -173,6 +173,16 @@ endef
 
 define SWUPDATE_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 0755 $(@D)/swupdate $(TARGET_DIR)/usr/bin/swupdate
+	$(if $(BR2_PACKAGE_SWUPDATE_INSTALL_CLIENT_LIB), \
+		$(INSTALL) -D -m 0644 $(@D)/libswupdate.so.0.1 $(TARGET_DIR)/usr/lib/;
+		ln -sf libswupdate.so.0.1 $(TARGET_DIR)/usr/lib/libswupdate.so)
+	$(if $(BR2_PACKAGE_SWUPDATE_INSTALL_CLIENT_TOOLS), \
+		$(INSTALL) -D -m 0755 $(@D)/tools/swupdate-progress $(TARGET_DIR)/usr/bin/swupdate-progress; \
+		$(INSTALL) -D -m 0755 $(@D)/tools/swupdate-client $(TARGET_DIR)/usr/bin/swupdate-client; \
+		$(INSTALL) -D -m 0755 $(@D)/tools/swupdate-sysrestart $(TARGET_DIR)/usr/bin/swupdate-sysrestart)
+	$(if $(BR2_PACKAGE_SWUPDATE_INSTALL_HAWKBIT_TOOLS), \
+		$(INSTALL) -D -m 0755 $(@D)/tools/swupdate-sendtohawkbit $(TARGET_DIR)/usr/bin/swupdate-sendtohawkbit; \
+		$(INSTALL) -D -m 0755 $(@D)/tools/swupdate-hawkbitcfg $(TARGET_DIR)/usr/bin/swupdate-hawkbitcfg)
 	$(if $(BR2_PACKAGE_SWUPDATE_INSTALL_WEBSITE), \
 		mkdir -p $(TARGET_DIR)/var/www/swupdate; \
 		cp -dpfr $(@D)/examples/www/v2/* $(TARGET_DIR)/var/www/swupdate)

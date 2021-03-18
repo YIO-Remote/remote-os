@@ -68,6 +68,30 @@ config BR2_PACKAGE_SWUPDATE_INSTALL_WEBSITE
 	  This is necessary if you want to run swupdate with the
 	  embedded webserver and do not provide an own website to be
 	  installed to /var/www/swupdate.
+
+config BR2_PACKAGE_SWUPDATE_INSTALL_CLIENT_LIB
+	bool "install client library"
+	default n
+	help
+	  Install the shared swupdate client library.
+
+config BR2_PACKAGE_SWUPDATE_INSTALL_CLIENT_TOOLS
+	bool "install client tools"
+	default n
+	select BR2_PACKAGE_SWUPDATE_INSTALL_CLIENT_LIB
+	help
+	  Install the provided swupdate client tools.
+
+	  swupdate-client, swupdate-sysrestart, swupdate-progress
+
+config BR2_PACKAGE_SWUPDATE_INSTALL_HAWKBIT_TOOLS
+	bool "install hawkbit tools"
+	default n
+	select BR2_PACKAGE_SWUPDATE_INSTALL_CLIENT_LIB
+	help
+	  Install the provided hawkbit client tools.
+
+	  swupdate-sendtohawkbit, swupdate-hawkbitcfg
 endif
 
 comment "swupdate needs a toolchain w/ threads"
