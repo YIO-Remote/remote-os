@@ -16,8 +16,12 @@ software = {
             );
             bootenv: (
                 {
-                    name = "yiospart";
+                    name = "rootfspart";
                     value = "2";
+                },
+                {
+                    name = "upgrade_available";
+                    value = "1";
                 }
             );
         }
@@ -32,8 +36,12 @@ software = {
             );
             bootenv: (
                 {
-                    name = "yiospart";
+                    name = "rootfspart";
                     value = "3";
+                },
+                {
+                    name = "upgrade_available";
+                    value = "1";
                 }
             );
         }

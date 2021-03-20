@@ -1,0 +1,8 @@
+[Unit]
+Description=Run bootcount reset check after app update script
+RefuseManualStart=no
+RefuseManualStop=no
+
+[Service]
+Type=oneshot
+ExecStart=/etc/swupdate/reset-bootcount.sh
