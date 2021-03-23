@@ -62,7 +62,7 @@ fi
 #       However: since we are loading the kernel from the same partition, the script will fail before booting the kernel. So it should be safe to use.
 to_boot="$newargs root=/dev/mmcblk0p${rootfspart}"
 fdt set /chosen bootargs "$to_boot"
-if ext4load mmc 0:${rootfspart} $kernel_addr_r /zImage; then
+if sqfsload mmc 0:${rootfspart} $kernel_addr_r /zImage; then
     bootz $kernel_addr_r - $fdt_addr
 fi
 

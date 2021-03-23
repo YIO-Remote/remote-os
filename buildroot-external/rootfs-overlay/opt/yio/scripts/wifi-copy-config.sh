@@ -18,9 +18,9 @@ then
         systemctl start wpa_supplicant@wlan0.service
         sleep 5
 
-        touch /wificopy
+        touch /var/yio/wificopy
     fi
 else
     echo "No wpa_supplicant.conf in /boot"
-    rm -f  /wificopy
+    rm -f  /var/yio/wificopy
 fi

@@ -39,6 +39,6 @@ if [[ -f ${BINARIES_DIR}/README.md ]]; then
 fi
 
 create_disk_image
-create_ota_update
+#create_ota_update
 
 yios_post_image

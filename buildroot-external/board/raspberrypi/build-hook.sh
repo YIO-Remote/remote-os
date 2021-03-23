@@ -7,6 +7,30 @@ function yios_post_build() {
     sed -i "s/\${YIO_APP_DIR}\/remote/\${YIO_APP_DIR}\/remote --cfg \"\/boot\/config.json\" --hw-cfg \"\${YIO_HOME}\/hardware-rpi.json\"/g" "${TARGET_DIR}/opt/yio/app-launch.sh"
 
     cp "${BINARIES_DIR}/zImage" "${TARGET_DIR}/"
+
+    # --- Changes for read-only rootfs ---
+
+    # Add mount points
+    mkdir -p "${TARGET_DIR}/boot"
+    mkdir -p "${TARGET_DIR}/mnt/data"
+
+    # bind mounts
+    mkdir -p "${TARGET_DIR}/etc/wpa_supplicant"
+    cp ${TARGET_DIR}/etc/hostname ${TARGET_DIR}/home/hostname
+    cp ${TARGET_DIR}/etc/hosts ${TARGET_DIR}/home/hosts
+    cp ${TARGET_DIR}/etc/machine-id ${TARGET_DIR}/home/machine-id
+
+    # additional directories
+    # - due to log error: bluetoothd[135]: Unable to open adapter storage directory: /var/lib/bluetooth/<MAC:ADDR>
+    mkdir -p "${TARGET_DIR}/var/lib/bluetooth"
+    mkdir -p "${TARGET_DIR}/var/lib/dropbear"
+
+    # Relocate dropbear's key storage from /etc/dropbear to /var/lib/dropbear
+    # See also: ../overlay/etc/systemd/system/dropbear.service.d/create-host-key-directory.conf
+    rm -f ${TARGET_DIR}/etc/dropbear
+    ln -s /var/lib/dropbear ${TARGET_DIR}/etc/dropbear
+
+    # --- End read-only rootfs ---
 }
 
 function yios_pre_image() {
