@@ -2,9 +2,16 @@
 /dev/mmcblk0p1  /boot       vfat    rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro    0 2
 /dev/mmcblk0p4  /mnt/data   auto    rw  0 2
 
-/mnt/data/hostname   /etc/hostname none    defaults,bind,nofai,noatime 0 0
-/mnt/data/hosts      /etc/hosts    none    defaults,bind,nofai,noatime 0 0
-# FIXME systemd mounts this to /run/machine-id See HAOS how to persist it in U-Boot env and specify it as kernel param
-# /mnt/data/machine-id /etc/machine-id  none    defaults,bind,nofai,noatime 0 0
-#/mnt/data/timezone   /etc/timezone    none    noauto,x-systemd.automount,bind,nofail,noatime 0 0
-/mnt/data/wpa_supplicant  /etc/wpa_supplicant  none  noauto,x-systemd.automount,bind,nofail,noatime  0 0
+/var/etc/hostname   /etc/hostname none    defaults,bind,nofail,noatime 0 0
+/var/etc/hosts      /etc/hosts    none    defaults,bind,nofail,noatime 0 0
+
+# FIXME workaround in /usr/libexec/init-overlay.sh
+#   - Further explanation about systemd handling: https://github.com/Opentrons/buildroot/commit/b1efd5a6208d05b2156ee4dbddfa708ef7849ec8
+#   - https://www.freedesktop.org/software/systemd/man/systemd-machine-id-commit.service.html
+#   - https://www.freedesktop.org/software/systemd/man/systemd-machine-id-setup.html#
+#     Maybe --root /var might work? 
+#   - See HAOS how to persist it in U-Boot env and specify it as kernel param
+#/var/etc/machine-id /etc/machine-id  none    defaults,bind,nofail 0 0
+
+#/var/etc/timezone   /etc/timezone    none    noauto,x-systemd.automount,bind,nofail,noatime 0 0
+/var/etc/wpa_supplicant  /etc/wpa_supplicant  none  noauto,x-systemd.automount,bind,nofail,noatime  0 0
