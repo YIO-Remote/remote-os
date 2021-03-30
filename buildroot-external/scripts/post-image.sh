@@ -25,10 +25,6 @@ touch ${BR2_EXTERNAL_YIOS_PATH}/.toolchain-ready
 BUILD_VERSION=$("$SCRIPT_DIR/git-version.sh" "$BR2_EXTERNAL/version")
 BUILD_DATE=$(date --iso-8601=seconds)
 
-echo "Generating file systems and SD card image ..."
-
-yios_pre_image
-
 # patch README file with build version and build timestamp
 if [[ -f ${BINARIES_DIR}/README.md ]]; then
     echo "Setting build version in README.md: $BUILD_VERSION"
@@ -37,6 +33,10 @@ if [[ -f ${BINARIES_DIR}/README.md ]]; then
     # for our Windows users:
     unix2dos ${BINARIES_DIR}/README.md
 fi
+
+echo "Generating file systems and SD card image ..."
+
+yios_pre_image
 
 create_disk_image
 #create_ota_update

@@ -1,1 +1,1 @@
-logo.nologo root=/dev/mmcblk0p2 rootwait rootfstype=squashfs ro dwc_otg.lpm_enable=0 console=tty1 panic=5 init=/usr/libexec/init-overlay.sh
+logo.nologo root=/dev/mmcblk0p3 rootwait rootfstype=squashfs ro dwc_otg.lpm_enable=0 console=tty1 panic=5 init=/usr/libexec/init-overlay.sh

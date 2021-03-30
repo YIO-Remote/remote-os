@@ -2,22 +2,21 @@ software = {
     version = "$BUILD_VERSION";
     description = "Firmware update for YIO remote";
 
-    hardware-compatibility: [ "$BOARD_ID"];
+    hardware-compatibility: [ "$BOARD_ID" ];
 
     rootfs = {
         rootfs-1: {
             images: (
                 {
-                    filename = "rootfs.ext4.gz";
-                    compressed = "zlib";
+                    filename = "rootfs.squashfs";
                     installed-directly = true;
-                    device = "/dev/mmcblk0p2";
+                    device = "/dev/mmcblk0p3";
                 }
             );
             bootenv: (
                 {
                     name = "rootfspart";
-                    value = "2";
+                    value = "3";
                 },
                 {
                     name = "upgrade_available";
@@ -28,16 +27,15 @@ software = {
         rootfs-2: {
             images: (
                 {
-                    filename = "rootfs.ext4.gz";
-                    compressed = "zlib";
+                    filename = "rootfs.squashfs";
                     installed-directly = true;
-                    device = "/dev/mmcblk0p3";
+                    device = "/dev/mmcblk0p4";
                 }
             );
             bootenv: (
                 {
                     name = "rootfspart";
-                    value = "3";
+                    value = "4";
                 },
                 {
                     name = "upgrade_available";

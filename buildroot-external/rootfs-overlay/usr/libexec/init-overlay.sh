@@ -1,7 +1,15 @@
 #!/bin/sh
+#
+# "Poor man initramfs"
+# Custom init script to bootstrap file system overlays before handing over to systemd
+#
 
 echo "Mounting persistent data volume"
-/bin/mount /mnt/data
+/bin/mount /mnt/data || {
+    echo "FATAL: Could not mount data volume! Check /etc/fstab and partition setup"
+    # This triggers a kernel panic! In case of a software update a rollback is triggered after n failed boots.
+    exit 1
+}
 
 echo "Preparing persistent /var overlay"
 /bin/mkdir -p /mnt/data/ov/var /mnt/data/ov/var-work

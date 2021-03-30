@@ -1,6 +1,6 @@
 /dev/root       /           auto    ro         0 1
 /dev/mmcblk0p1  /boot       vfat    rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro    0 2
-/dev/mmcblk0p4  /mnt/data   auto    rw  0 2
+/dev/mmcblk0p5  /mnt/data   auto    defaults   0 2
 
 /var/etc/hostname   /etc/hostname none    defaults,bind,nofail,noatime 0 0
 /var/etc/hosts      /etc/hosts    none    defaults,bind,nofail,noatime 0 0
