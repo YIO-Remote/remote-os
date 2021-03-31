@@ -6,14 +6,6 @@
 if [ -e /var/yio/firstrun ]
 then
     #--------------------
-    # Do some setup with services
-    #--------------------
-    systemctl disable dhcpcd.service
-    systemctl disable lighttpd.service
-
-    systemctl stop dhcpcd.service
-
-    #--------------------
     # SSID to config
     #--------------------
     MACADDR=$(cat /sys/class/net/wlan0/address | tr -d ":")
