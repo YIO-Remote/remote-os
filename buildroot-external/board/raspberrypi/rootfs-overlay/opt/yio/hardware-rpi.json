@@ -49,7 +49,7 @@
         "useShellScript": false,
         "interface": {
             "wpa_supplicant" : {
-                "socketPath": "/var/run/wpa_supplicant/wlan0",
+                "socketPath": "/run/wpa_supplicant/wlan0",
                 "removeNetworksBeforeJoin": false
             },
             "shellScript": {

@@ -21,9 +21,6 @@ function yios_post_build() {
     mkdir -p "${TARGET_DIR}/boot"
     mkdir -p "${TARGET_DIR}/mnt/data"
 
-    # bind mounts
-    mkdir -p "${TARGET_DIR}/etc/wpa_supplicant"
-
     # additional directories
     # - due to log error: bluetoothd[135]: Unable to open adapter storage directory: /var/lib/bluetooth/<MAC:ADDR>
     mkdir -p "${TARGET_DIR}/var/lib/bluetooth"

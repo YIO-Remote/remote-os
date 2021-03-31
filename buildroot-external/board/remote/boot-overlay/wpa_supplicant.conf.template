@@ -1,4 +1,4 @@
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+ctrl_interface=DIR=/run/wpa_supplicant GROUP=netdev
 # update_config is required to update the WIFI configuration from remote-software
 update_config=1
 country=<2 letter ISO 3166-1 country code: DK, DE, NL, CH, US, UK, ...>

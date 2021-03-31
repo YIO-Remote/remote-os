@@ -14,4 +14,3 @@
 #/var/etc/machine-id /etc/machine-id  none    defaults,bind,nofail 0 0
 
 #/var/etc/timezone   /etc/timezone    none    noauto,x-systemd.automount,bind,nofail,noatime 0 0
-/var/etc/wpa_supplicant  /etc/wpa_supplicant  none  noauto,x-systemd.automount,bind,nofail,noatime  0 0

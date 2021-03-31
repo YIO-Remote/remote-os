@@ -19,7 +19,7 @@ echo "Created upper and work dirs for /var overlay"
 # first run initialization for bind mounts in /etc/fstab
 if [ ! -r /mnt/data/ov/var/etc/hostname ]; then
     echo "First run: provisioning /var overlay data..."
-    /bin/mkdir -p /mnt/data/ov/var/etc/wpa_supplicant
+    /bin/mkdir -p /mnt/data/ov/var/etc
     /bin/cp -f /etc/hostname /mnt/data/ov/var/etc/
     /bin/cp -f /etc/hosts /mnt/data/ov/var/etc/
     # Signal first boot to systemd: https://www.freedesktop.org/software/systemd/man/machine-id.html
