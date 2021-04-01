@@ -4,11 +4,11 @@
 
 # Create the required env vars for boot count & limit support.
 # Note: bootcount and bootlimit are already defined in U-Boot.
-# - rootfspart holds the currently active root partition to boot
-if test -z "${rootfspart}"
+# - boot_slot defines which system to boot (A, B, RESCUE)
+if test -z "${boot_slot}"
 then
-    echo "No saved rootfspart, defaulting to 3"
-    setenv rootfspart "3"
+    echo "No saved boot_slot, defaulting to A"
+    setenv boot_slot "A"
     saveenv
 fi
 
@@ -17,19 +17,23 @@ if test -z "${altbootcmd}"
 then
     echo "No saved altbootcmd, creating it"
     setenv altbootcmd "
-oldrootfspart='\${rootfspart}';
-if test \"'\${rootfspart}'\" = \"3\";
+oldboot_slot='\${boot_slot}';
+if test \"'\${boot_slot}'\" = \"A\";
 then
-    setenv rootfspart 4;
+    setenv boot_slot B;
 else
-    setenv rootfspart 3;
+    setenv boot_slot A;
 fi;
 setenv bootcount 0;
 saveenv;
-echo Rollback from rootfs '\${oldrootfspart}' to old rootfs '\${rootfspart}';
+echo Rollback from boot slot '\${oldboot_slot}' to old boot slot '\${boot_slot}';
 boot"
     saveenv
 fi
+
+boot_a="root=PARTUUID=b831b597-efc4-4132-b88c-c50a2d4589cf"
+boot_b="root=PARTUUID=f2f82015-3087-485a-9241-914026bca453"
+boot_r="root=PARTUUID=b9ea076c-315f-422b-85d7-887854415b1e"
 
 # Parse and replace the boot arguments in the flattened device tree.
 # This allows us to keep the RPi cmdline.txt without hardcoded bootargs.
@@ -42,26 +46,36 @@ fdt get value fdtargs /chosen bootargs
 # Iterate through bootargs and save everything but the boot partition
 newargs=""
 for arg in $fdtargs; do
-    if test "root=/dev/mmcblk0p3" = $arg
+    if test "$boot_a" != "$arg"
     then
-        bootpart=$arg
-    else
         newargs="$newargs $arg"
     fi
 done
+
+if test "${boot_slot}" = "A"; then
+    rootfspart=3;
+    bootpart=${boot_a}
+elif test "${boot_slot}" = "B"; then
+    rootfspart=4;
+    bootpart=${boot_b}
+else
+    rootfspart=2;
+    bootpart=${boot_r}
+fi
 
 if test "$upgrade_available" = "1"
 then
     echo "Try booting system upgrade from partition ${rootfspart}. Boot count: $bootcount. Limit for rollback: $bootlimit"
 else
-    echo "Booting from active partition ${rootfspart}"
+    echo "Booting system ${boot_slot}: partition=${rootfspart}, ${bootpart}"
 fi
 
 # Note: setting an invalid root param will hang the boot process due to required `rootwait` argument, which waits indefinitely!
 #       A hackish workaround for a kernel panic to trigger a reboot would be using rootdelay=xx instead, but that delays the boot for xx seconds.
 #       However: since we are loading the kernel from the same partition, the script will fail before booting the kernel. So it should be safe to use.
-to_boot="$newargs root=/dev/mmcblk0p${rootfspart}"
+to_boot="$newargs $bootpart"
 fdt set /chosen bootargs "$to_boot"
+# TODO is it possible to get partition from PARTUUID in U-Boot? Then we would not have to hardcode the partition number!
 if sqfsload mmc 0:${rootfspart} $kernel_addr_r /zImage; then
     bootz $kernel_addr_r - $fdt_addr
 fi
@@ -69,4 +83,5 @@ fi
 echo "Boot failed!"
 # Reset loop might not be the best choice, but there's not much we can do here.
 # Better solution would require to initialize the display in U-Boot and display an error screen. That's another project...
+# Haptic motor feedback would be easier, that only involves setting up i2c.
 reset

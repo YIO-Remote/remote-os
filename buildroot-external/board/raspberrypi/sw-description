@@ -10,13 +10,13 @@ software = {
                 {
                     filename = "rootfs.squashfs";
                     installed-directly = true;
-                    device = "/dev/mmcblk0p3";
+                    device = "/dev/disk/by-partuuid/b831b597-efc4-4132-b88c-c50a2d4589cf";
                 }
             );
             bootenv: (
                 {
-                    name = "rootfspart";
-                    value = "3";
+                    name = "boot_slot";
+                    value = "A";
                 },
                 {
                     name = "upgrade_available";
@@ -29,13 +29,13 @@ software = {
                 {
                     filename = "rootfs.squashfs";
                     installed-directly = true;
-                    device = "/dev/mmcblk0p4";
+                    device = "/dev/disk/by-partuuid/f2f82015-3087-485a-9241-914026bca453";
                 }
             );
             bootenv: (
                 {
-                    name = "rootfspart";
-                    value = "4";
+                    name = "boot_slot";
+                    value = "B";
                 },
                 {
                     name = "upgrade_available";

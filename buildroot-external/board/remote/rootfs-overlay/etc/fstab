@@ -1,6 +1,7 @@
 /dev/root       /           auto    ro         0 1
-/dev/mmcblk0p1  /boot       vfat    rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro    0 2
-/dev/mmcblk0p5  /mnt/data   auto    defaults   0 2
+PARTUUID=53a3720d-07aa-4680-ab6d-f2ed0979c9ea  /boot       vfat    rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro    0 2
+# our custom init script can't use PARTUUID
+UUID=ce4c2d04-aed1-48e0-b58e-2ab110724812  /mnt/data   auto    defaults   0 2
 
 /var/etc/hostname   /etc/hostname none    defaults,bind,nofail,noatime 0 0
 /var/etc/hosts      /etc/hosts    none    defaults,bind,nofail,noatime 0 0

@@ -1,1 +1,1 @@
-logo.nologo root=/dev/mmcblk0p3 rootwait rootfstype=squashfs ro quiet fastboot vt.global_cursor_default=0 console=tty9 loglevel=3 panic=5 init=/usr/libexec/init-overlay.sh
+logo.nologo root=PARTUUID=b831b597-efc4-4132-b88c-c50a2d4589cf rootwait rootfstype=squashfs ro quiet fastboot vt.global_cursor_default=0 console=tty9 loglevel=3 panic=5 init=/usr/libexec/init-overlay.sh

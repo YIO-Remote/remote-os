@@ -39,6 +39,6 @@ echo "Generating file systems and SD card image ..."
 yios_pre_image
 
 create_disk_image
-#create_ota_update
+create_ota_update
 
 yios_post_image

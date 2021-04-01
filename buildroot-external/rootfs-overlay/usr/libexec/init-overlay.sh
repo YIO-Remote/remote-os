@@ -4,6 +4,9 @@
 # Custom init script to bootstrap file system overlays before handing over to systemd
 #
 
+# required to mount by UUID. TODO what is required to use PARTUUID?
+/bin/mount -t proc proc /proc -o rw,nosuid,nodev,noexec,relatime
+
 echo "Mounting persistent data volume"
 /bin/mount /mnt/data || {
     echo "FATAL: Could not mount data volume! Check /etc/fstab and partition setup"
