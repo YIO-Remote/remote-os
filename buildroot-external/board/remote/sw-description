@@ -19,6 +19,10 @@ software = {
                     value = "A";
                 },
                 {
+                    name = "bootcount";
+                    value = "0";
+                },
+                {
                     name = "upgrade_available";
                     value = "1";
                 }
@@ -36,6 +40,10 @@ software = {
                 {
                     name = "boot_slot";
                     value = "B";
+                },
+                {
+                    name = "bootcount";
+                    value = "0";
                 },
                 {
                     name = "upgrade_available";
