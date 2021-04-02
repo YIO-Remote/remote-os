@@ -32,6 +32,10 @@ fi
 /bin/mount overlay -t overlay /var -olowerdir=/var,upperdir=/mnt/data/ov/var,workdir=/mnt/data/ov/var-work
 echo "Mounted /var overlay"
 
+echo "Preparing persistent /opt/yio overlay"
+/bin/mkdir -p /mnt/data/ov/yio /mnt/data/ov/yio-work
+/bin/mount overlay -t overlay /opt/yio -olowerdir=/opt/yio,upperdir=/mnt/data/ov/yio,workdir=/mnt/data/ov/yio-work
+
 # Temporary testing: create /etc overlay to figure out all services which write into it! Lost after reboot!
 # TODO systemd update marker file in /etc https://www.freedesktop.org/software/systemd/man/systemd-update-done.service.html
 echo "Preparing in-memory /etc overlay"
