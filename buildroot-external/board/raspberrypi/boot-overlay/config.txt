@@ -6,6 +6,9 @@ disable_splash=1
 kernel=u-boot.bin
 gpu_mem=256
 
+# rotate display 90 degrees (3 = 270 degrees)
+display_rotate=1
+
 # uncomment for aarch64 bit support
 #arm_64bit=1
 
