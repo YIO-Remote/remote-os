@@ -5,4 +5,4 @@ RefuseManualStop=no
 
 [Service]
 Type=oneshot
-ExecStart=/etc/swupdate/reset-bootcount.sh
+ExecStart=/usr/libexec/reset-bootcount.sh

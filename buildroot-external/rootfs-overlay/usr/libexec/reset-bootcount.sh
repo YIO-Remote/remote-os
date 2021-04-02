@@ -1,4 +1,6 @@
 #!/bin/sh
+#
+# SWUpdate boot count reset script
 
 systemctl is-active --quiet app || {
   echo "Remote app not running!"
