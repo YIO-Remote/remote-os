@@ -8,6 +8,3 @@ EnvironmentFile=-/etc/default/dhcpcd
 PIDFile=/run/dhcpcd.pid
 ExecStart=/sbin/dhcpcd $DAEMON_ARGS
 Restart=always
-
-[Install]
-WantedBy=multi-user.target

@@ -1,2 +1,17 @@
-/dev/root       /           auto    rw         0 1
-/dev/mmcblk0p1  /boot       vfat    rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro    0 2
+/dev/root       /           auto    ro         0 1
+PARTUUID=53a3720d-07aa-4680-ab6d-f2ed0979c9ea  /boot       vfat    rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro    0 2
+# our custom init script can't use PARTUUID
+UUID=ce4c2d04-aed1-48e0-b58e-2ab110724812  /mnt/data   auto    defaults   0 2
+
+/var/etc/hostname   /etc/hostname none    defaults,bind,nofail,noatime 0 0
+/var/etc/hosts      /etc/hosts    none    defaults,bind,nofail,noatime 0 0
+
+# FIXME workaround in /usr/libexec/init-overlay.sh
+#   - Further explanation about systemd handling: https://github.com/Opentrons/buildroot/commit/b1efd5a6208d05b2156ee4dbddfa708ef7849ec8
+#   - https://www.freedesktop.org/software/systemd/man/systemd-machine-id-commit.service.html
+#   - https://www.freedesktop.org/software/systemd/man/systemd-machine-id-setup.html#
+#     Maybe --root /var might work? 
+#   - See HAOS how to persist it in U-Boot env and specify it as kernel param
+#/var/etc/machine-id /etc/machine-id  none    defaults,bind,nofail 0 0
+
+#/var/etc/timezone   /etc/timezone    none    noauto,x-systemd.automount,bind,nofail,noatime 0 0

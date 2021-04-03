@@ -6,4 +6,4 @@ RefuseManualStop=no
 
 [Service]
 Type=oneshot
-ExecStart=/etc/update_clock_file.sh
+ExecStart=/usr/libexec/update_clock_file.sh

@@ -8,16 +8,19 @@ software = {
         rootfs-1: {
             images: (
                 {
-                    filename = "rootfs.ext4.gz";
-                    compressed = "zlib";
+                    filename = "rootfs.squashfs";
                     installed-directly = true;
-                    device = "/dev/mmcblk0p2";
+                    device = "/dev/disk/by-partuuid/b831b597-efc4-4132-b88c-c50a2d4589cf";
                 }
             );
             bootenv: (
                 {
-                    name = "rootfspart";
-                    value = "2";
+                    name = "boot_slot";
+                    value = "A";
+                },
+                {
+                    name = "bootcount";
+                    value = "0";
                 },
                 {
                     name = "upgrade_available";
@@ -28,16 +31,19 @@ software = {
         rootfs-2: {
             images: (
                 {
-                    filename = "rootfs.ext4.gz";
-                    compressed = "zlib";
+                    filename = "rootfs.squashfs";
                     installed-directly = true;
-                    device = "/dev/mmcblk0p3";
+                    device = "/dev/disk/by-partuuid/f2f82015-3087-485a-9241-914026bca453";
                 }
             );
             bootenv: (
                 {
-                    name = "rootfspart";
-                    value = "3";
+                    name = "boot_slot";
+                    value = "B";
+                },
+                {
+                    name = "bootcount";
+                    value = "0";
                 },
                 {
                     name = "upgrade_available";

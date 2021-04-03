@@ -1,2 +1,2 @@
-#!/bin/bash
-
+#!/bin/true
+# dummy to keep same systemd service dependencies

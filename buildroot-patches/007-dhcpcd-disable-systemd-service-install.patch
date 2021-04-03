@@ -1,0 +1,11 @@
+diff --git a/package/dhcpcd/dhcpcd.service b/package/dhcpcd/dhcpcd.service
+index e648092c..9e69e720 100644
+--- a/package/dhcpcd/dhcpcd.service
++++ b/package/dhcpcd/dhcpcd.service
+@@ -8,6 +8,3 @@ EnvironmentFile=-/etc/default/dhcpcd
+ PIDFile=/run/dhcpcd.pid
+ ExecStart=/sbin/dhcpcd $DAEMON_ARGS
+ Restart=always
+-
+-[Install]
+-WantedBy=multi-user.target

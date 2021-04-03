@@ -1,0 +1,10 @@
+diff -ruN lighttpd-1.4.55/doc/systemd/lighttpd.service lighttpd-1.4.55.patch/doc/systemd/lighttpd.service
+--- lighttpd-1.4.55/doc/systemd/lighttpd.service	2020-02-01 03:49:09.000000000 +0100
++++ lighttpd-1.4.55.patch/doc/systemd/lighttpd.service	2021-03-31 17:28:28.665526949 +0200
+@@ -9,6 +9,3 @@
+ ExecStart=/usr/sbin/lighttpd -D -f /etc/lighttpd/lighttpd.conf
+ ExecReload=/bin/kill -USR1 $MAINPID
+ Restart=on-failure
+-
+-[Install]
+-WantedBy=multi-user.target

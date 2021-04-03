@@ -10,7 +10,7 @@ Wants=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/sbin/wpa_supplicant -c/etc/wpa_supplicant/wpa_supplicant-wlan0.conf -iwlan0
+ExecStart=/usr/sbin/wpa_supplicant -c/var/etc/wpa_supplicant/wpa_supplicant-wlan0.conf -iwlan0
 
 [Install]
 WantedBy=multi-user.target
