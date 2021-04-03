@@ -19,7 +19,7 @@ Development boards:
 
 ## Getting Started
 
-See [releases](./releases) for SD card images and cross compile toolchains.
+See [releases](https://github.com/YIO-Remote/remote-os/releases) for SD card images and cross compile toolchains.
 
 Use [balenaEtcher](https://www.balena.io/etcher/) - available for Linux, macOS and Windows - or your favorite tool.
 
