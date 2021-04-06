@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-VIM_VERSION = 8.1.1929
+VIM_VERSION = 8.2.0000
 VIM_SITE = $(call github,vim,vim,v$(VIM_VERSION))
 VIM_DEPENDENCIES = ncurses $(TARGET_NLS_DEPENDENCIES)
 VIM_SUBDIR = src
@@ -23,6 +23,7 @@ VIM_CONF_ENV = \
 VIM_CONF_OPTS = --with-tlib=ncurses --enable-gui=no --without-x
 VIM_LICENSE = Charityware
 VIM_LICENSE_FILES = README.txt
+VIM_CPE_ID_VENDOR = vim
 
 ifeq ($(BR2_PACKAGE_ACL),y)
 VIM_CONF_OPTS += --enable-acl

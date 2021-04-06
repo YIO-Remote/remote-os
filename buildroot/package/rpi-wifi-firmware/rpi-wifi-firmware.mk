@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-RPI_WIFI_FIRMWARE_VERSION = 5113681d6dcd46581a1882cbeb3d5cf1ddbf7676
+RPI_WIFI_FIRMWARE_VERSION = 83938f78ca2d5a0ffe0c223bb96d72ccc7b71ca5
 RPI_WIFI_FIRMWARE_SITE = $(call github,RPi-Distro,firmware-nonfree,$(RPI_WIFI_FIRMWARE_VERSION))
 RPI_WIFI_FIRMWARE_LICENSE = PROPRIETARY
 RPI_WIFI_FIRMWARE_LICENSE_FILES = LICENCE.broadcom_bcm43xx

@@ -4,12 +4,13 @@
 #
 ################################################################################
 
-DHCP_VERSION = 4.4.1
+DHCP_VERSION = 4.4.2
 DHCP_SITE = http://ftp.isc.org/isc/dhcp/$(DHCP_VERSION)
 DHCP_INSTALL_STAGING = YES
 DHCP_LICENSE = MPL-2.0
 DHCP_LICENSE_FILES = LICENSE
 DHCP_DEPENDENCIES = bind
+DHCP_CPE_ID_VENDOR = isc
 
 # use libtool-enabled configure.ac
 define DHCP_LIBTOOL_AUTORECONF
