@@ -4,11 +4,14 @@
 #
 ################################################################################
 
-COREUTILS_VERSION = 8.31
+COREUTILS_VERSION = 8.32
 COREUTILS_SITE = $(BR2_GNU_MIRROR)/coreutils
 COREUTILS_SOURCE = coreutils-$(COREUTILS_VERSION).tar.xz
 COREUTILS_LICENSE = GPL-3.0+
 COREUTILS_LICENSE_FILES = COPYING
+COREUTILS_CPE_ID_VENDOR = gnu
+# We're patching m4/pthread-cond.m4
+COREUTILS_AUTORECONF = YES
 
 COREUTILS_CONF_OPTS = --disable-rpath \
 	$(if $(BR2_TOOLCHAIN_USES_MUSL),--with-included-regex)

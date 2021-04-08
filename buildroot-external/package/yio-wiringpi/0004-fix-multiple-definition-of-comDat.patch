@@ -1,0 +1,64 @@
+From c69c7d60058e04f1e170723c2a9562ea095d1c79 Mon Sep 17 00:00:00 2001
+From: akvavit01 <48801175+akvavit01@users.noreply.github.com>
+Date: Fri, 5 Jun 2020 18:00:20 +0700
+Subject: [PATCH 1/2] Fix for multiple definition of comDat
+
+---
+ wiringPiD/drcNetCmd.h | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/wiringPiD/drcNetCmd.h b/wiringPiD/drcNetCmd.h
+index 23f7dc1..9754ad0 100644
+--- a/wiringPiD/drcNetCmd.h
++++ b/wiringPiD/drcNetCmd.h
+@@ -34,11 +34,19 @@
+ #define	DRCN_DIGITAL_READ8	8
+ #define	DRCN_ANALOG_READ	9
+ 
+-
++// Multiple definition for comDat fix
++/*
+ struct drcNetComStruct
+ {
+   uint32_t pin ;
+   uint32_t cmd ;
+   uint32_t data ;
+ } comDat ;
++*/
+ 
++struct drcNetComStruct
++{
++  uint32_t pin ;
++  uint32_t cmd ;
++  uint32_t data ;
++};
+
+From 7bace61ddba6be9a5ae1b75e1480c3f7f94606cc Mon Sep 17 00:00:00 2001
+From: Mark Liffiton <liffiton@gmail.com>
+Date: Thu, 26 Nov 2020 12:52:22 -0600
+Subject: [PATCH 2/2] Remove unneeded definition.
+
+---
+ wiringPiD/drcNetCmd.h | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/wiringPiD/drcNetCmd.h b/wiringPiD/drcNetCmd.h
+index 9754ad0..c59e0b3 100644
+--- a/wiringPiD/drcNetCmd.h
++++ b/wiringPiD/drcNetCmd.h
+@@ -34,15 +34,6 @@
+ #define	DRCN_DIGITAL_READ8	8
+ #define	DRCN_ANALOG_READ	9
+ 
+-// Multiple definition for comDat fix
+-/*
+-struct drcNetComStruct
+-{
+-  uint32_t pin ;
+-  uint32_t cmd ;
+-  uint32_t data ;
+-} comDat ;
+-*/
+ 
+ struct drcNetComStruct
+ {

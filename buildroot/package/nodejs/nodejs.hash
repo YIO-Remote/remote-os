@@ -1,5 +1,5 @@
-# From https://nodejs.org/dist/v12.20.1/SHASUMS256.txt
-sha256  e00eee325d705b2bfa9929b7d061eb2315402d7e8548945eac9870bf84321853  node-v12.20.1.tar.xz
+# From https://nodejs.org/dist/v12.22.1/SHASUMS256.txt
+sha256  dd650df7773a6ed3e390320ba51ef33cba6499f0e9397709ea3d1debdcbcb989  node-v12.22.1.tar.xz
 
 # Hash for license file
 sha256  221417a7ca275112a5ac54639b36ee3c5184e74631ea1e1b01b701293b655190  LICENSE

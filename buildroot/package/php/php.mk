@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-PHP_VERSION = 7.4.14
+PHP_VERSION = 7.4.16
 PHP_SITE = http://www.php.net/distributions
 PHP_SOURCE = php-$(PHP_VERSION).tar.xz
 PHP_INSTALL_STAGING = YES
@@ -13,6 +13,7 @@ PHP_INSTALL_TARGET_OPTS = INSTALL_ROOT=$(TARGET_DIR) install
 PHP_DEPENDENCIES = host-pkgconf pcre2
 PHP_LICENSE = PHP-3.01
 PHP_LICENSE_FILES = LICENSE
+PHP_CPE_ID_VENDOR = php
 PHP_CONF_OPTS = \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
@@ -98,7 +99,6 @@ PHP_CONF_OPTS += \
 	$(if $(BR2_PACKAGE_PHP_EXT_SOCKETS),--enable-sockets) \
 	$(if $(BR2_PACKAGE_PHP_EXT_POSIX),--enable-posix) \
 	$(if $(BR2_PACKAGE_PHP_EXT_SESSION),--enable-session) \
-	$(if $(BR2_PACKAGE_PHP_EXT_HASH),--enable-hash) \
 	$(if $(BR2_PACKAGE_PHP_EXT_DOM),--enable-dom) \
 	$(if $(BR2_PACKAGE_PHP_EXT_SIMPLEXML),--enable-simplexml) \
 	$(if $(BR2_PACKAGE_PHP_EXT_SOAP),--enable-soap) \
@@ -152,7 +152,7 @@ endif
 
 ifeq ($(BR2_PACKAGE_PHP_EXT_LIBXML2),y)
 PHP_CONF_ENV += php_cv_libxml_build_works=yes
-PHP_CONF_OPTS += --with-libxml --with-libxml-dir=$(STAGING_DIR)/usr
+PHP_CONF_OPTS += --with-libxml
 PHP_DEPENDENCIES += libxml2
 endif
 
@@ -312,6 +312,11 @@ PHP_CONF_OPTS += \
 	--with-jpeg \
 	--with-freetype
 PHP_DEPENDENCIES += jpeg libpng freetype zlib
+endif
+
+ifeq ($(BR2_PACKAGE_PHP_EXT_FFI),y)
+PHP_CONF_OPTS += --with-ffi
+PHP_DEPENDENCIES += libffi
 endif
 
 ifeq ($(BR2_PACKAGE_PHP_SAPI_FPM),y)

@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBCURL_VERSION = 7.74.0
+LIBCURL_VERSION = 7.76.0
 LIBCURL_SOURCE = curl-$(LIBCURL_VERSION).tar.xz
 LIBCURL_SITE = https://curl.haxx.se/download
 LIBCURL_DEPENDENCIES = host-pkgconf \
@@ -12,6 +12,8 @@ LIBCURL_DEPENDENCIES = host-pkgconf \
 	$(if $(BR2_PACKAGE_RTMPDUMP),rtmpdump)
 LIBCURL_LICENSE = curl
 LIBCURL_LICENSE_FILES = COPYING
+LIBCURL_CPE_ID_VENDOR = haxx
+LIBCURL_CPE_ID_PRODUCT = libcurl
 LIBCURL_INSTALL_STAGING = YES
 
 # We disable NTLM support because it uses fork(), which doesn't work
@@ -49,6 +51,13 @@ LIBCURL_CONF_OPTS += --with-ssl=$(STAGING_DIR)/usr \
 	--with-ca-path=/etc/ssl/certs
 else
 LIBCURL_CONF_OPTS += --without-ssl
+endif
+
+ifeq ($(BR2_PACKAGE_LIBCURL_BEARSSL),y)
+LIBCURL_CONF_OPTS += --with-bearssl=$(STAGING_DIR)/usr
+LIBCURL_DEPENDENCIES += bearssl
+else
+LIBCURL_CONF_OPTS += --without-bearssl
 endif
 
 ifeq ($(BR2_PACKAGE_LIBCURL_GNUTLS),y)
@@ -115,6 +124,13 @@ LIBCURL_DEPENDENCIES += nghttp2
 LIBCURL_CONF_OPTS += --with-nghttp2
 else
 LIBCURL_CONF_OPTS += --without-nghttp2
+endif
+
+ifeq ($(BR2_PACKAGE_LIBGSASL),y)
+LIBCURL_DEPENDENCIES += libgsasl
+LIBCURL_CONF_OPTS += --with-gsasl
+else
+LIBCURL_CONF_OPTS += --without-gsasl
 endif
 
 ifeq ($(BR2_PACKAGE_LIBCURL_COOKIES_SUPPORT),y)
