@@ -11,7 +11,8 @@
       branches:
         - master
       tags:
-        - v[0-9]+.[0-9]+.[0-9]+
+        # This is not regex capable: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
+        - 'v[0-9]+.[0-9]+.[0-9]+*'
 
   env:
     APP_NAME: app
