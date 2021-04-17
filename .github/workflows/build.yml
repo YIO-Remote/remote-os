@@ -9,9 +9,14 @@
   on:
     push:
       branches:
+        # normal releases happen directly in the main branch. TODO: rename master -> main
         - master
+        - main
+        # major releases with multiple rc candidates
+        - release/*
       tags:
-        - v[0-9]+.[0-9]+.[0-9]+
+        # This is not regex: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
+        - v[0-9]+.[0-9]+.[0-9]+*
 
   env:
     APP_NAME: app
@@ -20,6 +25,7 @@
   jobs:
     release:
       name: Create Release
+      # push on master without a version = development pre-release
       if: github.ref == 'refs/heads/master' || contains(github.ref, 'tags/v')
       runs-on: ubuntu-latest
 
