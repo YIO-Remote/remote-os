@@ -4,6 +4,12 @@
 . /etc/profile.d/yio.sh
 . /etc/profile.d/qt.sh
 
+if [[ -f ${YIO_CFG_OVERRIDE_DIR}/timezone ]]; then
+  export TZ="$(cat ${YIO_CFG_OVERRIDE_DIR}/timezone)"
+else
+  export TZ="$(cat /etc/timezone)"
+fi
+
 ${YIO_SCRIPT_DIR}/wifi-copy-config.sh
 
 ${YIO_SCRIPT_DIR}/firstrun.sh

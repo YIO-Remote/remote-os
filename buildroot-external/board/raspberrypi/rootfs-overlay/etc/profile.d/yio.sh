@@ -12,3 +12,4 @@ export YIO_OS_VERSION=$BUILD_VERSION
 export YIO_OS_GITHASH=$GIT_HASH
 export YIO_LOG_DIR=/var/log
 export YIO_LOG_DIR_UPDATE=/boot/log
+export YIO_CFG_OVERRIDE_DIR=/boot
