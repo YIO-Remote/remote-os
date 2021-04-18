@@ -22,6 +22,18 @@ Attention:
 - If a wpa_supplicant.conf file is present in /boot, the initial setup is skipped during first run.
 - The Raspberry Pi 0 W doesn't support 5GHz networks!
 
+### Timezone configuration
+
+The system time is automatically set with NTP and the default timezone is UTC.
+
+- To set another timezone create a file named `timezone` in the root of this boot partition.
+- Content is a single line containing the Linux TZ name.  
+  See <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones> for a list of valid TZ database names.  
+  Examples:
+  - Europe/Copenhagen
+  - Asia/Hong_Kong
+  - America/Vancouver
+
 ### Bluetooth Serial Console
 
 To enable a Bluetooth serial console, create a marker file `btconsole` in the root of this boot partition.
